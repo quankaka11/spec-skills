@@ -11,13 +11,34 @@
 | # | Giai đoạn | Trạng thái | Ghi chú |
 |---|---|---|---|
 | 1 | Tổng hợp tài liệu nền | ✅ **Xong** 04/09 | → `hackathon_descriptions.md` |
-| 2 | Thu thập PDF theo §7 | ⬜ Chưa | 40 tài liệu, 5 tầng ưu tiên |
-| 3 | Dựng LLM Wiki / PageIndex | ⬜ Chưa | Cấu trúc thư mục ở §7.6 |
-| 4 | Xây skills & agents | ⬜ Chưa | Blueprint 9 agent ở §8 |
-| 5 | Dựng 15 artifact thi đấu | ⬜ Chưa | Checklist ở Phụ lục A |
-| 6 | Diễn tập trọn 1 lượt | ⬜ Chưa | Dự kiến 10–11/09. **Không được bỏ** |
+| 2 | Thu thập PDF theo §7 | ✅ Một phần | 16 PDF trong `data/` (P0, P0-domain, P1) |
+| 3 | Dựng LLM Wiki / PageIndex | ✅ Thay bằng `knowledge/` | Data nhỏ → chưng cất 7 file thay wiki/RAG |
+| 4 | Xây skills & agents | ✅ **Xong** 05/09 | 6 skill + 2 agent trong `.claude/`, 7 file `knowledge/`; self-test `drill/selftest/KET-QUA-SELFTEST.md` |
+| 5 | Dựng 15 artifact thi đấu | ◐ Phần lớn có trong `knowledge/` | Glossary (10 §2), question bank (20 §2–4), template (30 §1–2), attack checklist (50 §1/§4/§6), blacklist (40 §2), RTM/log mẫu (20 §5–6); còn thiếu: in ra giấy, câu hỏi BTC đã có ở 00 §H |
+| 6 | Diễn tập trọn 1 lượt | ◐ Có `/drill`, chạy mini dở dang | Dự kiến 10–11/09 chạy `/drill` trọn vòng với đội thật. **Không được bỏ** |
 
 ---
+
+## Self-test kit (05/09) — trạng thái để tiếp tục
+
+**Đã xong:** `knowledge/00…50` (7 file, critic + fix); `.claude/skills/{elicit,spec-write,spec-review,attack,appeal,drill}/SKILL.md`; `.claude/agents/{executor,customer}.md`; `.claude/README.md`. Fixture self-test ở `drill/selftest/` (true-spec ẩn 49 luật/16 ⚠, RTM 33 dòng, spec lỗi 33 lỗi cài).
+
+| Test | Kết quả | Ghi chú |
+|---|---|---|
+| T1 executor mù | ĐẠT 7/7 | đúng 5 mục; từ chối đọc file thứ hai; không rò rỉ |
+| T2 customer HỎI | ĐẠT 6/6 + 5/5 | từ chối ngoài phạm vi, "không có quy định riêng" đúng |
+| T3 customer CHẤM | ĐẠT 4/4 | VÔ HIỆU/TRƯỢT/TRÚNG/TRÚNG đúng kỳ vọng |
+| T4 /elicit lượt 1 + nạp | ĐẠT (tự kiểm) | khối 8 câu, TRONG/NGOÀI, RTM 8 dòng, ⚠ ERP + guest? |
+| T5 /spec-write | ĐẠT 93/100 | 2.888 từ, 18 BR, 17/17 ⚠ có BR, không bịa; lỗ hổng: §3 thiếu 'xem hold' + 0.4 |
+| T6 /spec-review (spec lỗi) | ĐẠT 89/100 | recall 30/33 (91%), 4/4 lỗi cứng, kết luận CHƯA NỘP ĐƯỢC |
+| T7a /attack spec lỗi | **5/5 TRÚNG, 0 VÔ HIỆU** | dry-run loại đúng 4 ứng viên Executor đoán trùng |
+| T7b /attack ngược spec mình | **1/5 TRÚNG** | 17/17 ⚠ đã chắn; lỗ hổng: §3 thiếu hàng "xem hold" + 0.4 |
+| T8 /appeal | ĐẠT 90/100 | 3 ca đều có trích nguyên văn |
+| T9 /drill mini (đặt bàn) | CHƯA HOÀN TẤT | sinh fixture miền mới ✓ (33 luật/19 ⚠); dừng vì giới hạn phiên |
+
+**Sửa skill từ bài học self-test:** attack bước 8 (giữ khi Executor khác đáp án, kể cả ĐỘ PHỦ = ĐỦ → spec viết trái); spec-write bước 4 (§3 phủ thao tác chỉ-đọc vì 0.4), bước 10 (cách đếm wc -w); elicit nạp (tách liệt kê thành từng dòng); appeal (quét toàn bộ log, trích `[…]`, dẫn 00 §D).
+
+**Xong 05/09 19:40.** Báo cáo: `drill/selftest/KET-QUA-SELFTEST.md`. Chưa commit.
 
 ## Đã làm
 
@@ -35,11 +56,11 @@
 
 ## Việc tiếp theo (ưu tiên giảm dần)
 
-1. **Lấy ~12 PDF free trước** (đủ để bắt đầu index): EARS paper · NASA "How to Write a Good Requirement" · ISTQB FL v4 syllabus · IREB CPRE handbook · OMG DMN spec · Volere template · Bach HTSM · Hendrickson cheat sheet · Oracle/SAP ATP docs.
-2. **Lấy tầng P0-DOMAIN** (#23–29 trong §7.3) — ROI cao nhất vì đề bài là "đặt giữ hàng". Web docs → in PDF.
-3. Dựng cây `knowledge/` theo §7.6, chunk theo mục có số, gắn metadata `source · section_id · tier · use_for · vuln_type`.
-4. Song song: dựng **Question Bank ~100 câu** (§3.5) và **Spec Template** (§4.7) — hai artifact này không cần chờ PDF.
-5. Agent làm trước: `interrogator` → `spec-writer` → `red-teamer`. `executor-simulator` cần có sớm để chạy vòng lặp eval (§8).
+1. **Commit kit** (`.claude/`, `knowledge/`, `drill/selftest/`) để đồng đội pull; mở phiên Claude Code mới sau khi pull.
+2. **Sau họp 09/09:** điền các ô "CHỜ 09/09" trong `knowledge/00-luat-choi.md` §A (TOKEN_MAX, công thức điểm, cách đếm từ, định dạng nộp, được dùng AI/tài liệu không). Nếu BTC không cho dùng AI trong phòng: in `knowledge/20` §2–§4, `30` §1–§2, `40` §2, `50` §1/§4/§6 mang vào.
+3. **10–11/09: `/drill` trọn vòng với đội thật** (4 lượt hỏi, tự-động hoặc thủ-công), đo TRÚNG/lỗ hổng hỏi/lỗ hổng viết; sửa `knowledge/20`, `30` theo ket-qua.md.
+4. Luyện /attack và /spec-review trên fixture sẵn `drill/selftest/flawed/spec.md` (ground truth ở `planted.md`).
+5. Tùy chọn: chạy lại T9 drill mini đầy đủ; đổi `model` của agent `executor` sang model yếu hơn nếu biết Executor của BTC.
 
 ---
 
