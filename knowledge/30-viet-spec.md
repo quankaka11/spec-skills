@@ -155,6 +155,17 @@ Hợp nhất [NASA App.C], [Volere], [HD §4.8]. Chạy trên từng BR lúc 11:
 
 ## 5. KỸ THUẬT TIẾT KIỆM TỪ [HD §4.7]
 
+**Chọn dạng §6 TRƯỚC khi gõ chữ đầu tiên — theo số dòng ⚠ trong RTM:**
+
+| Số dòng ⚠ | Dạng §6 | Lý do |
+|---|---|---|
+| < 40 | bảng 5 cột như §1 (Mã · Luật · K/T/N/L · KHÔNG ĐƯỢC · RTM) | đủ ngân sách, dễ soi ô trống |
+| ≥ 40 | **danh sách** `**BR-xx** — luật. Cấm: … ← A-yy` | mỗi hàng bảng tốn thêm ~4 "từ" dấu `\|`; 50 BR = ~200 từ chỉ riêng dấu bảng |
+
+**Với đề ≥ 40 dòng ⚠, dồn tác động phụ thành luật chung ở §0.7** — "mọi chuyển trạng thái cập nhật tồn theo §4, ghi audit theo BR-xx, gửi thông báo theo §9, kể cả khi luật cụ thể không nhắc" — thay vì lặp cột K/T/N/L trong từng BR. Tiết kiệm ~700 từ trên 50 BR mà **không mất** thành phần (4) của §3.2, vì §0.7 là căn cứ hợp lệ cho Executor. Chỉ ghi tác động riêng ở BR nào khác luật chung (ví dụ hoàn tiền theo bậc).
+
+Số đo thực tế (diễn tập đề "đặt cọc giữ hàng", 111 dòng ⚠): §6 viết đúng template bảng 5 cột tốn **2.235 từ** (ngân sách 900), toàn spec **5.753 từ** — phải nén 3 vòng và cuối cùng vẫn phải cắt §7, §10 và 3 BR trùng nội dung §1/§2. Chọn dạng danh sách + §0.7 từ đầu thì vào thẳng ~3.000.
+
 - Tập luật cùng cấu trúc → một bảng; luật tổng quát + ngoại lệ ("Mọi terminal → Từ chối 0.5, trừ BR-xx") thay liệt kê.
 - "áp dụng BR-07" thay lặp nội dung; §7 chỉ trỏ BR.
 - Công thức (`ATP = OnHand − Reserved − Safety`) thay câu văn.
@@ -194,4 +205,4 @@ Phân công: A §6, §5; B §3, §4, §8, §9; C RTM, §0, red team.
 | 8 | Mã BR/EX không trùng; mọi "áp dụng BR-xx" trỏ tới mã tồn tại? |
 | 9 | Eval set 20 tình huống: không tình huống nào có 2 cách trả lời? |
 | 10 | Mọi BR đủ 6 thành phần (mục 3.2) và fit criterion; mọi dòng §0 đã verify hoặc xóa? |
-| 11 | Đếm từ ≤ 3.000 và đã lưu bản copy cho kháng nghị? |
+| 11 | Đếm từ ≤ 3.000 **trên bản nộp** (đã bỏ `← A-xx`, `(verify …)`) và đã lưu bản copy nội bộ cho kháng nghị? Bản nội bộ dài hơn ~200 từ — đo bản nội bộ sẽ tự cắt oan. Đếm bằng `LC_ALL=C.UTF-8 wc -w <file>`, **không** dùng `wc -w` trần: locale `C`/`POSIX` đếm sai ký tự đa byte (`—` `⇒` `→` `✓` `≥` `−` `§`) và báo thừa ~80 từ. |

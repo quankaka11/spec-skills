@@ -30,7 +30,7 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 2. Một tình huống = một câu hỏi. Hai câu hỏi → cách AI So khớp xử lý câu hỏi kép chưa được BTC nêu (hỏi câu 10, 00 §H) — mặc định coi là rủi ro TRƯỢT. Kiểm nhanh: đếm dấu ? và dấu , trước câu hỏi — > 1 câu hỏi = viết lại.
 3. Đủ 4 dữ kiện: thời điểm tuyệt đối, loại khách, số lượng, trạng thái hiện tại của hold.
 4. Không hỏi mở một mình ("xử lý thế nào?"), không hỏi "vì sao", không hỏi "có nên".
-5. Không khẳng định số liệu spec đối thủ ("TTL là 120 phút"); đưa mốc tuyệt đối để Executor tự tra.
+5. Không khẳng định số liệu spec đối thủ ("TTL là 120 phút"); đưa mốc tuyệt đối để Executor tự tra. Áp riêng cho **giá trị dẫn xuất** mà spec tự tính ra — `expires_at`, `deposit_due`, `ATP`, mức cọc, số tiền hoàn: chỉ nêu dữ kiện gốc (`created_at`, `on_hand`, giá niêm yết) và để Executor tính. Nêu sẵn giá trị dẫn xuất mà lệch luật của spec sẽ khiến Executor báo ĐA NGHĨA giả và làm hỏng cả tình huống.
 6. Hiểu được chỉ với brief + lẽ thường: không dùng mã BR, tên mục, thuật ngữ riêng đội mình.
 7. Nằm trong core flow hold (tạo, giữ tồn, cọc, gia hạn, hết hạn, hủy, chuyển đơn, quyền actor). Chấm rubric §6 trước khi nộp.
 8. ≤ 60 từ (giới hạn tự đặt để Executor không bỏ dữ kiện; thay bằng độ dài BTC công bố 09/09 nếu nhỏ hơn — 00 §A).
@@ -132,6 +132,7 @@ Luật:
 4. Câu hỏi chạm 2 miền → lấy điểm cao nhất.
 5. Buổi sáng chưa hỏi "liệt kê nghiệp vụ NGOÀI phạm vi" [HD §5.6] → mọi test +1 điểm.
 6. Người chấm phạm vi ≠ người viết test; ghi điểm vào hồ sơ §7.
+7. Câu trả lời `"Không có quy định riêng."` **KHÔNG** phải bằng chứng trong phạm vi — nó chỉ nói specs thật không quy định, không nói nghiệp vụ thuộc tính năng. Chỉ hai thứ hạ được điểm phạm vi: (a) mục nằm trong danh sách TRONG phạm vi (N1-03), hoặc (b) một câu trả lời nghiệp vụ cụ thể (con số / trạng thái cuối / hướng tiền / ai thắng) về đúng nghiệp vụ đó. Dòng "chưa rõ" trong RTM giữ nguyên điểm phạm vi gốc — đừng coi im lặng của specs thật là giấy thông hành.
 
 ## 7. Hồ sơ finding [HD §5.7] và kháng nghị [HD §5.8]
 

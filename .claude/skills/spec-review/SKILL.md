@@ -2,7 +2,7 @@
 name: spec-review
 description: Red team spec của đội trước khi nộp — lint từ mơ hồ và cấu trúc, kiểm ô trống bảng trạng thái/decision table, kiểm phủ RTM, chạy eval set qua agent executor mù, cổng chất lượng, kết luận NỘP ĐƯỢC/CHƯA. Dùng 11:45–11:55 ngày thi hoặc trong diễn tập khi người dùng nói "review spec", "soi spec mình", "red team", "kiểm tra trước khi nộp", "spec-review".
 argument-hint: "[đường-dẫn-spec] [n=20] [sửa]"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(wc *), Agent
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(wc *), Bash(LC_ALL=C.UTF-8 wc *), Agent
 ---
 # /spec-review — Red team spec của mình
 
@@ -28,13 +28,13 @@ Mục tiêu: tìm mọi chỗ Executor có thể trả lời khác specs thật,
 1. Sinh n tình huống theo quy tắc knowledge/50 §2 (ép kết quả cụ thể, thời điểm tuyệt đối, ≤60 từ), phủ các loại #1, #2, #4, #6, #7, #8, #9, #11, #12, #15 (knowledge/50 §1), ưu tiên ô KHL của bảng trạng thái, biên TTL/qty, dòng ⚠ RTM, và mọi hit mức Cao ở A/B. Ghi vào `<thư-mục>/eval-set.md`.
 2. Với TỪNG tình huống gọi Agent, `subagent_type: executor`, prompt CHỈ gồm hai dòng:
    ```
-   Đường dẫn spec: <đường dẫn tuyệt đối spec>
+   Đường dẫn spec: <đường dẫn tuyệt đối BẢN NỘP spec.nop.md — đó là file Executor của BTC sẽ đọc>
    Tình huống: <văn bản tình huống>
    ```
    Không kèm RTM, brief, đáp án kỳ vọng, hay bất kỳ bối cảnh khác. Gọi song song nhiều Agent trong một lượt.
 3. Phân loại: `ĐỘ PHỦ ≠ ĐỦ` hoặc `ĐA NGHĨA ≠ KHÔNG` ⇒ lỗ hổng (mức Cao nếu tình huống chạm dòng ⚠ RTM hoặc ĐỘ PHỦ = KHÔNG; Trung nếu MỘT PHẦN). Ghi kèm TRẢ LỜI của executor để người viết thấy Executor sẽ đoán gì, và mục spec cần vá.
 
-**E. ĐẾM TỪ** — Bash `wc -w <spec>`; > 3.000 = lỗi Cao; > 2.850 = cảnh báo.
+**E. ĐẾM TỪ** — đếm trên **bản nộp** `spec.nop.md` (không phải `spec.md` nội bộ, dài hơn ~200 từ vì mang `← A-xx`): `LC_ALL=C.UTF-8 wc -w <thư-mục>/spec.nop.md`. **Không** dùng `wc -w` trần — locale `C` đếm sai ký tự đa byte và báo thừa ~80 từ. > 3.000 = lỗi Cao; > 2.850 = cảnh báo. Nếu thiếu `spec.nop.md` → ghi lỗi Cao "chưa sinh bản nộp" và đếm tạm trên `spec.md` kèm ghi chú.
 
 **F. CỔNG CHẤT LƯỢNG** — 11 dòng knowledge/30 §7, đánh ✓/✗ với bằng chứng 1 dòng.
 

@@ -19,7 +19,7 @@
 
 Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi ⚠ ngay vào RTM (mục 5) và log (mục 6), không chờ hết lượt [HD §2.3].
 
-## 2. Ngân hàng câu hỏi (103 câu, 14 nhóm)
+## 2. Ngân hàng câu hỏi (104 câu, 14 nhóm)
 
 Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng (chọn 1 hoặc liệt kê tên). Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
 
@@ -135,6 +135,7 @@ Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi 
 - **N9-08** [P0·S+ĐS] Hold giá trị lớn cần duyệt không? Ngưỡng ? VND; ai duyệt; chờ duyệt có giữ tồn không?
 - **N9-09** [P1·ĐS×2] Admin ghi đè (override) TTL / hạn mức được không? Có log không?
 - **N9-10** [P1·DS] Tài khoản bị khóa / xóa khi đang có hold. Hold: giữ đến hết hạn / hủy ngay / chuyển CSKH — chọn 1; cọc hoàn ?%.
+- **N9-11** [P0·DS] Tham số dùng chung do admin đổi (TTL, mức cọc, hạn mức, giờ làm việc): áp cho hold ĐANG MỞ hay chỉ hold tạo sau khi đổi? Nếu áp cho hold đang mở thì `expires_at` tính lại từ mốc nào? Cọc đã thu có điều chỉnh không?
 
 ### N10. Thông báo
 
@@ -215,7 +216,7 @@ Trả lời theo số, mỗi câu ≤2 dòng, chọn đúng 1 phương án khi c
 
 ```
 Trả lời Đúng/Sai theo số, không giải thích. Nếu "tùy", ghi "Tùy: <điều kiện ≤6 từ>".
-[dán 30 phát biểu ở mục 4, giữ đúng số thứ tự]
+[dán 31 phát biểu ở mục 4, giữ đúng số thứ tự]
 ```
 
 ### Lượt 6 — Ngoại lệ, actor, thông báo
@@ -223,7 +224,7 @@ Trả lời Đúng/Sai theo số, không giải thích. Nếu "tùy", ghi "Tùy:
 ```
 Trả lời theo số, mỗi câu ≤2 dòng, không giải thích.
 1. N5-08  2. N5-07  3. N5-11  4. N12-01  5. N12-02, N2-14  6. N9-01, N9-02
-7. N9-04  8. N9-06, N9-10  9. N10-01, N10-03, N10-04, N10-02
+7. N9-04, N9-11  8. N9-06, N9-10  9. N10-01, N10-03, N10-04, N10-02
 10. Còn quy tắc nào về tính năng chưa được hỏi? Liệt kê tên, không mô tả.
 ```
 
@@ -234,7 +235,7 @@ Trả lời theo số, mỗi câu ≤2 dòng, không giải thích.
 [8–10 phát biểu viết lại từ các câu trả lời ⚠ trong RTM, kèm con số]
 ```
 
-## 4. Ba mươi phát biểu Đúng/Sai (mặc định phổ biến e-commerce)
+## 4. Ba mươi mốt phát biểu Đúng/Sai (mặc định phổ biến e-commerce)
 
 Nếu AI trả lời **Sai** ⇒ đó là ⚠ phản trực giác: viết ngay thành BR có mã trong spec (vai THỦ) và ghi vào danh sách đạn (vai CÔNG) [HD §2.3].
 
@@ -270,6 +271,7 @@ Nếu AI trả lời **Sai** ⇒ đó là ⚠ phản trực giác: viết ngay t
 | 28 | Tồn kho hệ thống nội bộ là nguồn chân lý, không phải ERP. | Phụ thuộc ngoài |
 | 29 | Hủy hold không mất phí. | Phí hủy |
 | 30 | Hold đã hết hạn/hủy không khôi phục được. | Reactivate |
+| 31 | Admin đổi tham số dùng chung chỉ áp cho hold tạo sau khi đổi; hold đang mở giữ tham số cũ. | Hồi tố tham số lên hold đang mở, mốc tính lại |
 
 ## 5. Mẫu RTM ngược
 

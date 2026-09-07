@@ -2,7 +2,7 @@
 name: spec-write
 description: Viết spec "Đặt giữ hàng" ≤3.000 từ cho AI Executor đọc, từ RTM ngược và log AI Khách hàng, theo template 11 mục có mã BR truy vết; hoặc nén spec đang có về ≤3.000 từ không mất luật. Dùng 11:00–11:45 ngày thi khi người dùng nói "viết spec", "điền template", "nén spec", "spec-write", "rút gọn còn 3000 từ".
 argument-hint: "[thư-mục] [nén]"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(wc *)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(wc *), Bash(LC_ALL=C.UTF-8 wc *), Bash(sed *)
 ---
 # /spec-write — Viết spec từ RTM
 
@@ -30,10 +30,13 @@ Mỗi BR/EX kết thúc bằng nguồn: `← A-07` (dòng RTM) hoặc `[GIẢ Đ
 7. **§2 Glossary**: chỉ thuật ngữ có nguy cơ hiểu sai và có dùng trong spec; một khái niệm một tên (loại bỏ từ đồng nghĩa khỏi toàn spec).
 8. **§7, §8, §9, §10** theo template; §8 tối thiểu các EX nêu trong template nếu RTM có dữ kiện, còn lại để 0.5 chặn.
 9. **§0 cuối cùng** từ khung knowledge/30 §2: từng dòng đối chiếu với RTM/log; dòng khớp → giữ và ghi `(verify A-xx)`; dòng RTM nói khác → sửa theo RTM; dòng không verify được → giữ nguyên nhưng gắn `[GIẢ ĐỊNH]`. Khai báo ký hiệu dùng trong spec ([a,b), →, KHL, K/T/N/L, ✓/✗) ở 0.x.
-10. Ghi `spec.md`. Chạy Bash `wc -w <thư-mục>/spec.md`. Lưu ý `wc -w` đếm cả dấu `|`, `→`, `←` của bảng — thiên an toàn (bảng 6×10 tốn ~70 "từ" ký hiệu); giữ cách đếm này cho tới khi knowledge/00 §A ghi cách đếm của BTC (câu 3 họp 09/09), khi đó đổi lệnh cho khớp. Nếu > 2.850 từ → sang chế độ nén (dưới) rồi quay lại bước 11; sau 2 vòng nén mà vẫn trong (2.850, 3.000] thì chấp nhận và ghi rõ trong bảng tóm tắt.
+10. Ghi `spec.md`, rồi **sinh ngay bản nộp** `spec.nop.md` (bước 13) và **đếm từ trên BẢN NỘP**, không trên `spec.md`: hạn mức 3.000 của BTC áp cho bản nộp, còn bản nội bộ dài hơn ~200 từ vì mang `← A-xx` và `(verify …)` — đo bản nội bộ sẽ tự cắt oan luật.
+    - Lệnh: `LC_ALL=C.UTF-8 wc -w <thư-mục>/spec.nop.md`. **Không** dùng `wc -w` trần: locale `C`/`POSIX` đếm sai ký tự đa byte (`—` `⇒` `→` `✓` `≥` `−` `§`) và báo thừa ~80 từ — đủ để tưởng là vượt hạn mức khi vẫn còn đệm.
+    - `wc -w` đếm cả dấu `|` của bảng (mỗi hàng ~4 "từ"); giữ cách đếm thiên an toàn này cho tới khi knowledge/00 §A ghi cách đếm của BTC (câu 3 họp 09/09). Nếu BTC chốt "từ trong bảng không tính" thì đo lại bằng cách bỏ `|` và `---`, thường dư thêm ~230 từ.
+    - Nếu > 2.850 từ → sang chế độ nén (dưới) rồi quay lại bước 11; sau 2 vòng nén mà vẫn trong (2.850, 3.000] thì chấp nhận và ghi rõ trong bảng tóm tắt. Thứ tự hy sinh khi cạn: §7 → §10 → §9 → §2, và gộp BR trùng nội dung §1/§2/§5 về đúng mục đó (RTM trỏ tới `§1`/`§2`/`§5` thay vì mã BR — vẫn truy vết được).
 11. Tự kiểm nhanh: (a) Grep `BR-\d+|EX-\d+` — mã duy nhất, mọi "áp dụng BR-xx" tồn tại; (b) Grep vài nhóm blacklist knowledge/40 §2 (nhóm 1, 3, 4, 5, 6) trên spec.md, sửa hit; (c) mọi dòng ⚠ trong RTM có BR.
 12. Điền ngược cột "Mã BR" và "Trạng thái" (✅) vào `rtm.md` bằng Edit.
-13. Tạo bản nộp `spec.nop.md` = spec.md bỏ mọi dấu vết nội bộ (`← A-xx`, `(verify A-xx)`, `[GIẢ ĐỊNH — …]` → giữ nội dung luật, bỏ nhãn) bằng sed/Edit; `wc -w` lại bản nộp (đây là số từ tính với BTC); spec.md nội bộ giữ nguyên để /spec-review, /appeal truy vết.
+13. Tạo bản nộp `spec.nop.md` = spec.md bỏ mọi dấu vết nội bộ (`← A-xx`, `(verify A-xx)`, `[GIẢ ĐỊNH — …]` → giữ nội dung luật, bỏ nhãn) bằng sed/Edit. Bước này chạy sớm ở bước 10 để có số đếm đúng, và chạy lại sau mỗi lần sửa `spec.md`. Grep `A-\d` trên bản nộp phải = 0 hit. `spec.md` nội bộ giữ nguyên để /spec-review, /appeal truy vết.
 14. In bảng tóm tắt: số từ (nội bộ / bản nộp) | số BR/EX | dòng ⚠ đã phủ / tổng ⚠ | danh sách `[GIẢ ĐỊNH]` (đề xuất câu verify ở lượt restate) | dòng RTM chưa thành BR (nếu có, kèm lý do).
 
 ## Chế độ `nén`
