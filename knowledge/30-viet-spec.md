@@ -4,6 +4,12 @@
 
 Quy ước file: `[..]` = chỗ điền · ⚠ = lấy từ dòng ⚠ trong RTM · HD = hackathon_descriptions.md.
 
+**Điều kiện vào:** `mo-hinh-bai-toan.md` (knowledge/05) phải tồn tại trước khi gõ chữ đầu tiên. Spec viết mà không có mô hình bài toán thì đạt mọi cổng hình thức và vẫn sai bài toán — bằng chứng đo được ở knowledge/05 §0 và 32 §7.
+
+**Hai luật ngân sách mới (từ bài học 08/09):**
+- **Đích là ≤ 2.700 từ trên bản nộp, không phải ≤ 3.000.** Bản 08/09 về đích 2.991/3.000 → còn 9 từ đệm, không đủ để vá một luật sau khi elicit trả về số thật. 300 từ đệm ≈ 4–6 luật vá.
+- **Bản nộp không chứa câu nói về chính nó.** "36/36 ô đã điền", "Phân hoạch 2×2×2 = 8 tổ hợp; phủ 4+2+2 = 8", "ba hàng rời ở cột 1 hoặc 2 → đủ, không chồng lấn" là chứng minh gửi cho người rà, không phải luật cho Executor. Chúng thuộc `spec.md` nội bộ và `review.md`; bỏ khỏi `spec.nop.md` (~60 từ ở bản 08/09).
+
 ## 1. TEMPLATE SPEC (11 mục, ngân sách theo [HD §4.7])
 
 Copy nguyên khối; điền hết ô mọi bảng [HD §4.8-7].
@@ -102,6 +108,12 @@ Bảng cột: `Mã EX-xx | Tình huống | Điều kiện phát hiện | Hành v
 | 0.8 | Xung đột đồng thời trên cùng tồn kho: xử lý theo thời điểm server tiếp nhận (FCFS). | [..] | "Hai khách giữ SKU cuối cùng giây, ai được?" |
 | 0.9 | Nghiệp vụ tại §1 NGOÀI PHẠM VI không thuộc tài liệu này. | [..] | "Nghiệp vụ nào KHÔNG thuộc tính năng này?" |
 | 0.10 | Request trùng cùng khóa idempotency → trả kết quả lần đầu, không tạo hold mới. | [..] | "Bấm giữ hàng 2 lần liên tiếp cùng SKU: 1 hay 2 hold?" |
+| 0.11 | Khử trùng sự kiện từ cổng thanh toán theo **mã giao dịch của cổng**, không theo thời điểm nhận; sự kiện đến sai thứ tự → lấy kết quả sau cùng theo mã giao dịch. | [..] | "Cổng báo trùng: ghi 1 hay 2 lần? Sai thứ tự thì lấy kết quả nào?" (N0-09) |
+| 0.12 | Mốc hệ thống **quyết định** (thu, hoàn, đổi trạng thái) khác mốc bên ngoài **hoàn tất**. Mọi nghĩa vụ tiền có hai mốc và một trường trạng thái riêng. | [..] | "Hoàn cọc: khởi tạo sau ? phút, tiền về sau tối đa ? ngày làm việc?" (N0-05) |
+| 0.13 | Hạn mức và định danh neo vào [đơn vị định danh]; yêu cầu không kèm đơn vị định danh hợp lệ PHẢI bị từ chối. | [..] | "Hạn mức tính theo tài khoản / SĐT đã OTP / thiết bị / thẻ? Chọn 1." (N0-02) |
+| 0.14 | Thất bại của kênh thông báo KHÔNG làm đổi trạng thái hold, `expires_at`, hay nghĩa vụ hoàn tiền. | Không cần | — |
+
+Bốn dòng 0.11–0.14 là bốn luật rẻ nhất phủ 8/12 kịch bản suy biến bắt buộc (knowledge/05 §M6), tổng ~90 từ. Xem mẫu câu dán được ở knowledge/32 §3.2.
 
 ## 3. CÚ PHÁP LUẬT
 
@@ -153,6 +165,20 @@ Hợp nhất [NASA App.C], [Volere], [HD §4.8]. Chạy trên từng BR lúc 11:
 | 16 | Không ô trống trong bảng; điều kiện phải kiểm chứng được bằng dữ liệu trong spec | "gia hạn nếu cần" → "gia hạn ≤ 1 lần, +60 phút, chỉ khi còn ≥ 10 phút trước `expires_at`" |
 | 17 | Giả định ngầm viết thành luật; khẳng định trước, không phủ định kép | "(ai cũng hiểu 1 hold nhiều SKU)" → "BR-12: một hold chứa 1..N HoldLine; mỗi SKU ≤ 1 HoldLine" |
 
+### Bảy quy tắc chất-lượng-nội-dung (18–24) — ISO/IEC/IEEE 29148 `feasible` + `affordable`
+
+Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều được viết có đứng được trong thực tế và có phục vụ mục tiêu không*. Chi tiết cách chấm: knowledge/32 §1 (cổng F). Chạy lúc 11:35, **trước** khi rà §0.
+
+| # | Quy tắc | Trước → Sau |
+|---|---|---|
+| 18 | **Không hứa hộ bên ngoài.** Mốc "hoàn tất" của việc do cổng/ngân hàng/ERP thực hiện phải tách khỏi mốc "quyết định" của hệ thống | "hoàn cọc hoàn tất ≤ 24 giờ" → "khởi tạo hoàn ≤ 5 phút, `refund_status = ĐANG_HOÀN`; cổng xác nhận → `ĐÃ_HOÀN`; quá [N] ngày làm việc chưa xác nhận → `HOÀN_THẤT_BẠI` + [phương án 2]" |
+| 19 | **Hạn mức phải cưỡng chế được.** Neo vào dữ liệu khách tự đặt được = hạn mức trang trí | "hạn mức theo email khai lúc cọc" → "hạn mức theo [đơn vị định danh]; yêu cầu không có đơn vị định danh hợp lệ bị từ chối `IDENTITY_REQUIRED`" |
+| 20 | **Mỗi luật phục vụ một mục tiêu.** Luật ở cột 3 bảng Mục tiêu↔Luật (05 §2) = luật tự phá mục tiêu → hỏi lại, không tự chốt | "guest tạo hold + khóa tồn trước khi thu tiền + hủy hoàn 100% phí 0" trong khi mục tiêu là chống bot → hỏi N0-02, N0-03, N0-04 trước khi viết |
+| 21 | **Mỗi phụ thuộc ngoài có một luật cho chế độ lỗi của nó.** Sáu láng giềng (05 §M4) → sáu luật | im lặng về cổng timeout → "NẾU cổng không xác nhận trong hạn trả cọc, THÌ → CANCELLED (HETHONG), K+, T0" |
+| 22 | **Không coi việc giữ tài nguyên là chắc chắn thành công.** Kiểm điều kiện xong vẫn có thể ghi thất bại [IBM; Shopify] | "`ATP ≥ q` khi nhận yêu cầu → tạo hold" → "+ NẾU ghi giữ thất bại do tồn đã đổi giữa lúc kiểm và lúc ghi, THÌ `OUT_OF_STOCK`, K0 T0, không giữ một phần, không tự thử lại" |
+| 23 | **Việc giao cho người phải quan sát được và có trần.** Mỗi `CSKH`/`Admin`/`thủ công` cần một dòng §9 (ai được báo) + trường audit + trần số lượng hoặc điều kiện | "hệ thống hủy hold đã cọc khi kho lệch" → "+ báo CSKH phụ trách, ghi lý do vào audit, và nêu trần / thứ tự hủy tường minh" |
+| 24 | **Nói ai chịu chi phí.** Hoàn 100%, thao tác thủ công, thông báo, tồn bị khóa đều có giá | "hoàn 100%, không thu phí hủy" → "+ phí cổng của khoản hoàn do [ai] chịu" hoặc đưa vào NGOÀI phạm vi tường minh |
+
 ## 5. KỸ THUẬT TIẾT KIỆM TỪ [HD §4.7]
 
 **Chọn dạng §6 TRƯỚC khi gõ chữ đầu tiên — theo số dòng ⚠ trong RTM:**
@@ -180,14 +206,15 @@ Số đo thực tế (diễn tập đề "đặt cọc giữ hàng", 111 dòng �
 | 11:10–11:30 | §6: dòng ⚠ thành BR trước, rồi luật lifecycle còn lại; decision table cho luật ≥ 2 điều kiện | ≥ 15 BR |
 | 11:30–11:40 | §5: bảng state × event, mỗi ô trỏ BR hoặc "Từ chối 0.5" | Bảng đầy 100% ô |
 | 11:40–11:45 | §3: actor × quyền, có Guest và System/Job | Bảng đầy |
-| 11:45–11:47 | §4 → §8 → §9 → §2 → §1 → §7 → §10 | Đủ 11 mục |
-| 11:47–11:50 | Rà §0: đối chiếu từng dòng với log hội thoại, sửa khớp hoặc xóa | §0 khớp specs thật |
-| 11:50–11:56 | Red team: eval set 20 tình huống, tự đóng vai Executor; Ctrl+F danh sách đen knowledge/40 §2; đối chiếu ⚠ RTM | Lỗ hổng đã vá |
-| 11:56–12:00 | Đếm từ ≤ 3.000; cắt đệm; nộp; lưu bản copy | Đã nộp |
+| 11:40–11:44 | §4 → §8 → §9 → §2 → §1 → §7 → §10 | Đủ 11 mục |
+| 11:44–11:48 | **Cổng F** (knowledge/32 §1) trên từng BR + bảng Mục tiêu↔Luật (`/frame muc-tieu-luat`) | 0 ✗ ở F1/F2/F5/F7; mọi mục tiêu có luật phục vụ |
+| 11:48–11:51 | Rà §0: đối chiếu từng dòng với log hội thoại, sửa khớp hoặc xóa; thêm 0.11–0.14 nếu chưa có | §0 khớp specs thật, 12 ca suy biến ✓ hoặc ⛔ |
+| 11:51–11:56 | Red team: eval set 20 tình huống qua **hai** Executor mù độc lập; Ctrl+F danh sách đen knowledge/40 §2 (đủ 22 nhóm); đối chiếu ⚠ RTM | Lỗ hổng đã vá; 0 ca hai reader lệch nhau |
+| 11:56–12:00 | Đếm từ trên bản nộp, đích ≤ 2.700; bỏ câu nói về chính spec; nộp; lưu bản copy | Đã nộp, còn đệm |
 
-Cạn giờ → cắt theo thứ tự: §7 → §10 → §9 → §2. Không cắt §0, §3, §5, §6, §8.
+Cạn giờ → cắt theo thứ tự: **BR "không thuộc mục tiêu nào" (05 §2)** → §7 → §10 → §9 → §2. Không cắt §0, §3, §5, §6, §8, và không cắt bốn luật 0.11–0.14.
 
-Phân công: A §6, §5; B §3, §4, §8, §9; C RTM, §0, red team.
+Phân công: A §6, §5; B §3, §4, §8, §9; C mô hình bài toán + RTM + §0 + cổng F + red team.
 
 ## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP [HD §5.9]
 
@@ -200,9 +227,14 @@ Phân công: A §6, §5; B §3, §4, §8, §9; C RTM, §0, red team.
 | 3 | Bảng actor × quyền có cột Guest và System/Job? |
 | 4 | Có 0.6 thứ tự ưu tiên khi hai luật xung đột, đã verify? |
 | 5 | Có timezone và quy ước [đầu, cuối) tại 0.2, 0.3? |
-| 6 | Đã Ctrl+F danh sách đen knowledge/40-tu-mo-ho.md §2 (đủ 16 nhóm) + §3 S1–S21; ký hiệu chưa khai báo? |
+| 6 | Đã Ctrl+F danh sách đen knowledge/40-tu-mo-ho.md §2 (đủ **22 nhóm**: 1–16 mơ hồ, 17–22 nội dung) + §3 **S1–S30**; ký hiệu chưa khai báo? |
 | 7 | Không tham chiếu tài liệu ngoài; không đại từ trôi? |
 | 8 | Mã BR/EX không trùng; mọi "áp dụng BR-xx" trỏ tới mã tồn tại? |
 | 9 | Eval set 20 tình huống: không tình huống nào có 2 cách trả lời? |
 | 10 | Mọi BR đủ 6 thành phần (mục 3.2) và fit criterion; mọi dòng §0 đã verify hoặc xóa? |
 | 11 | Đếm từ ≤ 3.000 **trên bản nộp** (đã bỏ `← A-xx`, `(verify …)`) và đã lưu bản copy nội bộ cho kháng nghị? Bản nội bộ dài hơn ~200 từ — đo bản nội bộ sẽ tự cắt oan. Đếm bằng `LC_ALL=C.UTF-8 wc -w <file>`, **không** dùng `wc -w` trần: locale `C`/`POSIX` đếm sai ký tự đa byte (`—` `⇒` `→` `✓` `≥` `−` `§`) và báo thừa ~80 từ. |
+| 12 | Mọi BR đã chấm **cổng F** (knowledge/32 §1); không còn ✗ ở F1 (khả thi), F2 (cưỡng chế được), F5 (phụ thuộc ngoài), F7 (phục vụ mục tiêu)? |
+| 13 | Bảng **Mục tiêu↔Luật** (knowledge/05 §2) đã lập; mọi mục tiêu của brief có ≥1 luật phục vụ; mọi ô "làm hỏng mục tiêu" đã hỏi AI Khách hàng hoặc đã xử lý? |
+| 14 | **12 kịch bản suy biến** (knowledge/05 §M6) đều ✓ có luật, hoặc ⛔ nằm trong danh sách NGOÀI phạm vi tường minh? |
+| 15 | Mọi nghĩa vụ tiền đã tách mốc "khởi tạo" (ta kiểm soát) khỏi mốc "hoàn tất" (bên ngoài), và có luật cho ca **hoàn tiền thất bại**? |
+| 16 | Bản nộp **không chứa câu nói về chính nó** ("36/36 ô đã điền", chứng minh phủ tổ hợp)? Còn ≥ 250 từ đệm dưới 3.000? |

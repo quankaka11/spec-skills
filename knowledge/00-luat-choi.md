@@ -24,8 +24,8 @@ BTC ghi số liệu đang được tinh chỉnh; mọi ô phải được xác n
 
 | Giờ | Pha | Việc | Output phải có |
 |---|---|---|---|
-| 9:00–9:30 | Nhận brief | Đọc brief; vào vai (§I) | Câu hỏi xếp ưu tiên |
-| 9:30–12:00 | THỦ | Hỏi đóng; đánh ⚠; viết spec; RTM ngược; nộp trước 11:50 | Spec đã nộp; log; RTM đủ; danh sách ⚠ |
+| 9:00–9:30 | Nhận brief | Đọc brief; **dựng mô hình bài toán (`/frame`, knowledge/05)**; vào vai (§I) | `mo-hinh-bai-toan.md` đủ M1–M6; danh sách mâu thuẫn nội tại của brief; câu hỏi P0 xếp ưu tiên |
+| 9:30–12:00 | THỦ | Hỏi đóng (mục tiêu & ràng buộc trước tham số); đánh ⚠; **lượt restate**; viết spec; RTM ngược; **cổng F + bảng Mục tiêu↔Luật**; nộp trước 11:50 | Spec đã nộp ≤2.700 từ; log; RTM đủ; danh sách ⚠; 0 ✗ ở F1/F5 |
 | 12:00–13:00 | Nghỉ | Chuyển ⚠ thành tình huống | ≥ 15 tình huống ứng viên |
 | 13:00–15:00 | CÔNG | Đọc 3 spec; tìm im lặng trùng ⚠; kiểm phạm vi | 15 test + đáp án kỳ vọng + căn cứ phạm vi |
 | 15:00–16:00 | Chạy 60 test | Ghi TRÚNG/VÔ HIỆU đáng ngờ | ≤ 3 ứng viên kháng nghị kèm mã luật |
@@ -84,11 +84,12 @@ Mẫu RTM ngược đầy đủ (7 cột, timestamp) + quy tắc điền: knowle
 
 Mỗi artifact một owner.
 
-| Vai | Sáng (THỦ) | Chiều (CÔNG) |
-|---|---|---|
-| Interrogator | Hỏi theo 20 §3, quản token, điền RTM (20 §5), lưu log (20 §6) | Chấm phạm vi (50 §6) |
-| Spec Writer | Gõ spec theo 30 §1, quản 3.000 từ | Soi spec #1, #2 (50 §4) |
-| Red Teamer | Eval set + lint (40, 50 §5), cổng chất lượng 30 §7 | Soi spec #3, tổng hợp 15 hồ sơ 50 §7, một mình giữ bằng chứng kháng nghị |
+| Vai | 9:00–9:30 (mô hình) | Sáng (THỦ) | Chiều (CÔNG) |
+|---|---|---|---|
+| Interrogator | M1 mục tiêu, M2 dòng tiền | Hỏi theo 20 §3 (**nhóm N0 mục tiêu & ràng buộc trước tham số**), quản token bằng hệ số 2,5, **giữ 15% cho lượt restate**, điền RTM (20 §5), lưu log (20 §6) | Chấm phạm vi (50 §6) |
+| Spec Writer | M3 dòng tồn, M4 biên hệ thống | Gõ spec theo 30 §1, gắn nhãn mục tiêu `[M-x]` cho từng BR, quản **đích 2.700 từ** | Soi spec #1, #2 (50 §4) |
+| Red Teamer | M5 lạm dụng, M6 suy biến, bảng mâu thuẫn brief | **Cổng F (32 §1)** + bảng Mục tiêu↔Luật + eval set **hai reader** + lint 22 nhóm (40) + cổng chất lượng **16 dòng** (30 §7) | Soi spec #3, tổng hợp 15 hồ sơ 50 §7, một mình giữ bằng chứng kháng nghị |
 
 - Đội 2 người: A = Interrogator + Spec Writer, B = Red Teamer + log; chiều chia 1,5 spec/người.
-- Diễn tập bắt buộc 10–11/09 [HD 6.2]: hỏi 60′ → viết 90′ → đổi spec tự bắn → đo TRÚNG/TRƯỢT/VÔ HIỆU.
+- **Khối 9:00–9:30 làm chung, không chia.** Mô hình bài toán là hiểu biết dùng chung; chia ra thì mỗi người viết luật theo một hình dung khác nhau và §0 sẽ chỏi §6.
+- Diễn tập bắt buộc 10–11/09 [HD 6.2]: dựng mô hình 20′ → hỏi 60′ (có restate) → viết 90′ → cổng F → đổi spec tự bắn → đo TRÚNG/TRƯỢT/VÔ HIỆU.

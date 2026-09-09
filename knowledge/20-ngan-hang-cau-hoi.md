@@ -23,6 +23,25 @@ Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi 
 
 Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng (chọn 1 hoặc liệt kê tên). Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
 
+### N0. Mục tiêu, ràng buộc, quyền sở hữu thất bại
+
+Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `knowledge/05-hieu-bai-toan.md` §1 (khối M1, M2, M3, M5) và §4. Mật độ ⚠ cao nhất trong toàn ngân hàng vì đây là chỗ specs thật hay có luật mà brief không kể. **Bắt buộc vào lượt 1**: N0-01, N0-02, N0-06.
+
+- **N0-01** [P0·DS] Liệt kê ≤5 điều tính năng này PHẢI ngăn không cho xảy ra, mỗi dòng ≤8 từ.
+- **N0-02** [P0·DS] Hạn mức chống gom hàng tính theo đơn vị nào: tài khoản đã đăng nhập / SĐT đã xác thực OTP / thiết bị / phương tiện thanh toán? Chọn 1.
+- **N0-03** [P0·DS] Tồn bị khóa tại thời điểm nào: khi khách bấm giữ, hay khi cọc thành công? Chọn 1.
+- **N0-04** [P0·S] Khách tự hủy: mất bao nhiêu % cọc, phí hủy bao nhiêu?
+- **N0-05** [P0·B] Bảng: sự kiện kết thúc hold | % cọc hoàn | mốc khởi tạo hoàn (phút) | mốc tiền về tay khách (ngày làm việc).
+- **N0-06** [P0·ĐS] Khách chưa đăng nhập tạo hold được không? Nếu được, có rào thêm nào (OTP / captcha / giới hạn thiết bị)?
+- **N0-07** [P0·DS] Hoàn về phương thức gốc thất bại (thẻ đóng, ví khóa): hoàn bằng gì thay thế? Chọn 1 hoặc nêu tên.
+- **N0-08** [P0·DS] Tồn e-commerce và ERP lệch nhau: số nào thắng? Đồng bộ mỗi ? phút.
+- **N0-09** [P1·DS] Cổng báo trùng cùng một giao dịch: ghi nhận 1 hay 2 lần? Sự kiện đến sai thứ tự: lấy kết quả nào?
+- **N0-10** [P1·DS] Ghi giữ tồn thất bại dù vừa kiểm thấy còn hàng: khách nhận kết quả gì? Chọn 1.
+- **N0-11** [P1·DS] Ai chịu phí cổng thanh toán của khoản cọc đã hoàn: shop / khách / không có phí?
+- **N0-12** [P1·S] Trần số hold đang mở trên toàn hệ thống cho một SKU (chống khóa hết tồn) = ?
+- **N0-13** [P1·ĐS] Gửi thông báo thất bại có làm đổi trạng thái hold, `expires_at`, hay nghĩa vụ hoàn tiền không?
+- **N0-14** [P2·DS] Thao tác của CSKH/Admin trên hold có màn hình riêng không, và ai duyệt?
+
 ### N1. Định nghĩa & phạm vi
 
 - **N1-01** [P0·DS] "Đặt giữ hàng" thuộc loại nào: cart hold / đặt cọc giữ hàng / giữ nhận tại cửa hàng / khác (nêu tên)?
@@ -171,13 +190,19 @@ Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi 
 
 ## 3. Sáu lượt hỏi đã batch sẵn (copy-paste)
 
-Copy câu hỏi theo ID từ §2 vào sau preamble; giữ số thứ tự. Ngân sách theo % TOKEN_MAX (00 §A): L1 15% · L2 18% · L3 14% · L4 15% · L5 12% · L6 16% · Restate 10%. Nếu TOKEN_MAX nhỏ, cắt theo thứ tự: L6 câu 9 → L1 câu 7 → L4 câu 9 → L6 câu 7 → L2 câu 5; không cắt L1 câu 3, L2 câu 1–2, L3.
+Copy câu hỏi theo ID từ §2 vào sau preamble; giữ số thứ tự. Ngân sách theo % TOKEN_MAX (00 §A): **L1 18%** · L2 16% · L3 13% · L4 13% · L5 11% · **L6 14%** · **Restate 15%**. Nếu TOKEN_MAX nhỏ, cắt theo thứ tự: L6 câu 9 → L1 câu 8 → L4 câu 9 → L6 câu 7 → L2 câu 5; **không cắt L1 câu 1–4, L2 câu 1–2, L3, và lượt Restate**.
 
-### Lượt 1 — Phạm vi TRONG/NGOÀI
+**Ước lượng token cho tiếng Việt:** dùng **số từ × 2,5** cho phần tiếng Việt (dấu, âm tiết rời thành nhiều token), **× 1,5** cho phần mã/số/tiếng Anh. Hệ số 1,5 dùng chung cho cả khối là **ước thiếu ~40%** — đủ để cháy token trước lượt Restate. Đo lại bằng số thật ngay sau lượt 1: `token thực tế / số từ đã gửi` rồi dùng hệ số đo được cho các lượt sau.
+
+**Lượt Restate là bắt buộc, không phải "lượt đệm".** Nó là lượt duy nhất kiểm được rằng ta hiểu đúng; giữ 15% token cho nó. Hết token mà chưa restate ⇒ mọi dòng ⚠ vẫn là giả định một chiều.
+
+### Lượt 1 — Mục tiêu, điều cấm, phạm vi TRONG/NGOÀI
+
+Bốn câu đầu là mục tiêu và ràng buộc (nhóm N0) — hỏi trước tham số, vì chúng quyết định luật nào cần tồn tại. Câu 1 và 2 lấy từ `mo-hinh-bai-toan.md` mục "Mâu thuẫn nội tại của brief" nếu có.
 
 ```
 Trả lời dạng danh sách đánh số, mỗi dòng ≤10 từ, không giải thích.
-1. N1-01  2. N1-03  3. N1-02  4. N1-04 (+N1-05)  5. N1-06  6. N9-03  7. N1-10  8. N1-07
+1. N0-01  2. N1-02  3. N1-03  4. N0-06  5. N0-02  6. N1-01  7. N1-04 (+N1-05)  8. N1-10
 ```
 
 ### Lượt 2 — State machine
@@ -196,13 +221,15 @@ Trả lời dạng bảng, không giải thích.
 Trả lời dạng bảng "Tham số | Giá trị | Đơn vị | Mốc/điều kiện", không giải thích. Không có giới hạn thì ghi "không giới hạn".
 1. N2-01, N2-02, N2-03, N2-05, N2-04
 2. N2-07, N2-08, N2-10
-3. N3-01, N1-08, N3-02, N3-03
+3. N3-01, N1-08, N3-02, N3-03, N0-12
 4. N5-01, N5-02, N5-05, N5-10
-5. N2-12, N2-13
-6. N10-02
+5. N0-03, N0-04, N0-05
+6. N2-12, N2-13, N10-02
 7. N4-06, N4-03, N3-06, N9-08
 8. N2-06
 ```
+
+`N0-05` trả về bảng bốn cột (sự kiện | % hoàn | mốc khởi tạo | mốc tiền về) — một câu chắn cả cụm luật hoàn tiền và cho luôn hai mốc mà spec phải tách (32 §3.1).
 
 ### Lượt 4 — Tồn kho, đồng thời, ưu tiên
 
@@ -223,10 +250,12 @@ Trả lời Đúng/Sai theo số, không giải thích. Nếu "tùy", ghi "Tùy:
 
 ```
 Trả lời theo số, mỗi câu ≤2 dòng, không giải thích.
-1. N5-08  2. N5-07  3. N5-11  4. N12-01  5. N12-02, N2-14  6. N9-01, N9-02
-7. N9-04, N9-11  8. N9-06, N9-10  9. N10-01, N10-03, N10-04, N10-02
+1. N5-08  2. N0-09, N0-10  3. N0-07  4. N12-01  5. N0-08, N12-02, N2-14  6. N9-01, N9-02
+7. N9-04, N9-11  8. N0-13, N0-11  9. N10-01, N10-03, N10-04, N0-14
 10. Còn quy tắc nào về tính năng chưa được hỏi? Liệt kê tên, không mô tả.
 ```
+
+Câu 2, 3, 5, 8 của lượt này phủ 8 trong 12 kịch bản suy biến bắt buộc (05 §M6) — ca nào lượt này không phủ thì phải nằm trong lượt Restate hoặc thành `[GIẢ ĐỊNH]` có xếp hạng rủi ro.
 
 ### Lượt đệm — Restate (làm sau 10:45)
 

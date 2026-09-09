@@ -4,7 +4,7 @@
 
 Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn), `<%CỌC>`, `<TZ>` = số lấy từ AI Khách hàng buổi sáng; điền số thật trước khi nộp. Dùng thời điểm tuyệt đối (10:00:00) thay vì "sau TTL".
 
-## 1. Bảng 15 loại lỗ hổng [HD §5.1]
+## 1. Bảng 20 loại lỗ hổng [HD §5.1; #16–#20 thêm 09/09]
 
 | # | Tên | Dấu hiệu trong spec (Ctrl+F / thiếu mục) | Probe §5 | Tỷ lệ TRÚNG | Rủi ro VÔ HIỆU |
 |---|---|---|---|---|---|
@@ -23,6 +23,13 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 | 13 | Phụ thuộc ngoài không định nghĩa | Nhắc ERP/cổng thanh toán/kho nhưng không nêu nguồn sự thật, timeout, retry | P16 | TB | TB |
 | 14 | Từ ngữ đa nghĩa | Dùng lẫn "giữ hàng"/"đặt trước"/"đặt cọc"/"khóa hàng"/"giỏ hàng" | "Khách 'đặt trước' 1 sản phẩm tồn = 0 sắp về. Hold được tạo hay từ chối?" | TB | TB |
 | 15 | Luật phản trực giác bị im lặng | Đối chiếu danh sách ⚠ buổi sáng; spec không nói → bắn thẳng [HD §2.3] | P19 | Rất cao | Thấp |
+| 16 | **Luật bất khả thi** — hứa hộ bên ngoài | Grep nhóm 40 §2-17: `hoàn tất|tiền về|đối soát xong` + số giờ/ngày. Specs thật **không thể** viết vậy ⇒ mọi ca hoàn tiền lệch | P43 / P44 | Rất cao | Thấp |
+| 17 | **Luật tự đánh bại mục tiêu** | Brief có mục tiêu chống-gì-đó, spec có luật mở cửa cho đúng việc đó (khóa tài nguyên trước khi thu tiền/xác thực; hủy phí 0 không trần) | P45 / P46 | Cao | Thấp |
+| 18 | **Hạn mức không cưỡng chế được** | Grep nhóm 40 §2-18: hạn mức neo vào email/SĐT/tên khách tự khai | P47 | Rất cao | Thấp |
+| 19 | **Thiếu luật cho thất bại của phụ thuộc ngoài** | Spec nhắc cổng/ERP/job/thông báo nhưng không có nhánh lỗi nào (nhóm 40 §2-19). Đối chiếu 12 ca 05 §M6 | P48–P51 | Rất cao | Thấp |
+| 20 | **Phạm vi NGOÀI tự đặt rộng hơn brief** | Đọc danh sách NGOÀI phạm vi của đối thủ, so với brief: nghiệp vụ nào brief nhắc mà họ đẩy ra ngoài | P52 | Cao | **Thấp** — vì brief là căn cứ chung, không phải suy diễn của ta |
+
+**Vì sao #16–#20 là đạn tốt nhất năm nay.** Chúng nhắm vào *nội dung* chứ không vào *cách viết*, nên (a) đội nào cũng hở — checklist phổ biến chỉ dạy chống mơ hồ; (b) rủi ro VÔ HIỆU thấp vì đều nằm trong core flow tiền/tồn; (c) đáp án chuẩn dễ có trong log nếu buổi sáng đã hỏi nhóm N0 (20 §2). Đo trên `battle/spec.nop.md` — một spec đạt mọi cổng hình thức: 0 hit mức Cao ở loại #3/#4/#5/#6, nhưng **7 điểm bắn** ở #16–#20 (knowledge/32 §7).
 
 ## 2. Quy tắc viết tình huống test
 
@@ -46,21 +53,23 @@ Mẫu câu chuẩn:
 | Test | Loại | Nguồn đạn |
 |---|---|---|
 | 1 | #15 hoặc #1 — khoảng trống lớn nhất, ưu tiên ⚠ | Danh sách ⚠ × sweep §4 |
-| 2 | #2 / #12 — ngoại lệ, lỗi hệ thống, rollback | Probe N12, N5; P39 / P41 / P42 |
-| 3 | #4 / #11 — biên, đơn vị, múi giờ | Probe BVA, Time |
-| 4 | #7 / #8 — đồng thời, ưu tiên xung đột | Probe N4, N14 |
-| 5 | #9 / #10 — actor, quyền | Probe N9 |
+| 2 | **#16 / #18 / #19 — khả thi, cưỡng chế, thất bại phụ thuộc ngoài** | Cổng F trên spec đối thủ (32 §1); P43–P51 |
+| 3 | #2 / #12 — ngoại lệ, lỗi hệ thống, rollback | Probe N12, N5; P39 / P41 / P42 |
+| 4 | #4 / #11 — biên, đơn vị, múi giờ | Probe BVA, Time |
+| 5 | #7 / #8 / #17 — đồng thời, ưu tiên xung đột, tự đánh bại mục tiêu | Probe N4, N14; P45 / P46 |
 
-Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đề. Slot đối thủ quá tốt → thay bằng #15 thứ hai ở chủ đề khác.
+Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng actor, còn cổng F thì hầu như không đội nào chạy. Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đề. Slot đối thủ quá tốt → thay bằng #15 hoặc #19 thứ hai ở chủ đề khác.
 
 ## 4. Quy trình soi 10 phút / spec [HD §5.4]
 
 | Phút | Việc | Đầu ra |
 |---|---|---|
 | 0–2 | Đọc heading; tick 14 nhóm N1–N14 [HD §3.5] có/không | Nhóm KHÔNG có = hạng A |
-| 2–4 | Ctrl+F danh sách đen [HD §4.6] + "có thể", "nên", "v.v.", "phù hợp", "hệ thống xử lý" | Mỗi hit = 1 điểm #3, ghi số mục |
-| 4–6 | Tìm bảng trạng thái / decision table. Không có → #6/#8. Có → tìm ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Danh sách ô trống |
-| 6–8 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
+| 2–3 | **Cổng F rút gọn** — 4 lệnh grep của knowledge/32 §1 (F1 mốc hoàn tất · F2 hạn mức tự khai · F5 láng giềng không có nhánh lỗi · F8 khóa tài nguyên trước rào) | Mỗi hit = ứng viên #16/#18/#19/#17, **hạng A** |
+| 3–4 | Ctrl+F danh sách đen [HD §4.6] nhóm 1, 3, 4, 6, 8, 11 + nhóm nội dung 17–22 (40 §2) | Mỗi hit = 1 điểm #3, ghi số mục |
+| 4–5,5 | Tìm bảng trạng thái / decision table. Không có → #6/#8. Có → tìm ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Danh sách ô trống |
+| 5,5–7 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
+| 7–8 | **Đối chiếu 12 kịch bản suy biến** (05 §M6) với spec đối thủ; và đọc danh sách NGOÀI phạm vi của họ so với brief (#20) | Mỗi ca không có luật = ứng viên #19 |
 | 8–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; mở hồ sơ §7 | 5 test điểm ≤1 |
 
 Knowledge boundary sweep [HD §2.1 ⑤]: Ctrl+F từng dòng danh sách ⚠ + bảng tham số đội mình (TTL, qty, hold max, %cọc, gia hạn, giá khóa, guest, hoàn cọc) trong spec đối thủ; không thấy hoặc khác specs thật → test hạng A, đáp án chuẩn có sẵn. 2 người: một sweep, một soi cấu trúc, song song từ phút 0.
@@ -116,6 +125,25 @@ Nguồn: EP [ISTQB 4.2.1]; BVA 3-value [4.2.2]; decision table [4.2.3]; state ta
 | P41 | Hủy khi cổng đang xử lý cọc | Interruptions: Cancel [Hendrickson] | N5 | "Khách bấm Hủy lúc cổng thanh toán đang xử lý cọc (chưa callback). Cọc về đâu: không thu / hoàn 100% / giữ?" |
 | P42 | SKU ngừng bán khi hold ACTIVE | State: invalid transition | N12 | "Admin ngừng bán SKU X lúc 10:30 khi hold ACTIVE tới 12:00. Hold ở trạng thái nào?" |
 
+### Probe khả thi & mục tiêu (P43–P52) — dùng cho loại #16–#20
+
+Nguồn: ISO/IEC/IEEE 29148 `feasible`/`affordable`; HTSM *Operations: disfavored use* + *Quality Criteria conflict*; WWWWWHKE (so *Why* với *How*); bảng thực tế phụ thuộc ngoài ở knowledge/32 §2.
+
+| # | Probe | Loại | N | Ví dụ tình huống viết sẵn |
+|---|---|---|---|---|
+| P43 | Hoàn tiền về phương thức không dùng được | #16 | N5 | "Khách trả cọc bằng thẻ, sau đó thẻ bị ngân hàng đóng. Hold hết hạn. Khách nhận lại tiền bằng cách nào?" |
+| P44 | Hai mốc hoàn tiền | #16 | N5 | "Hold hết hạn lúc 12/09 10:00. Đến 13/09 10:00 tiền cọc vẫn chưa vào tài khoản khách. Hệ thống ghi hold ở trạng thái gì và khoản cọc ở trạng thái gì?" |
+| P45 | Khóa tài nguyên trước khi thu tiền | #17 | N4 | "Khách bấm 'Đặt cọc giữ hàng' cho đơn vị cuối cùng rồi không thanh toán. Trong lúc chờ, khách khác mua sản phẩm đó được không?" |
+| P46 | Giữ chỗ miễn phí lặp lại | #17 | N3 | "Một khách tạo hold rồi tự hủy 20 lần trong một giờ cho các SKU khác nhau. Lần thứ 21 hệ thống tạo hold hay từ chối?" |
+| P47 | Vượt hạn mức bằng danh tính mới | #18 | N9 | "Khách chưa đăng nhập tạo hold bằng email A, rồi tạo tiếp bằng email B cho cùng sản phẩm. Hold thứ hai được tạo hay bị từ chối?" |
+| P48 | Callback trùng | #19 | N5 | "Cổng thanh toán báo cọc thành công hai lần cho cùng một giao dịch. Số tiền đã thu của khách là bao nhiêu?" |
+| P49 | Callback sai thứ tự | #19 | N5 | "Cổng gửi 'thất bại' lúc 10:00:05 rồi gửi 'thành công' của cùng giao dịch lúc 10:00:02 nhưng đến sau. Hold ở trạng thái nào?" |
+| P50 | Job hết hạn ngừng chạy | #19 | N12 | "Job dọn hết hạn ngừng chạy từ 10:00 tới 14:00. Lúc 14:00 tồn khả bán của SKU có hold hết hạn 11:00 bằng bao nhiêu?" |
+| P51 | Ghi giữ thất bại sau khi kiểm thấy còn hàng | #19 | N4 | "Hệ thống kiểm thấy còn 1 đơn vị nhưng khi ghi giữ thì số tồn đã bị giao dịch khác lấy. Khách nhận kết quả gì?" |
+| P52 | Nghiệp vụ brief nhắc bị đẩy ra ngoài phạm vi | #20 | N1 | "Khách đã chốt đơn từ hold và còn phải trả phần tiền còn lại. Khách trả nốt trong thời hạn nào?" *(chỉ bắn khi brief nhắc tường minh phần tiền còn lại)* |
+
+**Cảnh báo phạm vi cho P43–P52:** chấm rubric §6 như mọi test. P43, P44, P48–P51 điểm 0–1 vì nằm trong luồng tiền/tồn của chính tính năng. P52 chỉ nộp khi **trích được câu brief** nhắc nghiệp vụ đó — brief là căn cứ dùng chung, mạnh hơn suy diễn, nhưng vẫn yếu hơn một câu trả lời của AI Khách hàng.
+
 ## 6. Rubric kiểm phạm vi (chống VÔ HIỆU)
 
 | Điểm | Tiêu chí | Ví dụ |
@@ -157,5 +185,8 @@ Ca kháng nghị (tối đa 3 ca/đội):
 | 1 | Test bắn vào spec mình bị tính TRÚNG nhưng spec có quy định | "BR-nn của spec chúng tôi quy định [trích nguyên văn], bao trùm tình huống này. Executor không áp dụng; đề nghị đối chiếu lại đáp án chuẩn với BR-nn." |
 | 2 | Test mình bắn bị tính VÔ HIỆU sai | "Lúc [hh:mm], AI Khách hàng trả lời [trích nguyên văn] về đúng nghiệp vụ này, tức nằm trong specs thật. Đề nghị chấm lại theo đáp án chuẩn đó." |
 | 3 | So khớp hiểu sai ngữ nghĩa | "Đáp án chuẩn nói [A], Executor trả lời [B]; cùng kết quả về trạng thái cuối, tồn và tiền, chỉ khác diễn đạt. Đề nghị đổi kết quả theo lý do đối chiếu đã lưu." |
+| 4 | Test mình (loại #20) bị VÔ HIỆU nhưng brief nhắc tường minh nghiệp vụ đó | "Brief do BTC phát ghi nguyên văn [trích câu brief]. Nghiệp vụ này không thể nằm ngoài phạm vi tính năng khi chính đề bài mô tả nó; đề nghị chấm lại phạm vi." |
+
+Ca loại 4 dùng **brief** làm bằng chứng — tài liệu BTC phát cho mọi đội, nên không bác được bằng lý "suy diễn của đội bạn". Giới hạn phải tự biết: brief nhắc một nghiệp vụ không đồng nghĩa specs thật có luật cho nó, nên lập luận chỉ được nhắm vào **phạm vi**, không nhắm vào đáp án.
 
 Bằng chứng mang vào phiên 16:00: log AI Khách hàng có timestamp, bản copy spec đã nộp, 15 hồ sơ finding, lý do đối chiếu của AI So khớp (xin BTC trước [HD §2.2]).

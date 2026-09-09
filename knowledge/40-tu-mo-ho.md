@@ -46,6 +46,21 @@ Cách dùng: mỗi dòng đã ở dạng regex không khoảng trắng — dán 
 
 Ngoại lệ: "có thể" = "ĐƯỢC PHÉP" không đánh lỗi nếu đầu spec đã khai báo quy ước từ khóa PHẢI / KHÔNG ĐƯỢC / ĐƯỢC PHÉP [Berry §4.3].
 
+### Sáu nhóm lint NỘI DUNG (17–22)
+
+Nhóm 1–16 tìm câu **cho phép ≥2 cách đọc**. Sáu nhóm dưới tìm câu **chỉ có một cách đọc, và cách đó không đứng được trong thực tế** — loại lỗi mà lint cũ mù hoàn toàn (bằng chứng: `battle/spec.nop.md` ra 0 hit mức Cao ở nhóm 1–16 nhưng 7 ✗ ở cổng F, knowledge/32 §7). Nguồn: ISO/IEC/IEEE 29148 `feasible`/`affordable`; SPECS/DESIGNS WATCHLIST (McCann) mục *Oversimplification*, *Fudge*; HTSM *Operations: disfavored use*.
+
+Mỗi hit ở nhóm 17–20 **phải** được chấm cổng F (knowledge/32 §1) trước khi kết luận — hit ở đây là *nghi vấn*, cổng F là *phán quyết*.
+
+17. **Hứa hộ bên ngoài** (→ F1, F5): `(hoàn tất|tiền về|đã về tài khoản|đối soát xong|giao dịch xong|xong trong|hoàn thành trong|hoàn tiền trong|chuyển tiền trong) ?[^.]{0,30}(giờ|ngày|phút)` — mọi mốc **hoàn tất** cho việc do cổng / ngân hàng / ERP / đơn vị vận chuyển thực hiện. Mức **Cao**.
+18. **Hạn mức trang trí** (→ F2, F8): `(theo email|theo số điện thoại|theo tên|theo địa chỉ|khai lúc|tự khai|đã khai|cung cấp lúc)` xuất hiện trong cùng câu với `(hạn mức|giới hạn|tối đa|cooldown|định danh|mỗi khách)`. Neo hạn mức vào dữ liệu khách tự đặt được. Mức **Cao**.
+19. **Giả định phụ thuộc ngoài hoàn hảo** (→ F5): `(cổng|gateway|ERP|WMS|callback|webhook|job|cron|đồng bộ|thông báo|email|SMS)` — với **mỗi** hit, kiểm spec có luật cho chế độ lỗi của láng giềng đó chưa (knowledge/05 §M4). Có nhắc mà không có luật lỗi = mức **Cao**; nhắc kèm luật lỗi = ✓.
+20. **Việc giao cho người không quan sát được** (→ F3): `(CSKH|chăm sóc khách hàng|nhân viên|Admin|quản trị|thủ công|bằng tay|đối soát|duyệt)` — mỗi hit phải có (a) một dòng ở §9 nói ai được báo, (b) một trường audit, (c) một trần hoặc điều kiện. Thiếu ≥1 = mức Trung.
+21. **Chi phí không ai nhận** (→ F4, `affordable`): `(hoàn 100|hoàn toàn bộ|hoàn đủ|không thu phí|không phí|miễn phí|không giới hạn số lần|không giới hạn)` — kiểm spec có nói ai chịu phí cổng / phí xử lý, hoặc có trần. Mức Trung.
+22. **Câu nói về chính spec** (cắt khỏi bản nộp): `(ô đã điền|đã điền|tổ hợp|phân hoạch|không chồng lấn|đủ, không|phủ \d|hit policy .* vì|chứng minh|/36|/\d+ ô)` — chứng minh độ phủ là thứ gửi cho người rà, không phải luật cho Executor. Mức Thấp về rủi ro TRÚNG, nhưng **luôn cắt** vì nó là từ trong ngân sách 3.000. Bản 08/09 tốn ~60 từ ở nhóm này.
+
+Chạy nhóm 17–22 trên bản **nộp**, không phải bản nội bộ (nhóm 22 đúng ra chỉ tồn tại ở bản nội bộ).
+
 ## 3. Kiểm tra cấu trúc (ngoài từ ngữ)
 
 Mọi ví dụ trong file dùng quy ước [a,b) của knowledge/30-viet-spec.md §2 dòng 0.3; nếu spec khai báo quy ước khác, lint theo quy ước đã khai báo.
@@ -74,6 +89,15 @@ Mức: **Cao** = Executor gần chắc trả lời khác specs thật; **Trung**
 | S19 | Xung đột nội bộ | Hai luật cho cùng điều kiện ra kết quả khác nhau; số liệu khác nhau ở 2 chỗ (TTL 120 ở mục 3, 90 ở bảng) | Cao | Một nguồn sự thật cho mỗi tham số; chỗ khác chỉ trỏ tới BR [NASA C.4 Consistency] |
 | S20 | Thiếu luật bao quát (catch-all) | Cuối mỗi mục không có "Mọi trường hợp không nêu ở trên → …" | Cao | Thêm câu chốt phạm vi + hành vi mặc định [HD §2.2] |
 | S21 | Thuật ngữ dùng trước khi định nghĩa | Từ viết hoa/trạng thái xuất hiện trước bảng thuật ngữ | Trung | Đưa định nghĩa lên trước lần dùng đầu |
+| S22 | **Mục tiêu của brief không có luật nào phục vụ** | Bảng Mục tiêu↔Luật (05 §2): mục tiêu có cột 2 trống | Cao | Viết luật cho mục tiêu đó, hoặc hỏi AI Khách hàng nếu chưa biết specs thật quy định gì |
+| S23 | **Luật làm hỏng mục tiêu của brief** | Bảng Mục tiêu↔Luật: ô cột 3 có chữ | Cao | Không tự chốt — hỏi (32 §6). Không ai thiết kế tính năng tự phá mục tiêu của nó ⇒ specs thật gần chắc có luật thứ ba |
+| S24 | **Kịch bản suy biến không có luật** | 12 ca ở 05 §M6 — ca nào không tìm được luật bao trùm | Cao khi ca có tiền dính vào; Trung còn lại | Bốn luật §0 mẫu ở 32 §3.2 phủ 8/12 ca, ~90 từ |
+| S25 | **Nghĩa vụ tiền chỉ có một mốc** | Câu về thu/hoàn/trừ tiền không tách "khởi tạo" khỏi "hoàn tất"; không có trường trạng thái hoàn tiền | Cao | Mẫu 32 §3.1 |
+| S26 | **Không có luật cho ca hoàn tiền thất bại** | Grep `hoàn` → không có nhánh `NẾU … thất bại` | Cao | Thêm nhánh + phương án 2; số ngày phải hỏi, không đoán |
+| S27 | **Coi việc giữ tài nguyên là chắc thành công** | Điều kiện dạng `ATP ≥ q` / `còn hàng` → tạo hold, không có nhánh ghi thất bại | Cao | 32 §3.2 luật 3; nguồn: giữ tồn không phải khóa cứng [IBM], compare-and-swap [Shopify] |
+| S28 | **Rào bảo vệ đặt sau khi đã khóa tài nguyên** | Đọc §7 luồng chính: thứ tự các bước — tài nguyên (tồn, giá, slot) bị khóa trước khi kiểm định danh / thu tiền / hạn mức | Cao khi brief có mục tiêu chống lạm dụng | Đảo thứ tự, hoặc hỏi mốc khóa tài nguyên (N0-03) |
+| S29 | **Phạm vi NGOÀI tự đặt rộng hơn brief** | Từng dòng NGOÀI phạm vi: brief có nhắc nghiệp vụ đó không? | Cao | Nghiệp vụ brief nhắc tường minh không được tự đẩy ra ngoài — 0.10 sẽ trả lời "không thuộc tài liệu này" cho việc brief có nói. Chốt danh sách NGOÀI bằng N1-02, không tự đặt |
+| S30 | **Bản nộp chứa câu nói về chính nó** | Nhóm lint 22 | Thấp (nhưng luôn cắt) | Chuyển sang `spec.md` nội bộ / `review.md` |
 
 ## 4. Định dạng báo cáo lint
 
@@ -96,6 +120,10 @@ Sửa từ trên xuống; hết giờ thì dừng.
 
 1. **Ô trống bảng trạng thái / ma trận chuyển (S13, S17)** — đối thủ đọc bảng là thấy lỗ.
 2. **Câu ⚠ chưa có BR (RTM thiếu)** [HD §2.4] — TRÚNG gần chắc chắn.
+2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **hỏi**, và nếu hết lượt hỏi thì viết luật bao quát an toàn hai chiều (32 §3.3).
+2c. **Mốc "hoàn tất" hứa hộ bên ngoài (S25, nhóm 17)** — mọi tình huống hoàn tiền của đối thủ đều bắn trúng dòng này.
+2d. **Hạn mức trang trí (S28, nhóm 18)** — một câu hỏi "bot dùng email mới thì sao" là spec hoặc im lặng hoặc trả lời phi lý.
+2e. **Kịch bản suy biến có tiền dính vào còn hở (S24, S26, S27)** — bốn luật §0 ở 32 §3.2 phủ 8/12 ca với ~90 từ; đây là tỷ lệ chắn / từ tốt nhất trong toàn bộ file này.
 3. **Tham chiếu ra ngoài / trực giác ngầm (S12, nhóm 6)** — Executor đoán theo prior.
 4. **Số không đơn vị, khoảng không biên, giờ không timezone (S1–S3)** — "đúng 120 phút", "23:59" là mẫu bắn phổ biến nhất.
 5. **Thiếu luật bao quát cuối mục (S20)** — 1 câu chặn cả nhóm tình huống.
