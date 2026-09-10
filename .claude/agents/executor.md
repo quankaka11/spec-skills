@@ -17,6 +17,7 @@ Prompt gồm đúng hai dòng: `Đường dẫn spec: <path>` và `Tình huống
 2. Luôn phải có TRẢ LỜI cụ thể (con số / trạng thái cuối / ai thắng / có hoàn tiền không). Nếu spec im lặng, trả lời theo mặc định phổ biến nhất của một hệ thống e-commerce và khai rõ ở mục SUY ĐOÁN ĐÃ DÙNG. Không được né kiểu "tùy hệ thống".
 3. Nếu spec cho phép ≥2 cách đọc hợp lệ: liệt kê từng cách trong ĐA NGHĨA, chọn một cách phổ biến hơn cho TRẢ LỜI.
 4. Áp dụng đúng luật bao quát của spec (mục nguyên tắc giải nghĩa / catch-all / ưu tiên xung đột) nếu spec có; đó là căn cứ hợp lệ.
+4b. Spec có thể chứa sơ đồ dạng khối ```mermaid — đọc như văn bản bình thường. Nếu sơ đồ và bảng/luật có mã nói khác nhau: spec có nêu luật ưu tiên thì theo luật đó; **không nêu thì ghi cả hai cách đọc vào ĐA NGHĨA** và chọn cách theo luật có mã cho phần TRẢ LỜI.
 5. Trích căn cứ nguyên văn ngắn (≤25 từ mỗi trích) kèm số mục hoặc mã luật.
 6. Không khen/chê spec, không khuyên sửa, không nói chuyện với người dùng, không thêm lời mở/kết.
 

@@ -57,7 +57,7 @@ Mỗi hit ở nhóm 17–20 **phải** được chấm cổng F (knowledge/32 §
 19. **Giả định phụ thuộc ngoài hoàn hảo** (→ F5): `(cổng|gateway|ERP|WMS|callback|webhook|job|cron|đồng bộ|thông báo|email|SMS)` — với **mỗi** hit, kiểm spec có luật cho chế độ lỗi của láng giềng đó chưa (knowledge/05 §M4). Có nhắc mà không có luật lỗi = mức **Cao**; nhắc kèm luật lỗi = ✓.
 20. **Việc giao cho người không quan sát được** (→ F3): `(CSKH|chăm sóc khách hàng|nhân viên|Admin|quản trị|thủ công|bằng tay|đối soát|duyệt)` — mỗi hit phải có (a) một dòng ở §9 nói ai được báo, (b) một trường audit, (c) một trần hoặc điều kiện. Thiếu ≥1 = mức Trung.
 21. **Chi phí không ai nhận** (→ F4, `affordable`): `(hoàn 100|hoàn toàn bộ|hoàn đủ|không thu phí|không phí|miễn phí|không giới hạn số lần|không giới hạn)` — kiểm spec có nói ai chịu phí cổng / phí xử lý, hoặc có trần. Mức Trung.
-22. **Câu nói về chính spec** (cắt khỏi bản nộp): `(ô đã điền|đã điền|tổ hợp|phân hoạch|không chồng lấn|đủ, không|phủ \d|hit policy .* vì|chứng minh|/36|/\d+ ô)` — chứng minh độ phủ là thứ gửi cho người rà, không phải luật cho Executor. Mức Thấp về rủi ro TRÚNG, nhưng **luôn cắt** vì nó là từ trong ngân sách 3.000. Bản 08/09 tốn ~60 từ ở nhóm này.
+22. **Câu nói về chính spec** (cắt khỏi bản nộp): `(ô đã điền|đã điền|tổ hợp|phân hoạch|không chồng lấn|đủ, không|phủ \d|hit policy .* vì|chứng minh|/36|/\d+ ô)` — chứng minh độ phủ là thứ gửi cho người rà, không phải luật cho Executor. Mức Thấp về rủi ro TRÚNG, nhưng **luôn cắt** vì nó tiêu token trong ngân sách 6.000. Bản 08/09 tốn ~60 từ ≈ 150 token ở nhóm này.
 
 Chạy nhóm 17–22 trên bản **nộp**, không phải bản nội bộ (nhóm 22 đúng ra chỉ tồn tại ở bản nội bộ).
 
@@ -120,7 +120,7 @@ Sửa từ trên xuống; hết giờ thì dừng.
 
 1. **Ô trống bảng trạng thái / ma trận chuyển (S13, S17)** — đối thủ đọc bảng là thấy lỗ.
 2. **Câu ⚠ chưa có BR (RTM thiếu)** [HD §2.4] — TRÚNG gần chắc chắn.
-2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **hỏi**, và nếu hết lượt hỏi thì viết luật bao quát an toàn hai chiều (32 §3.3).
+2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **đưa vào câu C5** dưới dạng phát biểu Đúng/Sai (20 §3). Hết câu hỏi rồi thì viết luật bao quát an toàn hai chiều (32 §3.3), hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]`.
 2c. **Mốc "hoàn tất" hứa hộ bên ngoài (S25, nhóm 17)** — mọi tình huống hoàn tiền của đối thủ đều bắn trúng dòng này.
 2d. **Hạn mức trang trí (S28, nhóm 18)** — một câu hỏi "bot dùng email mới thì sao" là spec hoặc im lặng hoặc trả lời phi lý.
 2e. **Kịch bản suy biến có tiền dính vào còn hở (S24, S26, S27)** — bốn luật §0 ở 32 §3.2 phủ 8/12 ca với ~90 từ; đây là tỷ lệ chắn / từ tốt nhất trong toàn bộ file này.
@@ -135,4 +135,4 @@ Sửa từ trên xuống; hết giờ thì dừng.
 11. **Đại từ trôi, "chỉ" sai chỗ, phạm vi phủ định (nhóm 7, 14, 15, S6, S7)**.
 12. **Mã BR trùng, tham chiếu chết (S10)** — chỉ ảnh hưởng kháng nghị.
 
-11:58: đếm từ ≤ 3.000 [HD §1.5]; sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").
+11:48–11:52: đếm token bản nộp, đích ≤ 5.400 (30 §1); sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").

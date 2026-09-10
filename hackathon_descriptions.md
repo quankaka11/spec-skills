@@ -2,8 +2,9 @@
 ## Tài liệu nền: Mô tả cuộc thi · Miền tri thức · Thư viện tài liệu để xây LLM Wiki / PageIndex
 
 > **Nguồn:** tổng hợp từ website chính thức HBLAB AI Hackathon, trang thể lệ `spec-battle.html`, Google Doc thông báo của BTC, hợp nhất từ 3 bản phân tích độc lập (đã lược bỏ phần suy diễn sai — xem Phụ lục B).
-> **Cập nhật:** 04/09/2026.
-> **Cảnh báo dữ liệu:** BTC ghi rõ số liệu trên website *"đang được tinh chỉnh, có thể thay đổi trước ngày thi"*. Mọi con số phải được tái xác nhận tại buổi họp **09/09** (danh sách câu hỏi ở §6.3).
+> **Cập nhật:** 04/09/2026; **tham số cập nhật sau họp BTC 09/09** (§1.5, §6.3).
+> **NGUỒN SỰ THẬT CHO THAM SỐ: `knowledge/00-luat-choi.md` §A.** File này là tài liệu nền — nó giải thích *vì sao* các kỹ thuật được chọn. Khi một con số ở đây khác `knowledge/00` §A thì **`knowledge/00` thắng**; các số cũ được giữ lại ở chỗ chúng còn giá trị lịch sử (số đo diễn tập, ngân sách 3.000 từ) và được chú thích tại chỗ.
+> **Tóm tắt tham số chốt 09/09:** nộp **markdown ≤ 6.000 token** (sơ đồ mermaid, không ảnh) · hỏi AI Khách hàng **5 câu, mỗi lượt 1 câu, 5.000 token, KHÔNG memory**, ảnh ≤3 lần · điểm **CÔNG trúng +2 / THỦ đỡ +1 / CÔNG vô hiệu −1** · spec đối thủ markdown tải về được · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**, nộp bằng text gửi AI · không sửa test sau khi nộp · được xem lại hội thoại · câu hỏi về vận hành hệ thống thi là thông tin bảo mật.
 
 ---
 
@@ -57,14 +58,14 @@ Tài liệu được thiết kế làm **hạt giống cho một miền tri th�
 12/09    ── NGÀY THI CHÍNH THỨC
 ```
 
-Buổi **09/09** là nơi các con số đang bỏ trống (hạn mức token, công thức điểm, cơ chế kháng nghị) sẽ được chốt. Đây là mốc cập nhật bắt buộc cho toàn bộ tài liệu này.
+Buổi **09/09 đã diễn ra** và chốt các con số từng bỏ trống (hạn mức token, công thức điểm, cơ chế kháng nghị, định dạng nộp). Xem §1.5 và §6.3; bảng tham số hiện hành ở `knowledge/00-luat-choi.md` §A.
 
 ## 1.3. Agenda ngày thi 12/09
 
 | Giờ | Nội dung | Chi tiết |
 |---|---|---|
 | 9:00–9:30 | Khai mạc + **bắt đầu vai THỦ** | Check-in, phổ biến thể lệ, **công bố brief** |
-| 9:30–12:00 | Viết & nộp spec | **Tối đa 3.000 từ.** Sau 12:00 khóa, không sửa được |
+| 9:30–12:00 | Viết & nộp spec | **Markdown, tối đa 6.000 token** (chốt 09/09; trước đó website ghi 3.000 từ). Sau 12:00 khóa, không sửa được |
 | 12:00–13:00 | Nghỉ trưa | BTC lo ăn trưa |
 | 13:00–15:00 | **Bắt đầu vai CÔNG** | Nhận spec của **3 đội còn lại**, nộp **5 test / mỗi spec** (= 15 test) |
 | 15:00–16:00 | Máy chạy **60 test** | Bảng điểm cập nhật trực tiếp trên màn hình lớn |
@@ -132,18 +133,17 @@ Mỗi đội chơi **cả hai vai** trong cùng một ngày: buổi sáng là TH
 
 ## 1.5. Các hạn mức
 
-**Đã biết:**
-- Spec: tối đa **3.000 từ**
-- Vai CÔNG: **5 test / spec đối thủ**, 3 spec → **15 test**
-- Kháng nghị: **tối đa 3 ca / đội**
+**Đã chốt sau họp 09/09** (nguồn sự thật: `knowledge/00-luat-choi.md` §A):
+- Spec: **markdown, ≤ 6.000 token** (BTC có thể chỉnh sau), sơ đồ chỉ dạng mermaid, **bản nộp không có ảnh**
+- Hỏi AI Khách hàng: **5 câu · mỗi lượt đúng 1 câu · 5.000 token cho cả hỏi + trả lời · AI KHÔNG có memory** · gửi ảnh ≤ 3 lần
+- Điểm: **CÔNG trúng +2 · THỦ đỡ được (TRƯỢT) +1 · CÔNG bị VÔ HIỆU −1**
+- Vai CÔNG: **5 test / spec đối thủ**, 3 spec → **15 test**; spec đối thủ **tải về được** ở dạng markdown; **không sửa test sau khi nộp**
+- Kháng nghị: **chỉ cho ca test CÔNG bị chấm VÔ HIỆU**, nộp bằng **text gửi AI**, BTC review; ≤3 ca/đội
+- Được **xem lại hội thoại** với AI Khách hàng
+- Câu hỏi về **vận hành hệ thống thi** (model của 3 tác nhân, prompt Executor, cách chấm bên trong): **thông tin bảo mật, BTC không trả lời**
 - Thời gian: 2h30 cho vai THỦ, 2h cho vai CÔNG
 
-**Chưa công bố (chốt ngày 09/09):**
-- Hạn mức **token dùng chung** cho câu hỏi + phản hồi với AI Khách hàng
-- Hạn mức **hình ảnh đính kèm** trong spec
-- **Công thức tính điểm** (trọng số công/thủ, điểm TRÚNG, có trừ điểm VÔ HIỆU không)
-- Chi tiết cơ chế kháng nghị (form hay trình bày miệng)
-- Định dạng nộp spec và nộp test
+**Còn hở** (7 ô, chi tiết ở `knowledge/00` §A2): ảnh có tính vào 5.000 token không · AI Khách hàng còn mở sau 12:00 không · giao diện có hiển thị token không · xếp giải pool hay toàn giải · độ dài tối đa mỗi test · VÔ HIỆU của đối thủ có cho THỦ +1 không · được xem lý do đối chiếu trước khi kháng nghị không.
 
 ---
 ---
@@ -153,13 +153,17 @@ Mỗi đội chơi **cả hai vai** trong cùng một ngày: buổi sáng là TH
 ## 2.1. Năm nhận định cấu trúc
 
 **① Executor mù bối cảnh ⇒ spec phải TỰ CHỨA 100%.**
-Mọi thứ "ai chả biết", "theo thông lệ e-commerce", "như bình thường" đều là lỗ hổng. Executor không có common sense về nghiệp vụ của bạn — nó chỉ có 3.000 từ bạn viết. Đây là khác biệt lớn nhất so với viết spec thật cho dev người thật.
+Mọi thứ "ai chả biết", "theo thông lệ e-commerce", "như bình thường" đều là lỗ hổng. Executor không có common sense về nghiệp vụ của bạn — nó chỉ có những gì bạn viết trong 6.000 token. Đây là khác biệt lớn nhất so với viết spec thật cho dev người thật.
 
 **② AI Khách hàng chỉ trả lời khi được hỏi ⇒ elicitation là điểm nghẽn số 1.**
 Không hỏi = không biết = spec trống = bị bắn. Chất lượng câu hỏi trong 2h30 buổi sáng quyết định 60–70% điểm phòng thủ. Đây là lý do **question bank chuẩn bị trước** là tài sản giá trị nhất của đội.
 
+> **Cập nhật 09/09:** với hạn mức **5 câu**, question bank đổi vai — nó không còn là *danh sách để hỏi* mà là (a) nguyên liệu để gọt 5 câu mật độ cao và (b) **nguồn giá trị mặc định ngành để tự điền** phần không hỏi được. Xem `knowledge/20` §2.
+
 **③ Token dùng chung cho hỏi + trả lời ⇒ tối ưu mật độ thông tin trên mỗi token.**
 Câu hỏi mở ("kể tôi nghe về tính năng này") tốn token đầu ra khổng lồ nhưng nội dung loãng. Câu hỏi đóng dạng bảng ("liệt kê đúng các trạng thái của một hold và điều kiện chuyển") có mật độ cao gấp nhiều lần. Xem §5.6.
+
+> **Cập nhật 09/09 — nhận định này đúng nhưng chưa đủ.** Hạn mức thật là **5 câu hỏi, mỗi lượt 1 câu, và AI không có memory**. Ràng buộc chặt hơn token: không hỏi tiếp được, không sửa format ở lượt sau mà không mất 20% tri thức của cả ngày. Kỹ thuật đúng là **một câu hỏi xin về một bảng**, tự chứa, có cap dòng/từ — và phần bài toán không hỏi được (~70%) phải **tự điền bằng mặc định ngành**, không bỏ trống. Xem `knowledge/20` §1, §3 và `knowledge/30` §1b.
 
 **④ VÔ HIỆU là hình phạt kép ⇒ trinh sát phạm vi trước khi bắn.**
 Test vô hiệu đốt 1 trong 5 lượt mà không lấy được gì. Ưu tiên bắn vào **vùng chắc chắn trong phạm vi** (core flow + ngoại lệ hiển nhiên của "đặt giữ hàng") thay vì vùng biên xa (bảo hiểm, kế toán, thuế).
@@ -171,7 +175,7 @@ Trong an toàn thông tin có *trust boundary* — nơi dữ liệu đi từ vù
 
 | Sự thật | Hệ quả chiến thuật |
 |---|---|
-| 3.000 từ là ràng buộc rất chặt cho một tính năng nhiều ngoại lệ | Không thể liệt kê mọi case → phải viết **luật bao quát (catch-all rules)** thay vì liệt kê. Xem §5.5 |
+| Hạn mức spec rất chặt cho một tính năng nhiều ngoại lệ (6.000 token ≈ 2.100–2.200 từ tiếng Việt — chặt hơn mức 3.000 từ mà tài liệu này viết ban đầu) | Không thể liệt kê mọi case → phải viết **luật bao quát (catch-all rules)** thay vì liệt kê. Xem §5.5 |
 | Máy so khớp theo **ý nghĩa**, không theo từ khóa | Spec cần đúng *ý*, không cần trùng *chữ* với specs thật. Nhưng mơ hồ ngữ nghĩa vẫn bị bắt |
 | Bạn bắn 3 spec, nhưng chỉ có 1 spec để bảo vệ | Rủi ro phòng thủ tập trung hơn → **ưu tiên phòng thủ hơn công** nếu phải chọn khi cạn thời gian |
 | Đối thủ cũng hỏi AI Khách hàng cùng specs thật | Sau buổi sáng, bạn **đã biết** phần lớn specs thật → dùng chính tri thức đó soi chỗ đối thủ *chưa hỏi tới*. Đây là chìa khóa vai CÔNG |
@@ -408,7 +412,7 @@ Danh sách này dùng cho **ba mục đích cùng lúc**: (a) hỏi AI Khách h�
 
 ## 4.2. Taxonomy tài liệu BA — và cái nào thực sự dùng ở Spec Battle
 
-Trong dự án thật, một bộ tài liệu BA đầy đủ gồm nhiều loại. Ở cuộc thi này bạn chỉ nộp **một** tài liệu 3.000 từ, nên phải biết **nén những loại nào vào đâu**:
+Trong dự án thật, một bộ tài liệu BA đầy đủ gồm nhiều loại. Ở cuộc thi này bạn chỉ nộp **một** tài liệu markdown ≤6.000 token, nên phải biết **nén những loại nào vào đâu**:
 
 | Tài liệu | Nội dung gốc | Dùng ở Spec Battle |
 |---|---|---|
@@ -474,7 +478,9 @@ Học thuộc để **không viết vào spec của mình** và **Ctrl+F ngay tr
 | So sánh không mốc | tốt hơn, nhanh hơn, ưu tiên cao hơn | Nêu mốc so sánh |
 | Thiếu bao gồm/loại trừ | "trong vòng 2 giờ", "đến 17:00" | Nêu rõ `[đầu, cuối)` hoặc `≤ / <` |
 
-## 4.7. Ngân sách 3.000 từ — phân bổ đề xuất
+## 4.7. Ngân sách spec — phân bổ đề xuất
+
+> **Cập nhật 09/09:** hạn mức thật là **6.000 token, đích 5.400** (≈ 2.100–2.200 từ tiếng Việt), không phải 3.000 từ. Bảng dưới là phân bổ *theo từ* của bản gốc, giữ lại vì tỷ lệ giữa các mục vẫn đúng. **Bảng phân bổ theo token đang dùng: `knowledge/30` §1**, trong đó §7 và §10 bị hạ xuống "chỉ viết nếu còn đệm" và tổng đích là 5.350 token cho 9 mục.
 
 | Phần | Từ | Ghi chú |
 |---|---|---|
@@ -494,6 +500,8 @@ Học thuộc để **không viết vào spec của mình** và **Ctrl+F ngay tr
 **Kỹ thuật tiết kiệm từ:**
 - Bảng thay đoạn văn (tiết kiệm ~40% từ cho cùng lượng thông tin)
 - Đánh mã và tham chiếu: `áp dụng BR-07` thay vì lặp lại nội dung
+
+> **Đếm bằng token đổi hai kết luận** (`knowledge/30` §5): (a) dấu `|` của bảng là **token thật** — bảng chỉ đáng dùng khi có ≥3 cột nội dung, bảng 2 cột nên viết thành danh sách; (b) **ký hiệu và công thức rẻ hơn nhiều so với tiếng Việt** — `Reserved += qty` (~6 token) thay cho một câu 35 token, khai báo ký hiệu một lần ở §0 rồi dùng khắp spec là kỹ thuật lãi nhất.
 - Công thức thay lời: `ATP = OnHand − Reserved − Safety`
 - Một luật tổng quát thay 5 ví dụ
 - Ký hiệu quy ước khai báo một lần ở §0 (VD: `[a, b)` nghĩa là bao gồm a, không bao gồm b)
@@ -529,7 +537,9 @@ Học thuộc để **không viết vào spec của mình** và **Ctrl+F ngay tr
 
 # PHẦN V — ĐỐI KHÁNG: TẤN CÔNG & PHÒNG THỦ
 
-## 5.1. Taxonomy 15 loại lỗ hổng spec
+## 5.1. Taxonomy 15 loại lỗ hổng
+
+> **Đã mở rộng thành 21 loại** ở `knowledge/50` §1: #16 luật bất khả thi · #17 luật tự đánh bại mục tiêu · #18 hạn mức không cưỡng chế được · #19 thiếu luật cho thất bại của phụ thuộc ngoài · #20 phạm vi NGOÀI tự đặt rộng hơn brief · **#21 lệch đồng thuận chéo** (chỉ khả thi từ 09/09, khi biết spec đối thủ tải về được ở dạng markdown). spec
 
 Dùng cho **cả hai vai**: THỦ để vá, CÔNG để bắn.
 
@@ -596,7 +606,7 @@ Phút 8–10 │ Chốt 5 test theo công thức §5.3, viết tình huống c�
 
 ## 5.5. Kỹ thuật CATCH-ALL RULE — vũ khí phòng thủ mạnh nhất
 
-3.000 từ không đủ liệt kê mọi ngoại lệ. Giải pháp: viết **luật mặc định bao quát** ngay đầu spec, để Executor có chỗ tra khi gặp tình huống bạn không lường tới.
+6.000 token không đủ liệt kê mọi ngoại lệ. Giải pháp: viết **luật mặc định bao quát** ngay đầu spec, để Executor có chỗ tra khi gặp tình huống bạn không lường tới.
 
 ```
 §0. NGUYÊN TẮC GIẢI NGHĨA & LUẬT MẶC ĐỊNH
@@ -659,15 +669,21 @@ Mỗi test không chỉ là một câu hỏi — hãy ghi kèm hồ sơ. Nếu b
 | Kết quả máy trả | TRÚNG / TRƯỢT / VÔ HIỆU + lý do đối chiếu của AI So khớp |
 | Đánh giá | Đồng ý / **Ứng viên kháng nghị** |
 
-## 5.8. Kháng nghị (3 ca) — chuẩn bị lập luận
+## 5.8. Kháng nghị (≤3 ca) — chuẩn bị lập luận
 
-| Ưu tiên | Loại ca | Lập luận |
-|---|---|---|
-| 1 | Test bị tính TRÚNG nhưng spec **có** quy định | Trích chính xác §/BR trong spec, chỉ ra Executor đã bỏ qua. **Cần số mục** — đây là lý do §0 và mã BR quan trọng |
-| 2 | Test mình bắn bị tính VÔ HIỆU sai | Trích lời AI Khách hàng buổi sáng chứng minh nghiệp vụ nằm trong phạm vi. **⇒ Phải lưu log hội thoại** |
-| 3 | So khớp hiểu sai ngữ nghĩa | Chỉ ra hai câu trả lời tương đương về ý, chỉ khác diễn đạt |
+> **Cập nhật 09/09 — cơ chế hẹp hơn bản gốc:** kháng nghị **chỉ mở cho ca test CÔNG của mình bị chấm VÔ HIỆU**, nộp bằng **text gửi AI**, ban tổ chức review. Hai loại ca dưới đây **không còn kháng nghị được**: (1) spec mình bị tính TRÚNG dù có quy định; (3) So khớp hiểu sai ngữ nghĩa. Bảng gốc giữ lại để thấy điều gì đã mất.
+>
+> Hệ quả bất đối xứng, quan trọng khi chia thời gian: **rủi ro của vai THỦ không có đường lùi** (viết sai spec là mất điểm, hết), còn rủi ro của vai CÔNG cứu lại được một phần. Vì thế cẩn trọng dồn vào chất lượng spec trước 12:00, còn việc bắn thì tính theo kỳ vọng `EV = 2·P(TRÚNG) − P(VÔ HIỆU)`.
 
-**Chuẩn bị bắt buộc:** một người trong đội chịu trách nhiệm **lưu toàn bộ hội thoại với AI Khách hàng kèm timestamp** + **1 bản copy spec đã nộp**. Đây là bằng chứng duy nhất bạn có ở phiên kháng nghị.
+| Ưu tiên | Loại ca | Lập luận | Còn dùng được? |
+|---|---|---|---|
+| 1 | Test bị tính TRÚNG nhưng spec **có** quy định | Trích chính xác §/BR trong spec | ❌ không còn |
+| 2 | Test mình bắn bị tính VÔ HIỆU sai | Trích lời AI Khách hàng chứng minh nghiệp vụ nằm trong phạm vi | ✅ **loại ca duy nhất** |
+| 3 | So khớp hiểu sai ngữ nghĩa | Hai câu trả lời tương đương về ý | ❌ không còn |
+
+Vì chỉ còn 5 câu hỏi buổi sáng, bằng chứng loại 2 rất hiếm. `knowledge/50` §7 mở rộng thành **ba mức bằng chứng phạm vi**: (1) lời AI Khách hàng nguyên văn; (2) **câu brief tường minh** — brief là tài liệu BTC phát cho mọi đội nên không bác được bằng lý "suy diễn của đội bạn"; (3) **đồng thuận chéo** — ≥2 trong 3 spec tải về có luật cho nghiệp vụ đó. Cả ba chỉ chứng minh *phạm vi*, không chứng minh đáp án; text kháng nghị phải tự nêu giới hạn đó.
+
+**Chuẩn bị bắt buộc:** một người trong đội **lưu toàn bộ hội thoại với AI Khách hàng kèm timestamp** (hội thoại được xem lại, nhưng ảnh chụp không phụ thuộc hệ thống BTC còn hoạt động lúc 16:00) + **1 bản copy spec đã nộp** + **gói bằng chứng phạm vi của từng test, thu xong lúc nộp test** — test không sửa được sau khi nộp.
 
 ## 5.9. Cổng chất lượng trước khi nộp spec
 
@@ -681,8 +697,9 @@ Tất cả phải là "CÓ":
 - [ ] Đã Ctrl+F hết danh sách đen §4.6 và sửa?
 - [ ] Không có tham chiếu ra tài liệu ngoài, không có đại từ trôi?
 - [ ] Mã BR không trùng, mọi tham chiếu chéo đều tồn tại?
-- [ ] Đã chạy eval set ~20 tình huống, không tình huống nào có 2 cách trả lời?
-- [ ] Đếm từ ≤ 3.000 và đã lưu bản copy?
+- [ ] Đã chạy eval set ~20 tình huống qua **hai** Executor mù độc lập, không tình huống nào hai reader ra hai kết quả khác nhau?
+- [ ] **Token ≤ 6.000 (đích 5.400)** trên bản nộp và đã lưu bản copy? Đo bằng `LC_ALL=C.UTF-8 wc -w -m` rồi `max(từ×2,5; ký tự/2,2)`.
+- [ ] Bản nộp là markdown, **không có ảnh**; nếu có sơ đồ mermaid thì §0 có dòng "bảng và luật có mã thắng"?
 
 ---
 ---
@@ -696,7 +713,7 @@ Tất cả phải là "CÓ":
 | Vai | Nhiệm vụ sáng (THỦ) | Nhiệm vụ chiều (CÔNG) |
 |---|---|---|
 | **Interrogator** | Chủ trì hỏi AI Khách hàng theo question bank, quản ngân sách token, điền RTM | Xác minh phạm vi cho test (chống VÔ HIỆU) |
-| **Spec Writer** | Viết spec vào template dựng trước, quản ngân sách 3.000 từ | Soi spec đối thủ #1, #2 |
+| **Spec Writer** | Viết spec vào template dựng trước, quản ngân sách 6.000 token (đích 5.400) | Soi spec đối thủ #1, #2 |
 | **Red Teamer** | Đọc spec đang viết bằng con mắt tấn công, chạy eval set, chỉ lỗ hổng để vá | Soi spec #3 + tổng hợp 15 test + giữ log kháng nghị |
 
 **Đội 2 người:** người A = Interrogator + Spec Writer; người B = Red Teamer + quản log. Buổi chiều chia 1.5 spec/người.
@@ -713,7 +730,7 @@ Tất cả phải là "CÓ":
 | **07–08/09** | Dựng **Spec Template** rỗng đúng ngân sách từ (§4.7), viết sẵn **§0 catch-all** dạng khung có chỗ điền. Dựng state table & decision table trống. Dựng **eval set 20 tình huống**. |
 | **08/09** | Hoàn thiện **Attack Checklist** (§5.1 rút thành 1 trang A4) + **quy trình soi 10 phút** + **mẫu finding** (§5.7). |
 | **09/09** | **Dự họp BTC.** Hỏi hết §6.3. Cập nhật mọi con số trong tài liệu này. |
-| **10–11/09** | **DIỄN TẬP 1 lượt hoàn chỉnh.** Dùng ChatGPT/Claude giả lập AI Khách hàng với một tính năng khác (VD: đặt bàn nhà hàng, giữ chỗ lớp học). Chạy đủ: hỏi 60' → viết spec 3.000 từ 90' → đổi spec & tự bắn → đo kết quả. **Bước quan trọng nhất; đừng bỏ.** |
+| **10–11/09** | **DIỄN TẬP 1 lượt hoàn chỉnh.** Dùng ChatGPT/Claude giả lập AI Khách hàng với một tính năng khác (VD: đặt bàn nhà hàng, giữ chỗ lớp học). Chạy đủ theo hạn mức 09/09: 4 câu hỏi (mỗi lần 1 câu, phiên độc lập) → viết spec 45' → câu 5 restate → đổi spec & tự bắn → đo kết quả. **Bước quan trọng nhất; đừng bỏ.** |
 | **11/09** | Rút bài học từ diễn tập, sửa template. Thiết bị: laptop, sạc, 2 màn hình nếu được, tool đếm từ, file log có timestamp. |
 | **12/09** | Thi. |
 
@@ -721,7 +738,7 @@ Tất cả phải là "CÓ":
 
 1. Hạn mức **token** với AI Khách hàng là bao nhiêu? Tính cả input và output? Có hiển thị số token còn lại real-time?
 2. Có giới hạn **số lượt hỏi** riêng, ngoài token?
-3. Spec nộp ở **định dạng gì** (Markdown, Google Doc, plain text)? **Bảng và sơ đồ có được không?** Từ trong bảng có tính vào 3.000 từ?
+3. Spec nộp ở **định dạng gì** (Markdown, Google Doc, plain text)? **Bảng và sơ đồ có được không?** Cách đếm hạn mức?
 4. Hạn mức **hình ảnh đính kèm**? Executor có "đọc" được hình không?
 5. **Công thức điểm**: trọng số vai CÔNG vs vai THỦ? TRÚNG được mấy điểm? VÔ HIỆU có bị trừ không?
 6. Xếp giải theo **pool 4 đội** hay **toàn giải**?
@@ -734,24 +751,46 @@ Tất cả phải là "CÓ":
 13. Có được xem lại hội thoại của mình với AI Khách hàng sau khi khóa spec không?
 14. Có được sửa test sau khi nộp, trước 15:00?
 
+**Kết quả sau họp 09/09** (bảng đối chiếu đầy đủ: `knowledge/00` §H):
+
+| Câu | Trả lời |
+|---|---|
+| 1, 2 | **5 câu hỏi · mỗi lượt 1 câu · 5.000 token gồm hỏi + trả lời · AI KHÔNG có memory** |
+| 3 | **Markdown**; bảng được; sơ đồ dạng mermaid; hạn mức tính bằng **token (6.000)**, nên câu "từ trong bảng có tính không" không còn nghĩa — dấu `\|` là token thật |
+| 4 | Gửi ảnh cho AI Khách hàng **≤ 3 lần**; **bản nộp không có ảnh** |
+| 5 | **CÔNG trúng +2 · THỦ đỡ được +1 · CÔNG bị VÔ HIỆU −1** |
+| 7 | ⛔ **Thông tin bảo mật, BTC không trả lời** — model của 3 tác nhân và prompt Executor |
+| 11 | Markdown, **tải về được** ⇒ mở ra kỹ thuật đồng thuận chéo 3 spec (`knowledge/50` §4b) |
+| 12 | **Text gửi AI, BTC review; chỉ mở cho ca test CÔNG bị chấm VÔ HIỆU** ⇒ ca "spec mình bị TRÚNG oan" và "So khớp hiểu sai ngữ nghĩa" không còn kháng nghị được |
+| 13 | **Được** |
+| 14 | **Không** ⇒ bằng chứng phạm vi cho từng test phải thu xong lúc nộp |
+| 6, 8, 9, 10 (độ dài) | Chưa có — xem `knowledge/00` §A2 |
+
 ## 6.4. Checklist ngày thi
 
 **9:00–9:30 — Nhận brief**
 - [ ] Đọc brief 2 lượt. Người 1 highlight *danh từ nghiệp vụ*, người 2 highlight *chỗ mơ hồ*.
 - [ ] Đối chiếu brief với ontology đã dựng → xác định biến thể (cart hold / cọc / pickup).
-- [ ] Lọc question bank: chọn P0 (~25 câu), bỏ câu ngoài phạm vi rõ ràng.
+- [ ] **Dựng mô hình bài toán** (`knowledge/05`) rồi chia mọi ô chưa biết thành 3 nhóm: vào 4 câu hỏi dữ liệu · hàng đợi câu restate · **tự điền mặc định ngành**.
+- [ ] Hỏi BTC miệng: ảnh có tính vào 5.000 token không; AI Khách hàng còn mở sau 12:00 không.
 
-**9:30–11:00 — Khai thác (mục tiêu: dùng 80% token trước 11:00)**
-- [ ] Lượt 1: phạm vi + **liệt kê TRONG/NGOÀI phạm vi** (rất quan trọng cho buổi chiều).
-- [ ] Lượt 2: state machine + bảng chuyển trạng thái, yêu cầu format bảng.
-- [ ] Lượt 3: toàn bộ **con số** (TTL, hạn mức, %cọc, số lần gia hạn).
-- [ ] Lượt 4: tồn kho, đồng thời, ưu tiên xung đột.
-- [ ] Lượt 5: bộ câu Đúng/Sai xác nhận giả thuyết.
-- [ ] Lượt 6: ngoại lệ & lỗi hệ thống, actor & quyền, thông báo.
+**9:30–10:20 — Khai thác: 4 câu hỏi dữ liệu** *(cập nhật 09/09 — bản gốc viết 6 lượt batch, chế độ đó không còn tồn tại; chi tiết `knowledge/20` §3)*
+- [ ] C1: **NGOÀI phạm vi** + điều PHẢI ngăn (rất quan trọng cho buổi chiều).
+- [ ] C2: bảng chuyển trạng thái đầy đủ — câu lãi nhất, trả về cả §5 và nửa §6 của spec.
+- [ ] C3: bảng tham số, gồm **đơn vị neo hạn mức** và **số ngày tiền về tay khách**.
+- [ ] C4: tám kịch bản suy biến & thất bại của phụ thuộc ngoài.
+- [ ] Mỗi câu: đúng một dấu `?`, tự chứa (AI không có memory), có cap dòng/từ, qua **cổng 5 kiểm tra** trước khi gửi.
 - [ ] **⭐ Đánh dấu ⚠ mọi câu trả lời PHẢN TRỰC GIÁC — đây là băng đạn buổi chiều.**
-- [ ] Điền bảng RTM. Lưu log hội thoại vào file có timestamp.
+- [ ] Điền RTM: dòng `A-xx` cho câu trả lời, **dòng `G-xx` cho mọi ô phải tự điền**. Lưu log có timestamp.
 
-**11:00–11:55 — Viết & khóa spec**
+**10:20–11:05 — Viết bản nháp spec**
+- [ ] Điền mọi ô không hỏi được bằng **mặc định ngành** (`knowledge/20` §4), không tự nghĩ ra giá trị mới.
+- [ ] Xếp hạng rủi ro mọi dòng `G-xx` → **10 phát biểu cho câu 5**.
+
+**11:05–11:30 — Câu hỏi cuối cùng (restate) rồi vá**
+- [ ] C5: 10 phát biểu Đúng/Sai có con số; mỗi ý "Sai" = một việc sửa BR cụ thể.
+
+**11:30–11:55 — Khóa spec**
 - [ ] Viết §0 catch-all (điều chỉnh khung dựng trước cho khớp specs thật).
 - [ ] Điền template theo thứ tự: §6 BR → §5 state table → §3 actor → còn lại.
 - [ ] Red Teamer chạy eval set + Attack Checklist, đọc **như Executor** (chỉ đọc spec, quên hết bối cảnh).
@@ -885,13 +924,13 @@ knowledge/
 | Agent / Skill | Nhiệm vụ | Input | Output | RAG vào | Eval |
 |---|---|---|---|---|---|
 | **`interrogator`** | Sinh & xếp ưu tiên câu hỏi cho AI Khách hàng, tối ưu token; gộp batch, ép format bảng | brief + question bank + token còn lại | Danh sách lượt hỏi đã batch, kèm format yêu cầu | `20-elicitation`, `40-domain-ecommerce` | Đo mật độ thông tin/token trên bài diễn tập |
-| **`spec-writer`** | Viết/điền spec theo template §4.7, giữ ngân sách từ | RTM đã điền + specs thu được | Spec markdown có mã BR, đếm từ | `10-requirements-craft`, `11-rule-modeling` | ≤3.000 từ, mọi ⚠ có BR |
+| **`spec-writer`** | Viết/điền spec theo template §4.7, giữ ngân sách từ | RTM đã điền + specs thu được | Spec markdown có mã BR, đếm token | `10-requirements-craft`, `11-rule-modeling` | ≤6.000 token, mọi dòng RTM có BR |
 | **`ambiguity-linter`** (skill) | Quét danh sách đen §4.6, đại từ trôi, thiếu đơn vị/timezone, thiếu bao gồm/loại trừ | spec text | Danh sách hit + đề xuất viết lại | `12-syntax-ambiguity` | Chạy trên spec cố tình lỗi, đo recall |
 | **`completeness-checker`** (skill) | Kiểm bảng state × event và decision table có ô trống/overlap; kiểm mã BR trùng & tham chiếu chết | spec text | Báo cáo ô thiếu | `11-rule-modeling` (DMN hit policy) | Spec mẫu thiếu ô → phải phát hiện 100% |
 | **`executor-simulator`** | **Đóng vai AI Executor**: chỉ đọc spec, trả lời tình huống, không dùng kiến thức ngoài | spec + tình huống | Câu trả lời + trích mục spec đã dùng (hoặc "spec không đề cập") | `50-llm-behavior` (chỉ để hiệu chỉnh hành vi) | Không được dùng tri thức ngoài spec |
 | **`red-teamer`** | Sinh 5 test/spec theo công thức §5.3, đa dạng loại lỗ hổng | spec đối thủ + danh sách ⚠ | 5 tình huống + loại lỗ hổng + kỳ vọng | `30-test-design`, `40-domain-ecommerce` | Đo tỷ lệ TRÚNG trên spec mẫu |
 | **`scope-referee`** | Chấm điểm rủi ro VÔ HIỆU của một test trước khi nộp | tình huống + danh sách TRONG/NGOÀI phạm vi | Điểm rủi ro + lý do | `00-competition`, `40-domain-ecommerce` | Đo false-negative trên test cố tình ngoài phạm vi |
-| **`word-compressor`** (skill) | Nén spec về ≤3.000 từ mà không mất luật: chuyển văn → bảng, gộp luật, thay tham chiếu | spec dài | spec ngắn + diff luật | `10-requirements-craft` | Không mất BR nào sau nén |
+| **`word-compressor`** (skill) | Nén spec về ≤5.400 token mà không mất luật: chuyển văn → bảng, gộp luật, thay tham chiếu | spec dài | spec ngắn + diff luật | `10-requirements-craft` | Không mất BR nào sau nén |
 | **`appeal-builder`** | Dựng lập luận kháng nghị: trích số mục spec + log hội thoại + 2 câu lý lẽ | finding (§5.7) + spec + log | Hồ sơ kháng nghị | `00-competition` | Có trích dẫn cụ thể, không suy diễn |
 
 **Vòng lặp tự huấn luyện (đề xuất chạy 10–11/09):**
@@ -918,12 +957,12 @@ Vòng lặp này chính là bài diễn tập ở §6.2 nhưng tự động hoá
 2. **Executor mù bối cảnh.** Mọi common sense phải được viết ra thành luật. Tri thức không nằm trong spec = bề mặt tấn công.
 3. **Không hỏi = không biết = bị bắn.** Elicitation quyết định 60–70% điểm phòng thủ.
 4. **Hỏi bằng câu Đúng/Sai và yêu cầu format bảng** để tiết kiệm token và tăng mật độ thông tin.
-5. **§0 Catch-all rules là phần đắt giá nhất của 3.000 từ** — nhưng chỉ viết SAU khi đã khai thác xong, nếu không sẽ tự tạo mâu thuẫn nội tại.
+5. **§0 Catch-all rules là phần đắt giá nhất của ngân sách token** — nhưng chỉ viết SAU khi đã khai thác xong, nếu không sẽ tự tạo mâu thuẫn nội tại.
 6. **Dùng bảng, không dùng văn.** Decision table + state transition table vừa tiết kiệm từ vừa lộ ô trống để vá.
 7. **Bảng RTM ngược (đáp án khách hàng → luật có mã) là công cụ tự kiểm mạnh nhất.** Ô trống trong bảng = lỗ hổng chắc chắn bị bắn.
 8. **Đánh dấu ⚠ mọi câu trả lời phản trực giác của AI Khách hàng** — vừa là checklist bắt buộc cho spec của mình, vừa là băng đạn chính xác nhất cho buổi chiều.
 9. **Đa dạng hóa 5 test/spec** theo 5 loại lỗ hổng khác nhau; kiểm phạm vi trước khi bắn để tránh VÔ HIỆU.
-10. **Lưu log hội thoại + bản spec đã nộp.** Không có bằng chứng thì không kháng nghị được. Và **diễn tập trọn 1 lượt trước 12/09** — không có bài tập nào thay được việc thực sự viết 3.000 từ trong 90 phút.
+10. **Lưu log hội thoại + bản spec đã nộp.** Không có bằng chứng thì không kháng nghị được. Và **diễn tập trọn 1 lượt trước 12/09** — không có bài tập nào thay được việc thực sự viết một spec 6.000 token trong 45 phút với 4 câu trả lời trong tay.
 
 ---
 ---

@@ -2,6 +2,8 @@
 
 Bộ công cụ dùng chung của đội cho HBLAB AI Hackathon #02 (12/09/2026). Nằm trong repo để `git pull` là dùng được.
 
+**Tham số hiện hành (chốt họp BTC 09/09):** nộp markdown ≤ **6.000 token** (đích 5.400), sơ đồ mermaid, không ảnh · hỏi AI Khách hàng **5 câu, mỗi lượt 1 câu, 5.000 token, không memory**, ảnh ≤3 lần · điểm **+2 công / +1 thủ / −1 vô hiệu** · spec đối thủ tải về được · test không sửa sau khi nộp · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**. Bảng đầy đủ và 7 ô còn hở: `knowledge/00` §A.
+
 **Sau khi pull: mở phiên Claude Code MỚI** trong thư mục repo — agent tùy chỉnh (`executor`, `customer`) chỉ được nạp lúc khởi động phiên.
 
 ## Kiến trúc
@@ -16,7 +18,7 @@ Hai trục kiểm chất lượng, chạy song song:
 
 | Trục | Kiểm gì | File | Cổng |
 |---|---|---|---|
-| **Hình thức** | mơ hồ, ô trống, truy vết, biên, số từ | 40, 31, 20 §5 | lint 22 nhóm, S1–S30, cổng chất lượng 1–11 |
+| **Hình thức** | mơ hồ, ô trống, truy vết, biên, token | 40, 31, 20 §5 | lint 22 nhóm, S1–S30, cổng chất lượng 1–11 |
 | **Nội dung** | hiểu bài toán, khả thi, vận hành, phục vụ mục tiêu, chịu được lạm dụng | **05**, **32** | cổng F (8 kiểm tra), bảng Mục tiêu↔Luật, 12 ca suy biến, cổng chất lượng 12–16 |
 
 Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó đạt **toàn bộ** trục hình thức (0 hit lint Cao, 36/36 ô bảng, 15/15 eval "ĐỦ") mà vẫn có 7 lỗi nội dung mức Cao — 3 trong đó phá thẳng mục tiêu brief nêu. Chi tiết: `knowledge/32` §7.
@@ -26,33 +28,43 @@ Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó �
 | Giờ | Lệnh | Vào | Ra |
 |---|---|---|---|
 | 9:00–9:30 | `/frame` | `battle/brief.md` | `battle/mo-hinh-bai-toan.md` (M1 mục tiêu · M2 dòng tiền · M3 dòng tồn · M4 biên hệ thống · M5 lạm dụng · M6 12 ca suy biến); mâu thuẫn nội tại của brief; câu hỏi P0 |
-| 9:30–11:00 | `/elicit lượt 1` … `lượt 6`, rồi **`/elicit restate`**; sau mỗi câu trả lời `/elicit nạp` + dán | `brief.md`, `mo-hinh-bai-toan.md` | Khối prompt copy-paste; `battle/log-khach-hang.md` (timestamp, nguyên văn); `battle/rtm.md` (RTM ngược, ⚠) |
-| 11:00–11:40 | `/spec-write` | `mo-hinh-bai-toan.md`, `rtm.md`, log | `battle/spec.md` đích ≤2.700 từ, mọi BR truy vết `← A-xx` + nhãn mục tiêu; xếp hạng rủi ro giả định; RTM điền Mã BR |
-| 11:40–11:44 | `/frame muc-tieu-luat` | `spec.md`, `mo-hinh-bai-toan.md` | Bảng Mục tiêu↔Luật: mục tiêu không có luật, luật phá mục tiêu, BR cắt được |
-| 11:45–11:55 | `/spec-review battle/spec.md 20 sửa` | `spec.md`, `rtm.md`, mô hình | `battle/review.md`: NỘP ĐƯỢC/CHƯA, khối khả thi (cổng F, lạm dụng, suy biến), eval set qua **hai** `executor` mù, danh sách `SỬA` và `HỎI` |
-| 13:00–14:30 | `/attack battle/doi-thu/B.md B` (×3 đội) | spec đối thủ, `rtm.md` (⚠ = đạn), mô hình | `battle/tests/B.md`: 5 test + 2 dự phòng + hồ sơ finding, điểm phạm vi, dry-run executor |
-| 16:00–17:00 | `/appeal` + dán kết quả bất lợi | `spec.md`, log, tests | `battle/appeal.md`: 3 ca, trích dẫn nguyên văn, kịch bản 60 giây |
-| 10–11/09 | `/drill <tên> [tính-năng] [lượt] [tự-động]` | — | `drill/<tên>/` trọn vòng + `ket-qua.md` (6 chỉ số) |
+| 9:00–9:30 | `/elicit ke-hoach` | `mo-hinh-bai-toan.md` | `ke-hoach-hoi.md`: 4 câu đã gọt + ước token + **danh sách ô sẽ KHÔNG hỏi kèm giá trị mặc định ngành** |
+| 9:30–10:20 | `/elicit cau 1` … `cau 4`, mỗi câu kèm `/elicit nap` | `brief.md`, `ke-hoach-hoi.md` | Khối câu hỏi qua cổng 5 kiểm tra; `log-khach-hang.md` (sổ hạn mức, timestamp, nguyên văn); `rtm.md` (dòng `A-xx` + `G-xx`) |
+| 10:20–11:05 | `/spec-write` | `mo-hinh-bai-toan.md`, `rtm.md`, log | `battle/spec.md` đích ≤5.400 token, mọi BR có `← A-xx` hoặc `← G-xx` + nhãn mục tiêu; **khối `→ C5`: 10 phát biểu Đúng/Sai** |
+| 11:05–11:20 | `/elicit restate` (= câu 5) + `/elicit nap` | `spec.md`, bảng xếp hạng rủi ro | Câu hỏi cuối cùng; mỗi ý "Sai" = một việc sửa BR |
+| 11:20–11:38 | `/frame muc-tieu-luat` | `spec.md`, `mo-hinh-bai-toan.md` | Bảng Mục tiêu↔Luật: mục tiêu không có luật, luật phá mục tiêu, BR cắt được |
+| 11:38–11:52 | `/spec-review battle/spec.md 20 sửa` | `spec.md`, `rtm.md`, mô hình | `review.md`: NỘP ĐƯỢC/CHƯA, cổng F + lạm dụng + suy biến + **G-7 giá trị tự nghĩ ra**, eval qua **hai** `executor` mù, đếm token, `SỬA` / `HỎI` / `RỦI RO ĐÃ BIẾT` |
+| 13:00–13:15 | `/attack cheo A.md B.md C.md` | 3 spec đối thủ (markdown), `spec.nop.md` | `dong-thuan-cheo.md`: hai spec chỏi nhau · một spec im lặng (#21) · cả ba im lặng |
+| 13:15–14:30 | `/attack battle/doi-thu/B.md B` (×3 đội) | spec đối thủ, `rtm.md`, `dong-thuan-cheo.md`, brief | `battle/tests/B.md`: **tối đa** 5 test có `EV > 0` + hồ sơ finding + **gói bằng chứng phạm vi 3 mức** |
+| 16:00–17:00 | `/appeal` + dán các ca **VÔ HIỆU** | log, brief, tests, 3 spec đối thủ | `battle/appeal.md`: ≤3 ca, text ≤150 từ/ca gửi AI |
+| 10–11/09 | `/drill <tên> [tính-năng] [tự-động]` | — | `drill/<tên>/` trọn vòng + `ket-qua.md` (8 chỉ số) |
 
 Chuẩn bị `battle/`: tạo thư mục, dán đề bài vào `battle/brief.md`. Các file còn lại skill tự tạo.
 
 ## Năm quy tắc cứng của kit
 
-1. **Hiểu bài toán trước khi hỏi tham số.** `/frame` chạy trước `/elicit lượt 1`; `/spec-write` từ chối chạy khi chưa có `mo-hinh-bai-toan.md`. Mục tiêu và ràng buộc quyết định *luật nào cần tồn tại*; tham số chỉ điền số vào luật đã biết là cần.
-2. **Không bịa dữ kiện nghiệp vụ.** Mọi luật trong spec phải trỏ về một dòng RTM (`← A-07`) hoặc gắn `[GIẢ ĐỊNH]`. Không có nguồn thì để luật bao quát §0.5 chặn.
+1. **Hiểu bài toán trước khi hỏi tham số.** `/frame` chạy trước `/elicit cau 1`; `/spec-write` từ chối chạy khi chưa có `mo-hinh-bai-toan.md`. Với 5 câu hỏi, mô hình bài toán không còn dùng để *sinh* câu hỏi mà để **chọn** ô nào xứng đáng chiếm chỗ trong 5 câu (`knowledge/05` §4).
+2. **Không bịa dữ kiện nghiệp vụ — nhưng phải điền mọi ô.** Mọi luật trỏ về một dòng RTM: `← A-07` (có câu trả lời) hoặc `← G-12 [GIẢ ĐỊNH]` (mặc định ngành, có xếp hạng rủi ro). Giá trị giả định **lấy từ `knowledge/20` §4 hoặc `10` §6, không tự nghĩ ra** — lý lẽ ở `knowledge/30` §1b. Ba loại không được tự chốt: luật phá mục tiêu brief, hạn mức không cưỡng chế được, giả định đảo lại thì đổi hướng tiền.
 3. **Không hứa hộ bên ngoài.** Mốc "hoàn tất" của việc do cổng thanh toán / ngân hàng / ERP thực hiện phải tách khỏi mốc "hệ thống quyết định", và phải có nhánh thất bại (`knowledge/32` §3.1).
 4. **Executor luôn được gọi mù, và luôn gọi hai lần.** Prompt chỉ có đường dẫn spec + tình huống. Bằng chứng spec rõ là **hai reader trùng kết quả**, không phải reader tự khai "không mơ hồ".
 5. **Ép kết quả cụ thể.** Mọi câu hỏi AI Khách hàng và mọi test đều phải trả lời được bằng con số / trạng thái cuối / ai thắng / có hoàn tiền không.
+6. **Một lượt hỏi = một câu hỏi, và chỉ có 5 lượt.** Mỗi câu tự chứa (AI không có memory), xin về một bảng, có cap dòng/từ, và qua cổng 5 kiểm tra trước khi gửi. Câu cuối là restate và **chỉ soạn sau khi có bản nháp spec** — đó là cách duy nhất để nó nhắm vào giả định đã thật sự vào spec.
+7. **Nộp test theo kỳ vọng, không theo số slot.** `EV = 2·P(TRÚNG) − P(VÔ HIỆU)`; `EV ≤ 0` thì bỏ slot. Và mọi test phải có gói bằng chứng phạm vi thu sẵn — kháng nghị chỉ mở cho ca VÔ HIỆU.
 
 **Và một quy tắc về ranh giới sửa:** phát hiện chia hai loại. `SỬA` = viết lại được ngay (mơ hồ, ô trống, thiếu nhánh lỗi). `HỎI` = đội đang không biết specs thật quy định gì (luật phá mục tiêu, hạn mức neo sai, giả định rủi ro cao) — sửa hộ là đoán lần thứ hai trên cùng một chỗ mù. Skill không tự sửa mục `HỎI`; nó sinh câu hỏi.
 
-## Việc phải làm sau họp BTC 09/09
+## Còn hở sau họp 09/09
 
-Điền các ô "CHỜ 09/09" trong `knowledge/00-luat-choi.md` §A (TOKEN_MAX, công thức điểm, định dạng nộp, được dùng AI riêng không…). Skill đọc bảng này; ô trống thì skill dùng giả định và ghi rõ. Các ô này ảnh hưởng *ngân sách và cách nộp*, không ảnh hưởng chất lượng spec — trục nội dung (`knowledge/05`, `32`) chạy được bất kể chúng còn trống.
+Bảy ô ở `knowledge/00` §A2. Hai ô đổi kế hoạch buổi sáng, phải hỏi BTC trước 9:30:
 
-Nếu BTC **không cho dùng AI trong phòng thi**: kit vẫn dùng để diễn tập và để in artifact mang vào — sáu khối mô hình `knowledge/05` §1 + 12 ca suy biến §M6, cổng F `knowledge/32` §1 + bảng thực tế phụ thuộc ngoài §2 + ba mẫu viết lại §3, question bank `knowledge/20` §2–§4 (gồm nhóm N0), template `knowledge/30` §1–§2 + checklist 24 quy tắc §4, checklist tấn công `knowledge/50` §1, §4, §6, danh sách đen `knowledge/40` §2.
+1. **Ảnh có tính vào 5.000 token không?** Nếu không → ảnh thành phương tiện restate rẻ nhất (gửi ảnh bảng 25 giả định, xin về "dòng nào sai"), đảo hẳn quy tắc `knowledge/20` §1-9.
+2. **AI Khách hàng còn mở sau 12:00 không?** Nếu còn → giữ 1 câu cho 13:30 để xin danh sách NGOÀI phạm vi mở rộng, dùng chống VÔ HIỆU khi bắn.
+
+Năm ô còn lại (xếp giải pool/toàn giải, độ dài test, VÔ HIỆU của đối thủ có cho thủ +1 không, số ca kháng nghị, được xem lý do đối chiếu trước không) chỉ đổi cách tính điểm kỳ vọng, không đổi quy trình.
+
+Nếu BTC **không cho dùng AI trong phòng thi**: kit vẫn dùng để diễn tập và để in artifact mang vào — sáu khối mô hình `knowledge/05` §1 + 12 ca suy biến §M6, cổng F `knowledge/32` §1 + bảng thực tế phụ thuộc ngoài §2 + ba mẫu viết lại §3, **5 câu hỏi soạn sẵn `knowledge/20` §3** + 31 phát biểu mặc định ngành §4 + bảng ánh xạ cuối §3, template `knowledge/30` §1–§1b–§2 + checklist 24 quy tắc §4, checklist tấn công `knowledge/50` §1, §4, §4b, §6, danh sách đen `knowledge/40` §2.
 
 ## Tùy chỉnh
 
-- Executor của BTC dùng model gì chưa rõ (câu 7 họp 09/09). Muốn giả lập Executor "kém" hơn để dry-run khắt khe: đổi `model: inherit` → `model: haiku` trong `.claude/agents/executor.md`.
+- Model Executor của BTC là **thông tin bảo mật, BTC không công bố** (00 §H câu 7) — nên giả lập bảo toàn là lựa chọn duy nhất đúng: `/spec-review` khối D luôn gọi reader 2 bằng `model: haiku`. Muốn khắt khe hơn nữa: đổi `model: inherit` → model yếu hơn trong `.claude/agents/executor.md`.
 - `drill/selftest/` là bộ fixture sẵn (specs thật giả lập có 8+ luật phản trực giác, spec lỗi có ≥22 lỗi cài) — dùng lại để luyện /attack và /spec-review.

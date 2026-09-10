@@ -1,6 +1,6 @@
 ---
 name: frame
-description: Dựng mô hình bài toán từ brief trong 20 phút trước khi hỏi AI Khách hàng — mục tiêu & thước đo, dòng tiền, dòng tồn & nguồn chân lý, biên hệ thống 6 láng giềng, mô hình lạm dụng, 12 kịch bản suy biến — rồi sinh danh sách câu hỏi P0. Dùng 9:00–9:30 ngày thi khi người dùng nói "đọc brief", "hiểu bài toán", "mô hình bài toán", "frame", "dựng khung"; chạy lại lúc 11:40 để lập bảng Mục tiêu ↔ Luật.
+description: Dựng mô hình bài toán từ brief trong 20 phút trước khi hỏi AI Khách hàng — mục tiêu & thước đo, dòng tiền, dòng tồn & nguồn chân lý, biên hệ thống 6 láng giềng, mô hình lạm dụng, 12 kịch bản suy biến — rồi chia mọi ô chưa biết thành ba nhóm: vào 5 câu hỏi, vào hàng đợi câu restate, hay tự điền mặc định ngành. Dùng 9:00–9:30 ngày thi khi người dùng nói "đọc brief", "hiểu bài toán", "mô hình bài toán", "frame", "dựng khung"; chạy lại lúc 11:30 để lập bảng Mục tiêu ↔ Luật.
 argument-hint: "[thư-mục] | muc-tieu-luat [thư-mục]"
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(date *), Bash(mkdir *)
 ---
@@ -9,11 +9,13 @@ allowed-tools: Read, Write, Edit, Grep, Glob, Bash(date *), Bash(mkdir *)
 Mục tiêu: biến brief một trang thành 6 khối mô hình có thể đối chiếu, để mọi luật viết sau đều trả lời được "phục vụ mục tiêu nào" và "có khả thi không". Không có bước này, spec đạt mọi cổng hình thức mà vẫn sai bài toán (bằng chứng: `knowledge/05-hieu-bai-toan.md` §0).
 
 ## Input
-`$ARGUMENTS` = `[thư-mục]` (mặc định `battle/`) hoặc `muc-tieu-luat [thư-mục]` (chế độ thứ hai, chạy 11:40).
+`$ARGUMENTS` = `[thư-mục]` (mặc định `battle/`) hoặc `muc-tieu-luat [thư-mục]` (chế độ thứ hai, chạy 11:30).
 Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC.
 
 Đọc trước:
-- `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md`: §1 sáu khối M1–M6, §2 bảng Mục tiêu↔Luật, §3 template đầu ra, §4 mô hình lái lượt hỏi, §5 ví dụ đã điền.
+- `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md`: §1 sáu khối M1–M6, §2 bảng Mục tiêu↔Luật, §3 template đầu ra, **§4 ô mô hình nào đi vào câu nào và ô nào phải tự điền**, §5 ví dụ đã điền.
+- `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (5 câu hỏi / 5.000 token), **§A2 (hai ô còn hở phải hỏi BTC trước 9:30)**.
+- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §3 (5 câu soạn sẵn + bảng ánh xạ ID → câu), §4 (mặc định ngành).
 - `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (bảng thực tế phụ thuộc ngoài — dùng để điền cột "trễ / ngữ nghĩa giao hàng" của M4 khi brief im lặng), §6 (mẫu chuyển hit F thành câu hỏi).
 - `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md`: §1 nhận diện biến thể, §5 danh sách 14 actor.
 
@@ -32,9 +34,14 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 6. **M5 mô hình lạm dụng** — 6 kẻ cố định. Với mỗi kẻ: được lợi gì trong đúng tính năng này · lách bằng cách nào · luật nào phải chặn · đã có gì trong brief chưa. Kết khối bằng câu: **mọi hạn mức mà brief nhắc tới đang neo vào cái gì, khách có tự đổi được không?**
 7. **M6 kịch bản suy biến** — copy 12 ca, đánh dấu ca nào brief đã trả lời (hiếm), còn lại `✗`.
 8. **Mâu thuẫn nội tại của brief** — liệt kê từng cặp câu brief chỏi nhau, kèm số câu.
-9. **Sinh câu hỏi P0** — theo bảng knowledge/05 §4 + mẫu knowledge/32 §6. Mỗi câu: đóng, ép một kết quả (số / chọn 1 / Đúng-Sai), ≤ 25 từ. Xếp theo: mâu thuẫn brief → M1 điều cấm → M5 neo hạn mức → M3 nguồn chân lý → M2 thất bại tiền → M4 trễ → M6 ca ✗. Ghi rõ câu nào phải vào **lượt 1** (mâu thuẫn brief, M1, M5).
+9. **Phân loại mọi ô `?` thành ba nhóm** — đây là bước thay cho "sinh câu hỏi P0" của bản cũ, vì chỉ có 5 câu hỏi cho cả ngày (00 §A). Theo bảng knowledge/05 §4:
+   - **Nhóm 1 — vào C1–C4** (4 câu gửi trước 10:20): ô nào chen được vào phần liệt kê của một câu soạn sẵn ở 20 §3. Ghi rõ ô nào vào câu nào.
+   - **Nhóm 2 — hàng đợi C5**: ô mà đảo lại thì đổi hướng tiền / trạng thái cuối / ai thắng, nhưng không chen được vào C1–C4. Tối đa 10 ô sẽ lọt; xếp hạng ngay.
+   - **Nhóm 3 — tự điền mặc định ngành**: mọi ô còn lại, kèm **giá trị dự kiến** lấy từ 20 §4 hoặc 10 §6 (không tự nghĩ ra — 30 §1b).
+   Ưu tiên khi tranh chỗ trong nhóm 1: mâu thuẫn nội tại của brief → M1 điều cấm → M5 neo hạn mức → M3 nguồn chân lý → M2 thất bại tiền → M4 trễ → M6 ca ✗.
+9b. **Hai câu hỏi cho BTC** (không tốn token, hỏi miệng trước 9:30 — 00 §A2): ảnh có tính vào 5.000 token không; AI Khách hàng còn mở sau 12:00 không. Câu trả lời đổi kế hoạch: ảnh không tính token ⇒ C5 chuyển sang phương án ảnh; AI còn mở buổi chiều ⇒ giữ 1 câu để xin danh sách NGOÀI phạm vi mở rộng lúc 13:30.
 10. Ghi `<thư-mục>/mo-hinh-bai-toan.md` theo template knowledge/05 §3, có timestamp (Bash `date`).
-11. In ra cho người dùng: (a) M1 dạng bảng; (b) danh sách mâu thuẫn nội tại của brief; (c) khối câu hỏi P0 đã xếp hạng, đánh dấu câu cho lượt 1; (d) một dòng đếm: `? = n ô / tổng ô` — đây là số lỗ hổng tiềm năng khi bắt đầu ngày.
+11. In ra cho người dùng: (a) M1 dạng bảng; (b) danh sách mâu thuẫn nội tại của brief; (c) **ba nhóm ở bước 9**, trong đó nhóm 1 ghi rõ "ô này vào câu C mấy" và nhóm 3 ghi kèm giá trị mặc định dự kiến; (d) hai câu hỏi cho BTC ở bước 9b; (e) hai dòng đếm: `? = n ô / tổng ô` và `n1 vào 5 câu · n2 hàng đợi C5 · n3 tự điền` — tỷ lệ n3/n thường 60–75%, và biết trước con số đó là cách duy nhất để 10:20 không hoảng.
 
 ## Bước — chế độ `muc-tieu-luat` (chạy 11:40, sau khi có spec)
 1. Đọc `mo-hinh-bai-toan.md`, `spec.md`, `rtm.md`.
@@ -42,15 +49,16 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 3. Với từng BR trong spec, gán đúng một trong ba: `phục vụ M-x` / `làm hỏng M-x` / `không thuộc mục tiêu nào`.
 4. Kết luận in ra:
    - Mục tiêu có cột 2 trống ⇒ **lỗi Cao**, spec bỏ trắng đúng phần brief nhấn mạnh.
-   - Ô cột 3 có chữ ⇒ **lỗi Cao**, kèm câu hỏi verify (knowledge/32 §6) và ghi vào danh sách restate.
-   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt khi thiếu chỗ trong 3.000 từ, xếp trước cả §7/§10.
+   - Ô cột 3 có chữ ⇒ **lỗi Cao**, chuyển thành **phát biểu Đúng/Sai** cho câu C5 (knowledge/32 §6) và ghi vào hàng đợi restate. C5 đã gửi rồi ⇒ chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` (30 §1b-3).
+   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt khi thiếu chỗ trong 6.000 token, xếp trước cả §7/§10.
 5. Ghi phần bảng này append vào `mo-hinh-bai-toan.md` và vào `review.md` nếu file đã tồn tại.
 
 ## Output bắt buộc
 - [ ] `mo-hinh-bai-toan.md` có đủ M1–M6, không khối nào trống.
 - [ ] Mọi ô chưa biết là `?` hoặc `[SUY RA]`/`[NGÀNH]` — không có phỏng đoán ghi trần.
 - [ ] Danh sách mâu thuẫn nội tại của brief.
-- [ ] Khối câu hỏi P0 xếp hạng, đánh dấu câu bắt buộc vào lượt 1.
+- [ ] Ba nhóm ô `?`: vào C1–C4 (ghi rõ câu nào) · hàng đợi C5 (xếp hạng) · tự điền mặc định ngành (có giá trị dự kiến).
+- [ ] Hai câu hỏi cho BTC ở bước 9b.
 - [ ] Chế độ `muc-tieu-luat`: bảng Mục tiêu↔Luật, mỗi BR được gán đúng một nhãn.
 
 ## Không được
@@ -58,4 +66,6 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 - Tự hoà giải mâu thuẫn của brief; tự chọn hộ specs thật khi brief im lặng.
 - Điền ô bằng thông lệ ngành mà không đánh `[NGÀNH]` (M4) hoặc `[SUY RA]` (M1–M3).
 - Bỏ khối M5 hoặc M6 vì "chưa có dữ kiện" — đó là hai khối sinh nhiều câu hỏi P0 nhất.
-- Chạy `/elicit lượt 1` trước khi file mô hình tồn tại.
+- Chạy `/elicit cau 1` trước khi file mô hình tồn tại.
+- Để một ô `?` không thuộc nhóm nào ở bước 9, hoặc ghi nhóm 3 mà không kèm giá trị mặc định ngành dự kiến.
+- Sinh nhiều hơn 5 câu hỏi, hoặc sinh câu hỏi mở dạng "hãy mô tả" — hạn mức là 5 câu cho cả ngày.

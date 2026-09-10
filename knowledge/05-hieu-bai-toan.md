@@ -138,22 +138,25 @@ Ba kết luận đọc ra từ bảng:
 ## M5 Actor & động cơ lạm dụng
 | Kẻ | Được lợi | Lách bằng | Luật phải chặn | Đã có luật? |
 ## M6 Kịch bản suy biến (12 ca) — ✓ có luật / ✗ hở / ⛔ ngoài phạm vi
-## Bảng Mục tiêu ↔ Luật (điền lúc 11:40)
-## Câu hỏi P0 sinh ra từ mô hình (đưa vào /elicit lượt 1)
+## Bảng Mục tiêu ↔ Luật (điền lúc 11:30)
+## Câu hỏi P0 sinh ra từ mô hình (nguyên liệu để gọt 5 câu — 20 §3)
 ```
 
-## 4. Mô hình này lái lượt hỏi thế nào
+## 4. Mô hình này lái 5 câu hỏi thế nào
 
-| Ô mô hình | Sinh ra câu hỏi loại nào | Vào lượt |
+Chỉ có **5 câu hỏi cho cả ngày** (00 §A), nên mô hình không còn dùng để *sinh thêm* câu hỏi — nó dùng để **chọn** ô nào xứng đáng chiếm chỗ trong 5 câu và ô nào phải tự điền bằng mặc định ngành.
+
+| Ô mô hình | Đi vào đâu | Nếu không hỏi được |
 |---|---|---|
-| M1 mục tiêu `?` hoặc "PHẢI KHÔNG xảy ra" trống | mục tiêu + điều cấm (20 §2 nhóm N0, dưới) | **Lượt 1** |
-| M4 cột "nguồn chân lý"/"trễ" trống | ranh giới hệ thống, N1-10, N4-12/13 | Lượt 1–4 |
-| M5 hạn mức neo vào dữ liệu tự khai | "hạn mức tính theo gì" — N3 | Lượt 3 |
-| M2 ô "thất bại →" trống | ngoại lệ tiền — N5 | Lượt 3, 6 |
-| M6 ca ✗ | ngoại lệ hệ thống — N12 | Lượt 6 |
-| Bảng §2 có ô cột 3 | **P0 chèn ngay lượt kế tiếp bất kể kế hoạch** | ngay |
+| M1 mục tiêu `?` hoặc "PHẢI KHÔNG xảy ra" trống | **C1** (nửa sau) | Bảng Mục tiêu↔Luật không lập được ⇒ không phát hiện luật tự phá mục tiêu. Ô này gần như luôn phải hỏi |
+| M5 hạn mức neo vào dữ liệu tự khai | **C3** (dòng "đơn vị neo hạn mức") | Dùng luật an toàn hai chiều 32 §3.3, **không chọn hộ** |
+| M2 ô "thất bại →" trống | **C3** (% hoàn + ngày tiền về) và **C4** ca (3) | Tách hai mốc theo 32 §3.1, để `[..]` cho số chưa biết |
+| M3 nguồn chân lý tồn | **C4** ca (5), (6) | Mặc định ngành: hệ nội bộ là nguồn chân lý, ERP đồng bộ định kỳ (32 §2) |
+| M4 cột "nguồn chân lý"/"trễ" trống | **C4** ca (1), (2), (4) | Điền theo bảng thực tế 32 §2, đánh `[NGÀNH]` |
+| M6 ca ✗ | **C4** (8 trong 12 ca) | Bốn ca còn lại phủ bằng luật §0.11–0.14 (30 §2) |
+| Bảng §2 có ô cột 3 (luật phá mục tiêu) | **C5** — ưu tiên cao nhất | Chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` |
 
-Đảo lại: **ô mô hình còn `?` sau lượt 6 = một dòng `[GIẢ ĐỊNH]` trong spec**, và phải nằm trong bảng xếp hạng rủi ro giả định của `/spec-write`.
+Đảo lại: **ô mô hình còn `?` sau C1–C4 = một dòng `G-xx` trong RTM và một dòng `[GIẢ ĐỊNH]` trong spec** (20 §5), và phải nằm trong bảng xếp hạng rủi ro giả định của `/spec-write`. Mười dòng rủi ro cao nhất là nội dung câu C5.
 
 ## 5. Ví dụ đã điền — brief "Đặt cọc giữ hàng" 08/09 (dùng làm mẫu diễn tập)
 

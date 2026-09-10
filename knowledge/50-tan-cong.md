@@ -1,10 +1,12 @@
-*Dùng cho vai CÔNG 13:00–15:00 (3 spec đối thủ, 15 test) và red team nội bộ 11:45.*
+*Dùng cho vai CÔNG 13:00–15:00 (3 spec đối thủ, 15 test) và red team nội bộ 11:38.*
+
+**Ba tham số 09/09 đổi cách chơi vai CÔNG (00 §A, §D1):** điểm **TRÚNG +2 / VÔ HIỆU −1** ⇒ một test đáng bắn khi `P(TRÚNG) > P(VÔ HIỆU)/2`, và bỏ test là 0 điểm chứ không phải −1. **Spec đối thủ là markdown tải về được** ⇒ grep được, và so chéo 3 spec được (§4b). **Test không sửa được sau khi nộp và chỉ ca VÔ HIỆU được kháng nghị** ⇒ bằng chứng phạm vi phải thu xong *trước* khi nộp test, không phải lúc 16:00.
 
 # 50 — Sổ tay tấn công
 
 Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn), `<%CỌC>`, `<TZ>` = số lấy từ AI Khách hàng buổi sáng; điền số thật trước khi nộp. Dùng thời điểm tuyệt đối (10:00:00) thay vì "sau TTL".
 
-## 1. Bảng 20 loại lỗ hổng [HD §5.1; #16–#20 thêm 09/09]
+## 1. Bảng 21 loại lỗ hổng (#16–#20 thêm 09/09; #21 thêm sau họp BTC)
 
 | # | Tên | Dấu hiệu trong spec (Ctrl+F / thiếu mục) | Probe §5 | Tỷ lệ TRÚNG | Rủi ro VÔ HIỆU |
 |---|---|---|---|---|---|
@@ -28,6 +30,9 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 | 18 | **Hạn mức không cưỡng chế được** | Grep nhóm 40 §2-18: hạn mức neo vào email/SĐT/tên khách tự khai | P47 | Rất cao | Thấp |
 | 19 | **Thiếu luật cho thất bại của phụ thuộc ngoài** | Spec nhắc cổng/ERP/job/thông báo nhưng không có nhánh lỗi nào (nhóm 40 §2-19). Đối chiếu 12 ca 05 §M6 | P48–P51 | Rất cao | Thấp |
 | 20 | **Phạm vi NGOÀI tự đặt rộng hơn brief** | Đọc danh sách NGOÀI phạm vi của đối thủ, so với brief: nghiệp vụ nào brief nhắc mà họ đẩy ra ngoài | P52 | Cao | **Thấp** — vì brief là căn cứ chung, không phải suy diễn của ta |
+| 21 | **Lệch đồng thuận chéo** (mới 09/09) | Cả 3 spec tải về đều bàn một nghiệp vụ, **một** spec im lặng hoặc nói khác hai spec kia (§4b) | theo chủ đề | Cao | **Thấp** — hai spec kia là bằng chứng nghiệp vụ nằm trong phạm vi |
+
+**Vì sao #21 rẻ nhất.** Nó không cần biết specs thật: chỉ cần ba file markdown tải về và một bảng đối chiếu. Hai đội khác viết luật cho nghiệp vụ X là bằng chứng gián tiếp rằng X thuộc phạm vi (họ đã hỏi, hoặc brief có nói), nên rủi ro VÔ HIỆU thấp; còn đội im lặng thì Executor phải đoán. Cẩn trọng duy nhất: **cả 3 im lặng không phải bằng chứng ngoài phạm vi** — đó là điểm mù chung, muốn bắn thì phải có brief hoặc log đỡ.
 
 **Vì sao #16–#20 là đạn tốt nhất năm nay.** Chúng nhắm vào *nội dung* chứ không vào *cách viết*, nên (a) đội nào cũng hở — checklist phổ biến chỉ dạy chống mơ hồ; (b) rủi ro VÔ HIỆU thấp vì đều nằm trong core flow tiền/tồn; (c) đáp án chuẩn dễ có trong log nếu buổi sáng đã hỏi nhóm N0 (20 §2). Đo trên `battle/spec.nop.md` — một spec đạt mọi cổng hình thức: 0 hit mức Cao ở loại #3/#4/#5/#6, nhưng **7 điểm bắn** ở #16–#20 (knowledge/32 §7).
 
@@ -40,10 +45,15 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 5. Không khẳng định số liệu spec đối thủ ("TTL là 120 phút"); đưa mốc tuyệt đối để Executor tự tra. Áp riêng cho **giá trị dẫn xuất** mà spec tự tính ra — `expires_at`, `deposit_due`, `ATP`, mức cọc, số tiền hoàn: chỉ nêu dữ kiện gốc (`created_at`, `on_hand`, giá niêm yết) và để Executor tính. Nêu sẵn giá trị dẫn xuất mà lệch luật của spec sẽ khiến Executor báo ĐA NGHĨA giả và làm hỏng cả tình huống.
 6. Hiểu được chỉ với brief + lẽ thường: không dùng mã BR, tên mục, thuật ngữ riêng đội mình.
 7. Nằm trong core flow hold (tạo, giữ tồn, cọc, gia hạn, hết hạn, hủy, chuyển đơn, quyền actor). Chấm rubric §6 trước khi nộp.
-8. ≤ 60 từ (giới hạn tự đặt để Executor không bỏ dữ kiện; thay bằng độ dài BTC công bố 09/09 nếu nhỏ hơn — 00 §A).
-9. Chỉ nộp khi có đáp án chuẩn trong log buổi sáng; không có = không kháng nghị được.
-10. Không dùng từ mơ hồ trong câu hỏi ("một lúc sau", "khá nhiều").
-11. Tự đóng vai Executor: đoán mặc định khi spec im lặng vẫn trùng đáp án chuẩn → TRƯỢT cao, đổi test [HD §2.3].
+8. ≤ 60 từ (giới hạn tự đặt để Executor không bỏ dữ kiện; độ dài tối đa BTC cho phép vẫn chưa rõ — 00 §A2-5).
+9. **Chỉ nộp khi đã có gói bằng chứng phạm vi**, theo ba mức (đủ một mức là nộp được):
+   - **Mức 1 — câu trả lời AI Khách hàng nguyên văn** về đúng nghiệp vụ đó (C1–C5, có timestamp). Mạnh nhất, nhưng năm nay chỉ có 5 câu nên rất hiếm.
+   - **Mức 2 — câu brief tường minh** nhắc nghiệp vụ đó. Brief là tài liệu BTC phát cho mọi đội nên không bác được bằng lý "suy diễn của đội bạn".
+   - **Mức 3 — đồng thuận chéo:** ≥2 trong 3 spec tải về có luật cho nghiệp vụ đó (trích số mục của cả hai). Yếu hơn hai mức trên nhưng dùng được khi kháng nghị.
+   Không có mức nào ⇒ không nộp. Test không sửa được sau khi nộp, và kháng nghị chỉ mở cho ca VÔ HIỆU (00 §A) — nghĩa là gói bằng chứng phải xong lúc 14:30, không phải lúc 16:00.
+10. **Bỏ một slot còn hơn nộp một test âm kỳ vọng.** Không nộp = 0 điểm; VÔ HIỆU = −1. Với 5 slot × 3 spec, nộp 13 test tốt hơn nộp 15 test trong đó 2 test đoán bừa.
+11. Không dùng từ mơ hồ trong câu hỏi ("một lúc sau", "khá nhiều").
+12. Tự đóng vai Executor: đoán mặc định khi spec im lặng vẫn trùng đáp án chuẩn → TRƯỢT cao, đổi test [HD §2.3].
 
 Mẫu câu chuẩn:
 > "[Loại khách] tạo hold [qty] đơn vị sản phẩm [X] lúc [hh:mm:ss, ngày, TZ]; hold hiện ở trạng thái [S]. Lúc [hh:mm:ss] xảy ra [sự kiện]. [Trạng thái cuối của hold là gì / tồn khả dụng bằng bao nhiêu / tiền cọc hoàn bao nhiêu / ai được hàng]?"
@@ -52,13 +62,15 @@ Mẫu câu chuẩn:
 
 | Test | Loại | Nguồn đạn |
 |---|---|---|
-| 1 | #15 hoặc #1 — khoảng trống lớn nhất, ưu tiên ⚠ | Danh sách ⚠ × sweep §4 |
+| 1 | #15 / #1 / **#21** — khoảng trống lớn nhất | Danh sách ⚠ × sweep §4 × **bảng đồng thuận chéo §4b** |
 | 2 | **#16 / #18 / #19 — khả thi, cưỡng chế, thất bại phụ thuộc ngoài** | Cổng F trên spec đối thủ (32 §1); P43–P51 |
 | 3 | #2 / #12 — ngoại lệ, lỗi hệ thống, rollback | Probe N12, N5; P39 / P41 / P42 |
 | 4 | #4 / #11 — biên, đơn vị, múi giờ | Probe BVA, Time |
 | 5 | #7 / #8 / #17 — đồng thời, ưu tiên xung đột, tự đánh bại mục tiêu | Probe N4, N14; P45 / P46 |
 
-Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng actor, còn cổng F thì hầu như không đội nào chạy. Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đề. Slot đối thủ quá tốt → thay bằng #15 hoặc #19 thứ hai ở chủ đề khác.
+Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng actor, còn cổng F thì hầu như không đội nào chạy. Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đề. Slot đối thủ quá tốt → thay bằng #15, #19 hoặc #21 thứ hai ở chủ đề khác.
+
+**Với 5 câu hỏi buổi sáng, nguồn đạn đã đổi trọng số.** Kit cũ giả định danh sách ⚠ có hàng chục dòng nên slot 1 luôn là #15. Năm nay danh sách ⚠ chỉ 8–20 dòng và 3 spec đối thủ thì tải về được, nên thứ tự nguồn đạn là: (1) ⚠ từ C1–C5 — ít nhưng chắc; (2) **bảng đồng thuận chéo** (#21) — nhiều và rẻ; (3) cổng F trên spec đối thủ (#16–#19) — không cần biết specs thật; (4) catalogue ⚠ của domain (10 §6) — đoán theo mặc định ngành, rủi ro TRƯỢT cao nhất vì Executor cũng đoán y hệt.
 
 ## 4. Quy trình soi 10 phút / spec [HD §5.4]
 
@@ -70,9 +82,39 @@ Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng 
 | 4–5,5 | Tìm bảng trạng thái / decision table. Không có → #6/#8. Có → tìm ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Danh sách ô trống |
 | 5,5–7 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
 | 7–8 | **Đối chiếu 12 kịch bản suy biến** (05 §M6) với spec đối thủ; và đọc danh sách NGOÀI phạm vi của họ so với brief (#20) | Mỗi ca không có luật = ứng viên #19 |
-| 8–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; mở hồ sơ §7 | 5 test điểm ≤1 |
+| 8–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; **gói bằng chứng phạm vi (§2-9)**; mở hồ sơ §7 | 5 test điểm ≤1, mỗi test có bằng chứng |
+
+Spec đối thủ là markdown tải về được (00 §A), nên bốn bước đầu chạy bằng grep chứ không bằng mắt:
+
+```
+grep -n -i -E "hoàn tất|tiền về|đối soát" B.md            # F1 → #16
+grep -n -i -E "email|số điện thoại|tự khai|khai báo" B.md  # F2 → #18
+grep -n -i -E "cổng|ERP|WMS|job|callback|thông báo" B.md   # đếm nhánh lỗi → #19
+grep -n -i -E "đồng thời|cùng lúc|múi giờ|UTC|ngày lễ|guest|chưa đăng nhập|rollback|kiểm kê|ưu tiên|oversell|safety" B.md   # 0 hit = hạng A
+grep -c "^|" B.md ; grep -n '```mermaid' B.md              # có bảng không; chỉ có sơ đồ = #6 (31 §5)
+```
 
 Knowledge boundary sweep [HD §2.1 ⑤]: Ctrl+F từng dòng danh sách ⚠ + bảng tham số đội mình (TTL, qty, hold max, %cọc, gia hạn, giá khóa, guest, hoàn cọc) trong spec đối thủ; không thấy hoặc khác specs thật → test hạng A, đáp án chuẩn có sẵn. 2 người: một sweep, một soi cấu trúc, song song từ phút 0.
+
+## 4b. Bảng đồng thuận chéo 3 spec (bước mới, 13:00–13:15)
+
+Làm **một lần cho cả ba spec**, trước khi soi từng spec. Chỉ làm được vì spec đối thủ tải về được ở dạng markdown.
+
+| Nghiệp vụ | Spec A | Spec B | Spec C | Spec mình | Kết luận |
+|---|---|---|---|---|---|
+| Hoàn cọc khi hết hạn | §6 BR-09: hoàn 100% | §5: mất cọc | im lặng | hoàn 100% | A và B **chỏi nhau** ⇒ ít nhất một đội sai ⇒ bắn cả hai bằng cùng một tình huống; C im lặng ⇒ #21 |
+| Guest tạo lượt giữ | cấm | cấm | im lặng | cấm | C im lặng, hai đội cấm ⇒ #21, phạm vi có bằng chứng mức 3 |
+| Callback trùng | im lặng | im lặng | im lặng | có 0.11 | Điểm mù chung ⇒ **không** phải bằng chứng ngoài phạm vi; bắn cả 3 **chỉ khi** có brief/log đỡ |
+
+Cách dùng:
+
+1. Lấy danh sách nghiệp vụ từ 14 nhóm N1–N14 (20 §2) + 12 ca suy biến (05 §M6) — khoảng 25 dòng là đủ.
+2. Điền bằng grep, không đọc tuần tự: mỗi dòng một lệnh `grep -n -i -E "<3 từ khóa>" A.md B.md C.md`.
+3. Ba kết luận đáng bắn, theo độ mạnh giảm dần:
+   - **Hai spec chỏi nhau về cùng một nghiệp vụ** — ít nhất một đội trái specs thật. Một tình huống bắn được cả hai, và với đội sai thì gần chắc TRÚNG.
+   - **Một spec im lặng, ≥2 spec có luật** (#21) — bằng chứng phạm vi mức 3 có sẵn.
+   - **Cả ba im lặng** — điểm mù chung, giá trị cao nếu đúng nhưng phải có bằng chứng mức 1 hoặc 2 mới nộp.
+4. Cột "Spec mình" là phần lợi kép: dòng nào ta im lặng mà ≥2 đội có luật là chỗ ta gần chắc bị bắn — ghi lại để rút bài học, không sửa được nữa (spec đã khóa 12:00).
 
 ## 5. Bảng PROBE
 
@@ -155,12 +197,22 @@ Nguồn: ISO/IEC/IEEE 29148 `feasible`/`affordable`; HTSM *Operations: disfavore
 
 Luật:
 1. Chỉ nộp test điểm ≤ 1.
-2. Điểm 2 kèm trích lời AI Khách hàng (timestamp) chứng minh trong phạm vi → hạ xuống 1; không có → loại.
+2. Điểm 2 hạ xuống 1 khi có bằng chứng phạm vi **mức 1 hoặc mức 2** (§2-9): lời AI Khách hàng nguyên văn, hoặc câu brief tường minh. Bằng chứng **mức 3** (đồng thuận chéo) hạ điểm 2 xuống 1,5 — nộp được nếu ước `P(TRÚNG)` cao, xem luật 8.
 3. Điểm 3 không nộp với bất kỳ lý do.
 4. Câu hỏi chạm 2 miền → lấy điểm cao nhất.
 5. Buổi sáng chưa hỏi "liệt kê nghiệp vụ NGOÀI phạm vi" [HD §5.6] → mọi test +1 điểm.
 6. Người chấm phạm vi ≠ người viết test; ghi điểm vào hồ sơ §7.
-7. Câu trả lời `"Không có quy định riêng."` **KHÔNG** phải bằng chứng trong phạm vi — nó chỉ nói specs thật không quy định, không nói nghiệp vụ thuộc tính năng. Chỉ hai thứ hạ được điểm phạm vi: (a) mục nằm trong danh sách TRONG phạm vi (N1-03), hoặc (b) một câu trả lời nghiệp vụ cụ thể (con số / trạng thái cuối / hướng tiền / ai thắng) về đúng nghiệp vụ đó. Dòng "chưa rõ" trong RTM giữ nguyên điểm phạm vi gốc — đừng coi im lặng của specs thật là giấy thông hành.
+8. **Chấm kỳ vọng trước khi chốt slot** (00 §D1). Ước hai xác suất rồi tính `EV = 2·P(TRÚNG) − 1·P(VÔ HIỆU)`:
+
+   | Điểm phạm vi | P(VÔ HIỆU) ước | Nộp khi |
+   |---|---|---|
+   | 0 | ~0,05 | P(TRÚNG) ≥ 0,05 — tức gần như luôn nộp |
+   | 1 | ~0,15 | P(TRÚNG) ≥ 0,10 |
+   | 1,5 (điểm 2 + bằng chứng mức 3) | ~0,30 | P(TRÚNG) ≥ 0,20 |
+   | 2 không có bằng chứng | ~0,50 | không nộp |
+
+   Ước `P(TRÚNG)` từ dry-run executor mù: executor trả lời khác đáp án chuẩn và ĐỘ PHỦ = ĐỦ ⇒ 0,8; khác và ĐỘ PHỦ = KHÔNG ⇒ 0,6; trùng đáp án chuẩn ⇒ 0,1 (đổi test).
+9. Câu trả lời `"Không có quy định riêng."` **KHÔNG** phải bằng chứng trong phạm vi — nó chỉ nói specs thật không quy định, không nói nghiệp vụ thuộc tính năng. Chỉ hai thứ hạ được điểm phạm vi: (a) mục nằm trong danh sách TRONG phạm vi (N1-03), hoặc (b) một câu trả lời nghiệp vụ cụ thể (con số / trạng thái cuối / hướng tiền / ai thắng) về đúng nghiệp vụ đó. Dòng "chưa rõ" trong RTM giữ nguyên điểm phạm vi gốc — đừng coi im lặng của specs thật là giấy thông hành.
 
 ## 7. Hồ sơ finding [HD §5.7] và kháng nghị [HD §5.8]
 
@@ -172,21 +224,40 @@ Một hồ sơ / test, lập trước khi nộp.
 | Loại lỗ hổng | # theo §1, probe theo §5 |
 | Tình huống nộp | Nguyên văn |
 | Chỗ spec im lặng / mâu thuẫn | Trích dẫn có số mục; hoặc "không mục nào đề cập" + 3 từ khóa Ctrl+F |
-| Đáp án chuẩn kỳ vọng | Trích lời AI Khách hàng + timestamp; ghi cả hệ quả phụ (tồn về đâu, ai được thông báo) đã tách khỏi câu hỏi |
+| Đáp án chuẩn kỳ vọng | Kết quả mong đợi + **nguồn**: `log C<n> hh:mm (nguyên văn)` / `brief câu …` / `mặc định ngành (10 §6)`. Ghi cả hệ quả phụ (tồn về đâu, ai được thông báo) |
+| **Gói bằng chứng phạm vi** | Mức 1 / 2 / 3 theo §2-9, kèm trích nguyên văn đã copy sẵn — đây là toàn bộ hồ sơ kháng nghị nếu bị VÔ HIỆU |
 | Dự đoán Executor | Câu Executor sẽ trả lời nếu spec im lặng (prior) |
-| Điểm phạm vi | 0–3 theo §6, người chấm |
+| Điểm phạm vi & kỳ vọng | 0–3 theo §6; `P(TRÚNG)`, `P(VÔ HIỆU)`, `EV` theo §6 luật 8; người chấm |
 | Kết quả máy | TRÚNG / TRƯỢT / VÔ HIỆU + lý do đối chiếu của AI So khớp |
-| Đánh giá | Đồng ý / Ứng viên kháng nghị (ưu tiên 1–3) |
+| Đánh giá | Đồng ý / **Ứng viên kháng nghị** (chỉ khi kết quả máy = VÔ HIỆU; ưu tiên theo mức bằng chứng 1 > 2 > 3) |
 
-Ca kháng nghị (tối đa 3 ca/đội):
+### Kháng nghị — chỉ một loại ca
 
-| Ưu tiên | Ca | Lập luận mẫu (2 câu) |
+**Tham số 09/09 (00 §A):** kháng nghị **chỉ mở cho ca test CÔNG của mình bị chấm VÔ HIỆU**, nộp bằng **text gửi AI**, ban tổ chức review; ≤3 ca/đội.
+
+Hai loại ca của kit cũ **không còn kháng nghị được**: (a) spec mình bị chấm TRÚNG dù có quy định; (b) AI So khớp hiểu sai ngữ nghĩa làm test mình thành TRƯỢT. Hệ quả trực tiếp: **rủi ro của vai THỦ không có đường lùi**, nên mọi cẩn trọng dồn vào chất lượng spec trước 12:00; còn rủi ro của vai CÔNG cứu được một phần, nên ngưỡng nộp test tính theo kỳ vọng (§6 luật 8).
+
+Điều duy nhất phải chứng minh khi kháng nghị: **tình huống nằm TRONG phạm vi specs thật**. Không tranh đáp án chuẩn, không tranh cách Executor trả lời — chấm lại phạm vi là toàn bộ điều đang xin.
+
+| Ưu tiên | Bằng chứng | Lập luận mẫu (2 câu) |
 |---|---|---|
-| 1 | Test bắn vào spec mình bị tính TRÚNG nhưng spec có quy định | "BR-nn của spec chúng tôi quy định [trích nguyên văn], bao trùm tình huống này. Executor không áp dụng; đề nghị đối chiếu lại đáp án chuẩn với BR-nn." |
-| 2 | Test mình bắn bị tính VÔ HIỆU sai | "Lúc [hh:mm], AI Khách hàng trả lời [trích nguyên văn] về đúng nghiệp vụ này, tức nằm trong specs thật. Đề nghị chấm lại theo đáp án chuẩn đó." |
-| 3 | So khớp hiểu sai ngữ nghĩa | "Đáp án chuẩn nói [A], Executor trả lời [B]; cùng kết quả về trạng thái cuối, tồn và tiền, chỉ khác diễn đạt. Đề nghị đổi kết quả theo lý do đối chiếu đã lưu." |
-| 4 | Test mình (loại #20) bị VÔ HIỆU nhưng brief nhắc tường minh nghiệp vụ đó | "Brief do BTC phát ghi nguyên văn [trích câu brief]. Nghiệp vụ này không thể nằm ngoài phạm vi tính năng khi chính đề bài mô tả nó; đề nghị chấm lại phạm vi." |
+| 1 | **Mức 1** — AI Khách hàng đã trả lời nghiệp vụ đó | "Lúc [hh:mm], khi được hỏi [trích câu hỏi], AI Khách hàng trả lời [trích nguyên văn]. Câu trả lời đó là quy định nghiệp vụ cho đúng tình huống của test này, nên tình huống nằm trong phạm vi specs thật; đề nghị chấm lại phạm vi." |
+| 2 | **Mức 2** — brief nhắc tường minh | "Brief do BTC phát ghi nguyên văn [trích câu brief]. Nghiệp vụ này không thể nằm ngoài phạm vi tính năng khi chính đề bài mô tả nó; đề nghị chấm lại phạm vi." |
+| 3 | **Mức 3** — đồng thuận chéo | "Spec của đội [X] mục [§] và đội [Y] mục [§] đều có luật cho nghiệp vụ này [trích cả hai]. Hai đội độc lập cùng xếp nghiệp vụ này trong phạm vi tính năng; đề nghị chấm lại phạm vi." |
 
-Ca loại 4 dùng **brief** làm bằng chứng — tài liệu BTC phát cho mọi đội, nên không bác được bằng lý "suy diễn của đội bạn". Giới hạn phải tự biết: brief nhắc một nghiệp vụ không đồng nghĩa specs thật có luật cho nó, nên lập luận chỉ được nhắm vào **phạm vi**, không nhắm vào đáp án.
+Giới hạn phải tự biết và nói trước khi trọng tài chỉ ra: mức 2 và mức 3 chỉ chứng minh nghiệp vụ **thuộc tính năng**, không chứng minh specs thật **có luật** cho nó. Vì vậy lập luận chỉ xin chấm lại phạm vi, không xin đổi thành TRÚNG.
 
-Bằng chứng mang vào phiên 16:00: log AI Khách hàng có timestamp, bản copy spec đã nộp, 15 hồ sơ finding, lý do đối chiếu của AI So khớp (xin BTC trước [HD §2.2]).
+**Mẫu text kháng nghị (≤150 từ/ca, gửi AI):**
+
+```
+Test: <ID> — <tình huống nguyên văn>
+Kết quả máy: VÔ HIỆU
+Đề nghị: chấm lại phạm vi.
+Căn cứ: <trích nguyên văn 1 nguồn mạnh nhất + vị trí: mã câu + timestamp, hoặc câu brief, hoặc §mục của 2 spec>
+Lập luận: <2 câu, chỉ về phạm vi>
+Giới hạn: <1 câu tự nêu điểm yếu của bằng chứng, nếu là mức 2 hoặc 3>
+```
+
+Câu "Giới hạn" không phải khiêm tốn: người review thấy đội tự nêu đúng giới hạn của bằng chứng sẽ tin phần còn lại hơn, và nó chặn trước lý bác duy nhất mà họ có.
+
+Bằng chứng chuẩn bị trước 15:00 (không kịp thu lúc 16:00): log AI Khách hàng có timestamp + ảnh chụp từng câu trả lời, bản copy spec đã nộp, 15 hồ sơ finding **kèm gói bằng chứng phạm vi 3 mức**, bảng đồng thuận chéo §4b, 3 spec đối thủ đã tải về.

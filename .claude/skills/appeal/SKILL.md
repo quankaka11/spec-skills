@@ -1,38 +1,47 @@
 ---
 name: appeal
-description: Dựng hồ sơ kháng nghị cho tối đa 3 ca từ các kết quả chấm bất lợi trong Spec Battle — phân loại ca, tìm trích dẫn nguyên văn trong spec đã nộp và log AI Khách hàng có timestamp, chấm xác suất thắng, viết lập luận 2 câu và kịch bản nói 60 giây. Dùng 16:00–17:00 ngày thi khi người dùng nói "kháng nghị", "appeal", "bị chấm TRÚNG oan", "bị VÔ HIỆU sai".
-argument-hint: "[thư-mục-trận] + dán danh sách kết quả bất lợi"
+description: Dựng hồ sơ kháng nghị cho tối đa 3 ca test CÔNG bị chấm VÔ HIỆU trong Spec Battle — xác nhận ca có đủ điều kiện kháng nghị, xếp bằng chứng phạm vi theo 3 mức (lời AI Khách hàng / câu brief / đồng thuận chéo 2 spec), chấm xác suất thắng, và viết text kháng nghị ≤150 từ gửi AI. Dùng 16:00–17:00 ngày thi khi người dùng nói "kháng nghị", "appeal", "bị chấm VÔ HIỆU".
+argument-hint: "[thư-mục-trận] + dán danh sách kết quả VÔ HIỆU"
 allowed-tools: Read, Write, Grep, Glob
 ---
-# /appeal — Hồ sơ kháng nghị ≤3 ca
+# /appeal — Hồ sơ kháng nghị ≤3 ca VÔ HIỆU
 
-Mục tiêu: chọn 3 ca có bằng chứng trích dẫn mạnh nhất; mỗi ca trình bày được trong 60 giây với số mục và timestamp.
+**Điều kiện kháng nghị (00 §A, chốt 09/09): chỉ ca test CÔNG của mình bị chấm VÔ HIỆU.** Nộp bằng **text gửi AI**, ban tổ chức review; ≤3 ca/đội.
+
+Hai loại ca của kit cũ **không còn kháng nghị được** — nếu người dùng dán vào, nói rõ và loại ngay, đừng dựng hồ sơ:
+- spec mình bị chấm TRÚNG dù spec có quy định;
+- AI So khớp hiểu sai ngữ nghĩa làm test mình thành TRƯỢT.
+
+**Điều duy nhất được tranh: tình huống nằm TRONG phạm vi specs thật.** Không tranh đáp án chuẩn, không tranh cách Executor trả lời, không tranh chất lượng test. Mọi câu trong text kháng nghị phải phục vụ đúng một kết luận đó.
 
 ## Input
-`$ARGUMENTS` = `[thư-mục-trận]` (mặc định `battle/`) + phần người dùng dán: từng kết quả bất lợi gồm tình huống, kết quả máy (TRÚNG/VÔ HIỆU), lý do đối chiếu của AI So khớp (nếu có).
-Đọc: `spec.md` (bản đã nộp), `brief.md` (bằng chứng dùng chung cho ca loại 4), `log-khach-hang.md`, `tests/*.md` (hồ sơ finding), `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (số ca, cơ chế), `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §7 (loại ca + lập luận mẫu), `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (dùng khi phải chứng minh một luật của đối thủ bất khả thi, hoặc bảo vệ luật của mình trước lý "không thực tế").
+`$ARGUMENTS` = `[thư-mục-trận]` (mặc định `battle/`) + phần người dùng dán: từng kết quả VÔ HIỆU gồm ID test, tình huống, lý do đối chiếu của AI So khớp (nếu được xem).
+Đọc: `tests/*.md` (hồ sơ finding — **gói bằng chứng phạm vi đã thu sẵn lúc 14:30**), `log-khach-hang.md` (5 câu trả lời nguyên văn), `brief.md`, `dong-thuan-cheo.md`, `spec.md`, `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §7 (mẫu text + 3 mức bằng chứng), §2-9, `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A, §D.
 
 ## Bước
-1. **Phân loại** từng ca vào đúng một loại (knowledge/50 §7): (1) spec mình bị TRÚNG nhưng spec CÓ quy định; (2) test mình bị VÔ HIỆU nhưng AI Khách hàng đã trả lời nghiệp vụ đó buổi sáng; (3) So khớp hiểu sai ngữ nghĩa — hai câu cùng kết quả về trạng thái cuối / tồn / tiền; **(4) test mình (loại #20) bị VÔ HIỆU nhưng brief nhắc tường minh nghiệp vụ đó** — bằng chứng là câu brief, không phải log.
-   Loại 4 mạnh riêng một kiểu: brief là tài liệu **BTC phát cho mọi đội**, nên trọng tài không thể bác bằng lý "đó là suy diễn của đội bạn". Nhưng nó cũng yếu hơn loại 2 ở một điểm phải nói trước: brief nhắc một nghiệp vụ *không* đồng nghĩa specs thật có quy định cho nghiệp vụ đó. Lập luận đúng là "nghiệp vụ này không thể nằm NGOÀI phạm vi vì chính brief mô tả nó", chứ không phải "specs thật chắc chắn có luật cho nó".
-2. **Tìm bằng chứng bằng Grep**, không nhớ mò:
-   - Loại 1: Grep từ khóa của tình huống trong `spec.md` → trích nguyên văn §/BR-xx bao trùm tình huống. Không tìm được câu bao trùm trực tiếp → ca này yếu.
-   - Loại 2: Grep trong `log-khach-hang.md` → trích khối lượt, timestamp, câu trả lời nguyên văn. Đối chiếu mục NGOÀI phạm vi trong log lượt 1: nếu nghiệp vụ nằm trong danh sách NGOÀI → bỏ ca.
-   - Loại 3: đặt hai câu cạnh nhau, chỉ ra 3 chiều (trạng thái cuối, tồn kho, tiền) khớp; lệch một chiều → bỏ ca.
-   - Loại 4: Grep `brief.md` → trích nguyên văn câu brief nhắc nghiệp vụ đó, kèm số câu / đoạn. Không trích được câu brief trực tiếp → bỏ ca (đừng dựa vào "brief hàm ý").
-   - Ca đối thủ bắn vào spec mình bằng nghiệp vụ NGOÀI phạm vi (theo log lượt 1) mà bị tính TRÚNG → xếp loại 2 (lẽ ra VÔ HIỆU), bằng chứng là log lượt 1.
-   - Với mỗi ca, Grep TOÀN BỘ log (mọi lượt) để gom mọi câu trả lời củng cố, không dừng ở câu đầu tìm được; xếp câu trả lời trực tiếp nhất lên đầu.
-   - Trích nguyên văn giữ đúng ký tự (kể cả backtick, mã); cắt đoạn thì đánh dấu `[…]`. Khi viện "theo thể lệ", dẫn dòng cụ thể trong `knowledge/00-luat-choi.md` §D.
-3. **Xác suất thắng**: Cao = có trích nguyên văn khớp trực tiếp (BR bao trùm, hoặc log trả lời đúng nghiệp vụ); TB = phải suy 1 bước (áp catch-all §0.5/0.6, hoặc log trả lời nghiệp vụ lân cận); Thấp = không có trích dẫn. Bỏ mọi ca Thấp, ghi lý do 1 dòng.
-4. **Xếp hạng**: theo xác suất, rồi theo ưu tiên loại 1 > 2 > 4 > 3; điểm ảnh hưởng bằng nhau thì ưu tiên ca bảo vệ spec mình. Chọn 3.
-5. **Viết** cho mỗi ca chọn: tiêu đề 1 dòng (ID test, kết quả máy → đề nghị); loại; bằng chứng (trích nguyên văn có số mục / lượt + timestamp); lập luận 2 câu theo mẫu knowledge/50 §7; kịch bản nói 60 giây (~120 từ, mở bằng đề nghị, đóng bằng số mục); 2 câu hỏi trọng tài có thể hỏi + trả lời 1 câu mỗi câu.
+1. **Sàng điều kiện.** Mỗi ca người dùng dán: kết quả máy có đúng là **VÔ HIỆU** và test đó do **đội mình bắn** không? Không đủ hai điều kiện ⇒ loại, ghi một dòng lý do. Đây là bước đầu vì nó loại phần lớn ca của kit cũ.
+2. **Lấy gói bằng chứng có sẵn** từ hồ sơ finding của test đó (`/attack` bước 7 đã trích nguyên văn). Có sẵn ⇒ sang bước 4. Không có ⇒ bước 3.
+3. **Tìm bằng chứng bằng Grep**, không nhớ mò, theo thứ tự độ mạnh:
+   - **Mức 1** — Grep toàn bộ `log-khach-hang.md` (cả 5 câu) tìm câu trả lời nghiệp vụ về đúng tình huống đó → trích khối `## C<n>`, timestamp, câu hỏi và câu trả lời nguyên văn. Đối chiếu mục NGOÀI phạm vi trong câu trả lời C1: nghiệp vụ nằm trong danh sách NGOÀI ⇒ **bỏ ca**, máy chấm đúng.
+   - **Mức 2** — Grep `brief.md` tìm câu nhắc nghiệp vụ đó → trích nguyên văn kèm vị trí (đoạn/câu). Không trích được câu trực tiếp ⇒ không dùng mức 2 (đừng dựa vào "brief hàm ý").
+   - **Mức 3** — Grep 3 spec đối thủ đã tải + `dong-thuan-cheo.md`: ≥2 spec có luật cho nghiệp vụ đó → trích số mục của **cả hai**.
+   - `"Không có quy định riêng."` trong log **không phải** bằng chứng phạm vi (50 §6-9) — nó chỉ nói specs thật không quy định. Dòng `G-xx` (giả định của đội) cũng không phải bằng chứng.
+   - Trích nguyên văn giữ đúng ký tự (kể cả backtick, mã); cắt đoạn thì đánh dấu `[…]`.
+4. **Xác suất thắng**: Cao = mức 1 khớp trực tiếp nghiệp vụ · TB = mức 2, hoặc mức 1 nói về nghiệp vụ lân cận · Thấp–TB = mức 3 · Thấp = không có mức nào. **Bỏ mọi ca Thấp**, ghi lý do 1 dòng — nộp ca không bằng chứng làm loãng hai ca còn lại trong mắt người review.
+5. **Xếp hạng & chọn 3**: theo xác suất, rồi theo mức bằng chứng 1 > 2 > 3, rồi theo điểm thu lại được (một ca thắng đổi −1 thành 0 hoặc +2, tức lãi 1–3 điểm — 00 §D1; ưu tiên ca mà dry-run trước đó dự đoán TRÚNG, vì nó lãi 3).
+6. **Viết text cho mỗi ca chọn** theo mẫu knowledge/50 §7, **≤150 từ**, đúng 6 dòng: `Test` · `Kết quả máy` · `Đề nghị` (chấm lại phạm vi) · `Căn cứ` (trích nguyên văn 1 nguồn mạnh nhất + vị trí) · `Lập luận` (2 câu, chỉ về phạm vi) · `Giới hạn` (1 câu tự nêu điểm yếu của bằng chứng khi dùng mức 2 hoặc 3).
+   Dòng `Giới hạn` không phải khiêm tốn: nó chặn trước lý bác duy nhất người review có ("brief nhắc không có nghĩa specs thật có luật"), và làm phần còn lại đáng tin hơn.
 
 ## Output `appeal.md`
-1. Bảng xếp hạng mọi ca: ID | loại | xác suất | chọn/bỏ | lý do 1 dòng.
-2. 3 hồ sơ ca theo bước 5.
-3. Checklist mang vào phiên: bản spec đã nộp, log có timestamp, hồ sơ finding, lý do đối chiếu đã xin BTC.
+1. Bảng sàng: ID | kết quả máy | đủ điều kiện kháng nghị? | mức bằng chứng | xác suất | chọn/bỏ | lý do 1 dòng.
+2. **Text kháng nghị của 3 ca, mỗi ca trong một code block copy nguyên khối** — đây là thứ gửi đi, không phải bản tóm tắt.
+3. Hai câu hỏi người review có thể hỏi mỗi ca + trả lời 1 câu mỗi câu.
+4. Dòng cuối: tổng điểm có thể thu lại (số ca × 1 đến 3), và các ca đã bỏ kèm lý do — để rút bài học cho lần sau.
 
 ## Không được
-- Lập luận không có trích dẫn nguyên văn; trích dẫn không tồn tại trong spec/log (Grep xác nhận trước khi ghi).
-- Chọn quá 3 ca; chọn ca xác suất Thấp.
-- Sửa spec hay log sau khi khóa.
+- Dựng hồ sơ cho ca không phải VÔ HIỆU, hoặc cho test do đội khác bắn vào spec mình.
+- Tranh đáp án chuẩn, tranh cách Executor trả lời, tranh chất lượng spec của mình — ngoài phạm vi cơ chế kháng nghị.
+- Lập luận không có trích dẫn nguyên văn; trích dẫn không tồn tại trong log/brief/spec đối thủ (Grep xác nhận trước khi ghi).
+- Dùng `"Không có quy định riêng."` hoặc dòng `G-xx` làm bằng chứng.
+- Chọn quá 3 ca; chọn ca xác suất Thấp; viết quá 150 từ một ca.
+- Sửa spec, log, hay test sau khi khóa.

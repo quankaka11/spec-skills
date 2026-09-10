@@ -1,71 +1,89 @@
 ---
 name: elicit
-description: Lập lượt hỏi AI Khách hàng cho Spec Battle (batch 5–8 câu đóng, mục tiêu & ràng buộc hỏi trước tham số, ép format, ước token đúng cho tiếng Việt) và nạp câu trả lời vào RTM ngược + log có timestamp; có lượt restate bắt buộc để xác nhận giả định. Dùng buổi sáng 9:30–11:00 khi người dùng nói "lượt hỏi", "hỏi AI khách hàng", "nạp câu trả lời", "cập nhật RTM", "restate", "elicit", "elicitation round".
-argument-hint: "lượt <n> [thư-mục] | restate [thư-mục] | nạp [thư-mục]"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(date *), Bash(mkdir *)
+description: Quản 5 câu hỏi cho AI Khách hàng Spec Battle (mỗi lượt 1 câu, 5.000 token, AI không có memory) — chọn và gọt 5 câu từ mô hình bài toán, in từng câu qua cổng 5 kiểm tra, nạp câu trả lời vào RTM ngược + log có timestamp, và soạn câu restate cuối từ bảng xếp hạng rủi ro giả định. Dùng buổi sáng 9:30–11:20 khi người dùng nói "kế hoạch hỏi", "câu 1", "hỏi AI khách hàng", "nạp câu trả lời", "cập nhật RTM", "restate", "elicit".
+argument-hint: "ke-hoach [thư-mục] | cau <1..5> [thư-mục] | nap [thư-mục] | restate [thư-mục]"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(date *), Bash(mkdir *), Bash(LC_ALL=C.UTF-8 wc *)
 ---
-# /elicit — Hỏi AI Khách hàng & cập nhật RTM
+# /elicit — 5 câu hỏi, không có lần thứ hai
 
-Mục tiêu: mỗi lượt hỏi lấy được nhiều dữ kiện nhất trên mỗi token, và mọi câu trả lời được truy vết vào RTM ngược để không dữ kiện ⚠ nào bị bỏ ngoài spec.
+Hạn mức cứng (00 §A): **5 câu hỏi cho cả ngày · mỗi lượt đúng 1 câu · 5.000 token cho cả hỏi + trả lời · AI Khách hàng KHÔNG có memory · ảnh tối đa 3 lần**.
+
+Mục tiêu: 5 câu trả về nhiều dữ kiện nhất có thể, mọi dữ kiện vào RTM, và mọi ô **không** hỏi được cũng có một dòng RTM (loại `G-xx`) để không có chỗ nào trong spec bị bỏ trắng.
 
 ## Input
-`$ARGUMENTS` = `lượt <n> [thư-mục]`, `restate [thư-mục]`, hoặc `nạp [thư-mục]`. Thư mục mặc định `battle/`. Thư mục phải có `brief.md` **và `mo-hinh-bai-toan.md`** — thiếu file mô hình thì chạy `/frame` trước, vì lượt 1 lấy câu hỏi từ đó.
-Người dùng có thể dán thêm sau lệnh: câu trả lời của AI Khách hàng (chế độ nạp) hoặc ghi chú (token còn lại, chủ đề ưu tiên).
+`$ARGUMENTS` = `ke-hoach [thư-mục]` · `cau <n> [thư-mục]` · `nap [thư-mục]` · `restate [thư-mục]`. Thư mục mặc định `battle/`, phải có `brief.md` **và `mo-hinh-bai-toan.md`** — thiếu file mô hình thì chạy `/frame` trước.
+Người dùng có thể dán thêm sau lệnh: câu trả lời của AI Khách hàng (chế độ `nap`) hoặc ghi chú (token còn lại, BTC đã trả lời ảnh có tính token hay không).
 
 Đọc trước:
-- `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A — lấy TOKEN_MAX. Nếu ô ghi "CHỜ 09/09" và log chưa ghi hạn mức: hỏi người dùng một lần, ghi vào dòng đầu `log-khach-hang.md` dạng `TOKEN_MAX = <n> (giả định/đã chốt)`.
-- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md`: §1 (10 quy tắc hỏi), §2 (ngân hàng câu theo ID, **gồm nhóm N0 mục tiêu & ràng buộc**), §3 (6 lượt batch sẵn + ngân sách % token + hệ số token tiếng Việt), §4 (phát biểu Đúng/Sai), §5 (mẫu RTM), §6 (mẫu log).
-- `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §4 — bảng "ô mô hình → sinh câu hỏi loại nào, vào lượt nào".
-- `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §6 — sáu câu chuyển từ hit cổng F; dùng khi `/spec-review` đã trả về danh sách `HỎI`.
-- `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md`: §1 (nhận diện biến thể), §6 (edge case ⚠ để ưu tiên câu hỏi và để đánh ⚠ khi nạp).
-- `<thư-mục>/mo-hinh-bai-toan.md` — mục "Câu hỏi P0 sinh ra từ mô hình" và "Mâu thuẫn nội tại của brief".
+- `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số), §A1 (cách ước token), §A2 (hai ô còn hở đổi kế hoạch: ảnh có tính token, AI còn mở sau 12:00).
+- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md`: §1 (10 quy tắc + **cổng 5 kiểm tra**), §2 (ngân hàng nguyên liệu), §3 (**5 câu soạn sẵn C1–C5 + bảng ánh xạ ID → câu**), §4 (31 phát biểu mặc định ngành), §5 (RTM hai loại dòng), §6 (log).
+- `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §4 — bảng "ô mô hình → đi vào câu nào, nếu không hỏi được thì làm gì".
+- `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md`: §1 (nhận diện biến thể), §6 (catalogue ⚠ — dùng khi nạp và khi chọn mặc định ngành).
+- `<thư-mục>/mo-hinh-bai-toan.md` — "Câu hỏi P0", "Mâu thuẫn nội tại của brief".
 
-## Khởi tạo (chỉ khi thiếu file)
-Nếu chưa có `rtm.md` → tạo từ mẫu bảng 7 cột ở knowledge/20 §5 (chỉ header). Nếu chưa có `log-khach-hang.md` → tạo với dòng `TOKEN_MAX = ...` và header theo knowledge/20 §6.
+## Sổ hạn mức (đọc/ghi ở đầu `log-khach-hang.md`)
+Dòng đầu file luôn có: `Đã dùng: <k>/5 câu · <t>/5.000 token · ảnh <a>/3 · ảnh tính token: có|không|chưa rõ`.
+Không có file → tạo với `0/5`, `0/5.000`, `0/3`, `chưa rõ`.
 
-## Chế độ `lượt <n>`
-1. Đọc `brief.md`, `rtm.md`, `log-khach-hang.md`. Ghi nhận: biến thể đã xác định chưa (knowledge/10 §1), danh sách ID đã hỏi, token đã dùng.
-2. Chọn khối lượt n từ knowledge/20 §3 làm khung. Thay các ID bằng câu hỏi nguyên văn từ §2. Loại câu đã hỏi, câu ngoài phạm vi theo brief hoặc theo danh sách NGOÀI đã nhận. Thêm tối đa 2 câu follow-up từ ⚠ lượt trước (câu trả lời mơ hồ → bắt định nghĩa/con số, quy tắc §1-9).
-3. Ràng buộc bắt buộc:
-   - **Lượt 1 phải có, theo đúng thứ tự này:** (a) mọi câu sinh từ mục "Mâu thuẫn nội tại của brief" trong `mo-hinh-bai-toan.md`; (b) N0-01 (điều PHẢI KHÔNG xảy ra); (c) N1-02 + N1-03 (NGOÀI + TRONG phạm vi); (d) N0-06 và N0-02 (guest + đơn vị neo hạn mức); (e) N1-01 nhận diện biến thể. Mục tiêu và ràng buộc hỏi **trước** tham số: chúng quyết định luật nào cần tồn tại, còn tham số chỉ điền số vào luật đã biết là cần.
-   - Lượt 5 = bộ Đúng/Sai knowledge/20 §4, bỏ phát biểu đã được trả lời trực tiếp ở lượt trước, giữ đúng số thứ tự còn lại.
-   - Mỗi lượt 5–8 câu (Đúng/Sai được tính là 1 câu cho cả bộ). Dòng đầu khối luôn là câu ép format + cap độ dài (§1-2). Không câu mở đứng một mình, không "vì sao", không dẫn dắt (§1-6, §1-7).
-   - Nếu chưa tới 11:00 mà chưa hỏi NGOÀI phạm vi → chèn N1-02 vào lượt này bất kể n.
-   - Ô mô hình còn `?` sau lượt 4 mà thuộc M1/M2/M5 → chèn vào lượt này, ưu tiên trên câu tham số P1.
-4. **Ước lượng token**: phần tiếng Việt `số từ × 2,5`, phần mã/số/tiếng Anh `× 1,5` (knowledge/20 §3). Hệ số 1,5 dùng chung cho cả khối là **ước thiếu ~40%** và làm cháy token trước lượt restate. Sau lượt 1, nếu người dùng cung cấp số token thực tế → tính hệ số đo được (`token thực / số từ đã gửi`) và ghi vào log để dùng cho các lượt sau. Cộng thêm dự kiến câu trả lời (theo % ngân sách lượt ở §3). Nếu tổng vượt token còn lại → cắt theo thứ tự ưu tiên ghi ở §3.
-4b. **Bảo vệ 15% token cho lượt restate.** Nếu token còn lại sau lượt này < 15% TOKEN_MAX → cảnh báo người dùng ngay trong output và đề nghị bỏ lượt 6 để chạy restate. Restate là lượt duy nhất kiểm được rằng đội hiểu đúng; hết token mà chưa restate thì mọi dòng ⚠ vẫn là suy luận một chiều.
-5. Lấy timestamp bằng Bash `date "+%Y-%m-%d %H:%M:%S"`. Ghi vào `log-khach-hang.md` khối `## Lượt n — <tên>` với "Thời gian gửi", "Token trước lượt", "Câu hỏi (nguyên văn)" theo mẫu §6; để trống phần câu trả lời.
-6. In ra cho người dùng: (a) khối prompt trong một code block để copy nguyên khối; (b) một dòng "Token ước lượng: hỏi ~X, trả lời ~Y, còn lại ~Z"; (c) danh sách ID vừa hỏi.
+**Chốt cứng:** khi `k = 5`, mọi chế độ `cau`/`restate` **từ chối sinh câu mới** và in ra danh sách việc thay thế (điền mặc định ngành theo 30 §1b, luật an toàn hai chiều 32 §3.3). Không có câu thứ 6 trong bất kỳ hoàn cảnh nào.
 
-## Chế độ `restate` (bắt buộc, chạy sau 10:45 hoặc ngay sau `/spec-review`)
-1. Nguồn phát biểu, ưu tiên giảm dần: (a) danh sách `HỎI` do `/spec-review` sinh ra; (b) mọi dòng `[GIẢ ĐỊNH]` xếp hạng rủi ro cao do `/spec-write` sinh ra; (c) dòng ⚠ trong RTM có mâu thuẫn `↔`; (d) ô mô hình M1/M2/M5 còn `?`.
-2. Viết mỗi ý thành một phát biểu **có con số hoặc trạng thái cụ thể**, để AI Khách hàng chỉ cần Đúng/Sai. Không hỏi "có đúng không" chung chung. Ý nào "Sai" thì xin giá trị đúng ≤8 từ ngay trong cùng lượt.
-3. Tối đa 12 phát biểu một lượt; xếp phát biểu rủi ro cao lên đầu vì lượt có thể bị cắt giữa.
-4. Câu cuối lượt: "Còn quy tắc nào về <chủ đề còn `?` nhiều nhất> chưa được hỏi? Liệt kê tên, không mô tả."
-5. Ghi log như chế độ `lượt`; sau khi nạp, mỗi phát biểu "Sai" tạo một dòng RTM mới ⚠⚠ và một việc sửa spec.
+## Chế độ `ke-hoach` (9:30, chạy một lần)
+1. Đọc `brief.md`, `mo-hinh-bai-toan.md`. Xác định biến thể (10 §1) và **tên tính năng đúng như brief gọi** — mọi câu hỏi phải dùng tên đó, không dùng từ riêng của đội (quy tắc 20 §1-10).
+2. Lấy C1–C4 ở 20 §3 làm khung, rồi **gọt theo brief**: thay `<TÊN TÍNH NĂNG>`; bỏ khỏi phần liệt kê những ô mà brief đã trả lời tường minh; chèn tối đa 2 ô sinh từ mục "Mâu thuẫn nội tại của brief" — mâu thuẫn của brief là dấu hiệu specs thật có luật thứ ba, ưu tiên trên mọi tham số.
+3. Đối chiếu bảng 05 §4: mỗi ô mô hình `?` phải rơi vào một trong ba chỗ — một câu trong C1–C4, hàng đợi cho C5, hoặc "tự điền mặc định ngành". **Không được có ô `?` không thuộc chỗ nào.**
+4. Ước token từng câu (00 §A1) và tổng; giữ **≥1.000 token cho C5**.
+5. Ghi `<thư-mục>/ke-hoach-hoi.md`: 4 câu nguyên văn đã gọt · ước token · bảng "ô mô hình → câu nào / tự điền" · danh sách hàng đợi C5.
+6. In ra: bảng 4 câu + ước token, và **danh sách ô sẽ KHÔNG hỏi** kèm giá trị mặc định ngành dự kiến (20 §4). Danh sách thứ hai quan trọng bằng danh sách thứ nhất: đó là phần spec sẽ viết bằng giả định.
 
-## Chế độ `nạp`
-1. Lấy câu trả lời từ phần dán sau lệnh hoặc từ file người dùng chỉ. Không sửa chữ, không tóm tắt khi ghi log.
-2. Ghi vào khối lượt gần nhất trong `log-khach-hang.md`: "Câu trả lời (nguyên văn)", "Token sau lượt" (ước lượng nếu người dùng không cung cấp), timestamp nhận (Bash date).
-3. Tách từng ý trả lời thành một dòng RTM (knowledge/20 §5): `A-xx | ID câu hỏi | câu trả lời rút gọn ≤12 từ | ⚠? | (trống) | ❌ | hh:mm`. Câu trả lời dạng liệt kê ("Được: a, b, c / Không được: d, e"; bảng nhiều hàng) → MỖI ý một dòng RTM, không gộp thành một dòng ⚠ chính (ý bị gộp sẽ không thành BR và bị catch-all 0.4/0.5 xử sai). Cột "Mã BR" để trống — /spec-write sẽ điền.
-   - Đánh ⚠ khi câu trả lời khác mặc định phổ biến: đối chiếu với 30 phát biểu knowledge/20 §4 (trả lời "Sai" ⇒ ⚠) và catalogue ⚠ knowledge/10 §6. Đánh ⚠⚠ khi vừa khác mặc định vừa có con số/trạng thái cụ thể.
-   - "Ngoài phạm vi" ⇒ trạng thái ⛔, ghi vào mục "NGOÀI phạm vi" cuối rtm.md (nguồn cho §1 spec và cho chấm phạm vi buổi chiều).
-   - Mâu thuẫn với dòng RTM cũ ⇒ ghi cả 2 ID, đánh dấu `↔ A-yy`, đưa vào danh sách restate.
-4. Không bịa: ý nào AI Khách hàng không trả lời rõ → dòng RTM ghi "chưa rõ" và đề xuất câu follow-up.
-5. Cập nhật dòng "Trích rút → RTM:" trong khối log.
-6. In ra: bảng ⚠ mới (ID, nội dung, vì sao phản trực giác), số dòng RTM tổng / số ⚠, danh sách ≤3 câu follow-up đóng cho lượt sau, danh sách mâu thuẫn cần restate.
+## Chế độ `cau <n>` (n = 1..4)
+1. Đọc sổ hạn mức. `k ≥ 5` → từ chối (xem chốt cứng). `n ≤ k` → cảnh báo "câu này đã gửi" và in lại từ log thay vì sinh mới.
+2. Lấy câu n từ `ke-hoach-hoi.md` (chưa có file → chạy `ke-hoach` trước).
+3. **Cổng 5 kiểm tra (20 §1-10), in kết quả từng dòng ✓/✗; còn ✗ thì KHÔNG in khối copy:**
+   - đúng **một** dấu `?`, và câu là một câu hỏi duy nhất;
+   - không tham chiếu lượt trước, không đại từ trôi ("việc đó", "như trên") — AI không có memory;
+   - có ép format + cap số dòng + cap số từ mỗi ô + "không giải thích";
+   - câu trả lời tệ nhất có thể vẫn dùng được (không thể là một chữ "Có"/"Không");
+   - mọi thuật ngữ đều là từ của brief.
+4. Ước token câu hỏi + dự kiến câu trả lời; nếu vượt token còn lại sau khi trừ 1.000 cho C5 → cắt phần liệt kê cuối của câu (thứ tự cắt ghi ở 20 §3 từng câu) và in rõ đã cắt gì.
+5. Timestamp bằng Bash `date "+%Y-%m-%d %H:%M:%S"`. Ghi khối `## C<n> — <tên>` vào `log-khach-hang.md` theo mẫu 20 §6, để trống phần câu trả lời. Tăng `k`.
+6. In ra: (a) khối câu hỏi trong một code block, copy nguyên khối; (b) `Token: hỏi ~X · dự kiến trả lời ~Y · còn lại ~Z / 5.000 · câu còn lại <5−k>`; (c) một dòng "nếu câu trả lời hụt phần nào thì phần đó tự điền bằng: …" — chuẩn bị trước cho khả năng AI chỉ trả lời nửa đầu.
+
+## Chế độ `restate` (= câu 5, chạy 11:05, SAU khi có bản nháp spec)
+1. Điều kiện vào: `spec.md` tồn tại **và** `/spec-write` đã in bảng xếp hạng rủi ro giả định. Thiếu → dừng, nói rõ vì sao: câu 5 phải nhắm vào giả định đã thật sự vào spec, chứ không phải kế hoạch soạn trước.
+2. Nguồn phát biểu, ưu tiên giảm dần (20 §3 C5): (a) 10 dòng đầu bảng xếp hạng rủi ro giả định; (b) BR nhãn `⚡` hoặc ✗ cổng F2/F7; (c) ô M1/M2/M5 còn `?`; (d) phát biểu 20 §4 có tiền/tồn dính vào.
+3. Viết mỗi ý thành một phát biểu **có con số hoặc trạng thái cụ thể**, ≤15 từ, để AI chỉ cần Đúng/Sai; ý "Sai" xin giá trị đúng ≤8 từ trong cùng câu. Tối đa 10 phát biểu; xếp rủi ro cao lên đầu vì câu trả lời có thể bị cắt giữa.
+4. Chạy cổng 5 kiểm tra như chế độ `cau`. Ghi log, tăng `k` lên 5.
+5. In kèm: bảng "phát biểu → BR nào trong spec sẽ phải sửa nếu trả lời Sai" — để lúc 11:20 vá được trong 15 phút mà không phải suy lại.
+
+## Chế độ `nap`
+1. Lấy câu trả lời từ phần dán sau lệnh hoặc file người dùng chỉ. **Không sửa chữ, không tóm tắt** khi ghi log.
+2. Ghi vào khối `## C<n>` gần nhất còn trống: "Câu trả lời (nguyên văn)", "Token sau câu này" (thật nếu người dùng cung cấp, không thì ước — ghi rõ "thật" hay "ước"), timestamp nhận. Cập nhật sổ hạn mức.
+3. Tách **từng ý** thành một dòng RTM `A-xx` (20 §5): `A-xx | C<n> | nội dung ≤12 từ | ⚠? | — | (trống) | ❌ | hh:mm`. Bảng nhiều hàng hoặc câu trả lời liệt kê → **mỗi hàng/mỗi ý một dòng RTM**, không gộp.
+   - Đánh ⚠ khi khác mặc định ngành: đối chiếu 31 phát biểu 20 §4 và catalogue 10 §6. ⚠⚠ khi vừa khác mặc định vừa có con số/trạng thái cụ thể.
+   - "Ngoài phạm vi tính năng này" ⇒ trạng thái ⛔, ghi vào mục "NGOÀI phạm vi" cuối `rtm.md` (nguồn cho §1 spec **và** cho rào chống VÔ HIỆU buổi chiều — 50 §6).
+   - "Không có quy định riêng." ⇒ dòng RTM ghi đúng cụm đó, **không** đánh ⛔ và **không** coi là bằng chứng phạm vi (50 §6-9). Ô này chuyển thành `G-xx` mặc định ngành.
+   - Câu trả lời hụt một phần câu hỏi ⇒ ghi "không trả lời phần <x>" và mở ngay dòng `G-xx` cho phần đó. Không hỏi lại — hỏi lại tốn một câu trong 5.
+4. **Không bịa, không suy diễn.** Ý nào AI không trả lời rõ → `G-xx` với giá trị mặc định ngành, không phải `A-xx` với giá trị đoán.
+5. **Sau khi nạp câu 4** (hoặc sau câu cuối trong C1–C4 đã gửi): sinh **toàn bộ dòng `G-xx`** — mỗi ô mô hình còn `?` và mỗi nhóm ID ở cột phải của bảng ánh xạ 20 §3 thành một dòng `G-xx` với giá trị mặc định ngành đề xuất (nguồn: 20 §4 / 10 §6) và cột Rủi ro để trống cho `/spec-write` chấm. Đây là bước biến "chưa hỏi" thành "đã có kế hoạch viết", và là điều kiện để `/spec-write` không bỏ trắng mục nào.
+6. Cập nhật dòng "Trích rút → RTM:" trong khối log.
+7. In ra: bảng ⚠ mới (ID, nội dung, vì sao phản trực giác) · số dòng `A-xx` / `G-xx` / tổng ⚠ · mâu thuẫn với dòng RTM cũ (gắn `↔`, đưa vào hàng đợi C5) · token còn lại · câu còn lại.
+
+## Ảnh (tối đa 3 lần)
+Mặc định **không dùng** (20 §1-9): một ảnh ≈ 1.000–1.600 token, còn bảng viết bằng text chỉ 400–600. Chỉ đảo quyết định khi người dùng xác nhận BTC nói **ảnh không tính vào 5.000 token** — lúc đó ghi `ảnh tính token: không` vào sổ hạn mức, và chế độ `restate` chuyển sang phương án ảnh: xuất một bảng markdown ≤25 dòng giả định để người dùng chụp gửi kèm, câu hỏi text chỉ còn "trong ảnh, dòng nào Sai; ghi giá trị đúng ≤8 từ?".
 
 ## Output bắt buộc
-- [ ] Khối prompt copy-paste được (chế độ lượt) hoặc bảng ⚠ mới (chế độ nạp).
-- [ ] `log-khach-hang.md` có timestamp, nguyên văn, token trước/sau.
-- [ ] `rtm.md` cập nhật, cột Mã BR trống, ⚠ đúng.
-- [ ] Dòng token còn lại.
+- [ ] Khối câu hỏi copy-paste được, đã qua cổng 5 kiểm tra (chế độ `cau`/`restate`), hoặc bảng ⚠ mới (chế độ `nap`).
+- [ ] `log-khach-hang.md` có sổ hạn mức ở dòng đầu, timestamp, nguyên văn.
+- [ ] `rtm.md` có cả dòng `A-xx` và `G-xx`; không dòng nào thiếu cả hai cột "Mã BR" và "Rủi ro".
+- [ ] Một dòng `Token: … / 5.000 · câu còn lại: …` ở cuối mọi output.
 
 ## Không được
-- Chạy `lượt 1` khi chưa có `mo-hinh-bai-toan.md`.
-- Hỏi mở một mình, hỏi "vì sao", hỏi dẫn dắt.
-- Quá 8 câu một lượt; bỏ N1-02 (NGOÀI phạm vi) trước 11:00; bỏ N0-01/N0-02/N0-06 khỏi lượt 1.
-- Ước token bằng hệ số 1,5 cho phần tiếng Việt.
-- Tiêu hết token mà chưa chạy lượt `restate`.
-- Bịa hoặc suy diễn câu trả lời khi nạp; tóm tắt câu trả lời trong log.
-- Điền cột Mã BR (việc của /spec-write).
+- Sinh câu thứ 6, hoặc gộp hai câu hỏi vào một lượt để "tiết kiệm".
+- In khối câu hỏi khi cổng 5 kiểm tra còn ✗.
+- Viết câu hỏi tham chiếu lượt trước ("như đã nói", "bổ sung ý 3") — AI không có memory.
+- Chạy `restate` trước khi có `spec.md` và bảng xếp hạng rủi ro giả định.
+- Hỏi lại một phần đã bị trả lời hụt; hỏi "vì sao"; hỏi dẫn dắt; hỏi điều suy được từ mặc định ngành.
+- Coi `"Không có quy định riêng."` là bằng chứng phạm vi, hoặc là lý do bỏ trắng ô trong spec.
+- Bịa câu trả lời khi nạp; tóm tắt câu trả lời trong log; ghi giá trị đoán thành dòng `A-xx`.
+- Dùng ảnh khi chưa xác nhận ảnh có tính token hay không.
+- Điền cột Mã BR (việc của `/spec-write`).

@@ -91,7 +91,7 @@ Mã hiệu ứng (khai báo một lần ở đầu bảng §5):
 
 **ST-1 vòng đời Hold** (tập trạng thái ứng viên — xác nhận với AI Khách hàng trước khi điền)
 
-Giá trị K/T/N trong bảng là **MINH HỌA**; trước khi chép vào spec thay từng ô bằng đáp án Lượt 2 (state machine) và Lượt 3 (con số) của knowledge/20 §3; ô chưa có đáp án → hỏi ở lượt restate hoặc để KHL. `T?` = bắt buộc điền.
+Giá trị K/T/N trong bảng là **MINH HỌA**; trước khi chép vào spec thay từng ô bằng đáp án **C2** (bảng chuyển trạng thái) và **C3** (bảng tham số) của knowledge/20 §3; ô chưa có đáp án → điền mặc định ngành theo 30 §1b, và nếu rủi ro cao thì đưa vào **C5**. `T?` = bắt buộc điền.
 
 | Trạng thái \ Event | E1 create | E2 cọc OK | E3 extend | E4 khách cancel | E5 admin cancel | E6 timeout | E7 checkout | E8 cọc thất bại | E9 tồn giảm < số giữ |
 |---|---|---|---|---|---|---|---|---|---|
@@ -123,7 +123,7 @@ Chuyển KHL là nguồn test **rẻ nhất**: ST-1 có 54 − 13 = 41 ô KHL, s
 | Input số không phân hoạch kín (`<5`, `>5`) | #4 | "Khách giữ **đúng 5** đơn vị — áp mức nào?" |
 | Hai rule chồng lấn, không hit policy (thường do `-` chéo cột) | #8 | Tình huống nằm **đúng giao**: "VIP giữ hàng Flash-sale: TTL 240 hay 15?" — Executor phải chọn một |
 | Ô trống state table | #6 | "Hold đang **X** lúc hh:mm:ss thì xảy ra **Y**. Hold sang trạng thái nào?" — K/T kỳ vọng ghi vào hồ sơ 50 §7, không đưa vào câu hỏi |
-| Chỉ có sơ đồ mũi tên, không bảng | #6 / #12 | Bắn event **hệ thống** vắng trong sơ đồ: "Admin hạ tồn về 0 khi hold ACTIVE"; "Cổng thanh toán báo cọc thất bại sau ACTIVE" |
+| Chỉ có sơ đồ mũi tên hoặc chỉ có khối ```mermaid, không bảng | #6 / #12 | Bắn event **hệ thống** vắng trong sơ đồ: "Admin hạ tồn về 0 khi hold ACTIVE"; "Cổng thanh toán báo cọc thất bại sau ACTIVE" |
 | Event 2 đích không guard | #5 | "Khách extend lần thứ 3 — được không?" |
 
 Soi 1 bảng đối thủ trong 3 phút: (1) tính n₁×n₂×n₃ theo giá trị **họ tự khai**; (2) cộng tổ hợp mỗi hàng; (3) lệch → tổ hợp trống làm tình huống; (4) 2 hàng có `-` chéo cột → tình huống giao; (5) state table: mọi event trong spec × mọi trạng thái, ô không có câu trả lời → ứng viên.
