@@ -74,25 +74,27 @@ Năm gạch đầu dòng ở (2) là checklist bắt buộc cho MỌI bảng Cas
 
 **Bốn mục hoàn toàn mới phải hỏi AI Khách hàng buổi sáng: 2, 3, 4, 9.** Không hỏi = bốn vùng trống lớn.
 
-## 5. Ngân sách 3.000 từ đề xuất cho 10 mục
+## 5. Ngân sách token đề xuất cho 10 mục
 
-Giới hạn 3.000 từ giữ nguyên (knowledge/00 §A). Phân bổ: ưu tiên mục 6 vì đó là nơi Executor bị bắn nhiều nhất; mục 5 gần như không tốn từ.
+Hạn mức là **≤6.000 token, đích 5.400** (knowledge/00 §A, cách đo ở §A1) — **không phải 3.000 từ**. Quy đổi: 1 từ tiếng Việt ≈ 2,5 token, nên 3.000 từ ≈ 7.500 token, vượt hạn mức. Phân bổ dưới đây giữ đúng tỷ lệ ưu tiên cũ (mục 6 lớn nhất vì đó là nơi Executor bị bắn nhiều nhất; mục 5 gần như không tốn gì) nhưng tính lại theo token.
 
-| Mục | Từ | Ghi chú |
-|---|---|---|
-| 1 Tổng quan & phạm vi (gồm catch-all) | 300 | bullet + 10 dòng catch-all |
-| 2 Item màn hình | 350 | bảng, dồn item cùng khu vực |
-| 3 Event | 200 | bảng |
-| 4 Validation & message | 300 | message nguyên văn tốn từ nhưng bắt buộc |
-| 5 Design/Wireframe | 50 | mô tả bố cục bằng chữ + link |
-| 6 Flow & quy tắc xử lý | 1.100 | **lớn nhất** — mỗi logic: step + bảng Case |
-| 7 Ràng buộc, bất thường, chưa chốt | 350 | 3–4 bảng ngắn |
-| 8 Xác thực & phân quyền | 150 | 2 bảng |
-| 9 Luồng dữ liệu & API | 150 | bảng timing |
-| 10 Data model, perf, security | 150 | 3 bảng gọn |
-| **Tổng** | **3.000** | cắt theo thứ tự §6 dưới |
+| Mục | Token | ≈ Từ | Ghi chú |
+|---|---|---|---|
+| 1 Tổng quan & phạm vi (gồm catch-all) | 540 | 215 | bullet + **15 dòng** catch-all (0.1–0.15) |
+| 2 Item màn hình | 630 | 250 | bảng, dồn item cùng khu vực |
+| 3 Event | 360 | 145 | bảng |
+| 4 Validation & message | 540 | 215 | message nguyên văn tốn token nhưng bắt buộc |
+| 5 Design/Wireframe | 90 | 35 | mô tả bố cục bằng chữ + link |
+| 6 Flow & quy tắc xử lý | 1.980 | 790 | **lớn nhất** — mỗi logic: step + bảng Case |
+| 7 Ràng buộc, bất thường, chưa chốt | 630 | 250 | 3–4 bảng ngắn |
+| 8 Xác thực & phân quyền | 270 | 110 | 2 bảng |
+| 9 Luồng dữ liệu & API | 270 | 110 | bảng timing |
+| 10 Data model, perf, security | 270 | 110 | 3 bảng gọn |
+| **Tổng** | **5.580** | **2.230** | sát đích 5.400 → cắt theo thứ tự §6 dưới |
 
-## 6. Thứ tự cắt khi quá từ
+Tổng đã sát đích, nên **mục nào vượt phải lấy chỗ từ mục khác**. Hai chi phí ẩn dễ làm tràn: dấu `|` của bảng là token thật (~6 token mỗi hàng 5 cột chỉ riêng dấu), và mục 6 viết bằng bảng 5 cột với đề nhiều luật đã đo được 2.235 từ ≈ 5.600 token — một mục ăn hết hạn mức cả spec. Với ≥40 dòng RTM, chọn dạng danh sách cho mục 6 ngay từ đầu (30 §5).
+
+## 6. Thứ tự cắt khi quá hạn mức
 
 Cắt: **10 → 9 → 5 → 3 → 2**. KHÔNG cắt: **1** (phạm vi + catch-all), **6** (flow & case), **7** (bất thường + chưa chốt), **4** (validation & message), **8** (phân quyền).
 
@@ -175,6 +177,6 @@ Chi tiết khi nào gọi / gửi gì / thất bại thì làm gì nằm ở **b
 
 ### 7.5 Ngân sách & thứ tự cắt
 
-Bốn sơ đồ trên tốn khoảng **180–220 từ** theo cách đếm `wc -w`. Chúng nằm trong ngân sách mục 5 (50), 6 (1.100), 9 (150) ở §5 — không xin thêm từ.
+Bốn sơ đồ trên tốn khoảng **450–550 token** (180–220 từ). Chúng nằm trong ngân sách mục 5 (90), 6 (1.980), 9 (270) ở §5 — không xin thêm.
 
-Khi quá 3.000 từ, cắt sơ đồ theo thứ tự **7.1 wireframe → 7.4 sơ đồ hệ thống → 7.3 sequence → 7.2 state machine**, mỗi lần cắt thay bằng 1–2 câu chữ. Bảng đi kèm **không bao giờ bị cắt** — bảng chở luật, sơ đồ chỉ chở trực quan.
+Khi quá hạn mức token, cắt sơ đồ theo thứ tự **7.1 wireframe → 7.4 sơ đồ hệ thống → 7.3 sequence → 7.2 state machine**, mỗi lần cắt thay bằng 1–2 câu chữ. Bảng đi kèm **không bao giờ bị cắt** — bảng chở luật, sơ đồ chỉ chở trực quan.
