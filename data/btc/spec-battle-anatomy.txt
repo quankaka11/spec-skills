@@ -1,0 +1,64 @@
+# Spec Battle Anatomy — tài liệu BTC gửi 11/09/2026
+# Nguồn: artifact claude.ai/code/artifact/810f4e82-a592-424f-b158-afd12263aac2
+# Đây là bản trích text nguyên văn, giữ làm bằng chứng đối chiếu.
+# Bản đã chưng cất để skill dùng: knowledge/33-cau-truc-spec-btc.md
+
+Spec Battle Anatomy 
+
+ Hackathon #2 · Specs Battle · Tài liệu chuẩn bị
+
+ Một bản spec cần mô tả những gì?
+
+ Basic design 基本設計 mục 1–5 · theo màn hình 
+ Detailed design 詳細設計 mục 6–9 · theo chức năng 
+ Technical spec 技術仕様 mục 10 · cho dev 
+
+ 1
+ Tổng quan & phạm vi 概要 
+ Tên hệ thống, tên màn hình / chức năng, trạng thái tài liệu. Chức năng này làm gì. Cái gì nằm trong và cái gì nằm ngoài phạm vi. 
+ Hình thức 4–5 dòng bullet Basic 
+
+ 2
+ Item trên màn hình 画面項目仕様 
+ Mọi thành phần người dùng thấy, chia theo khu vực: label, kiểu control (text, dropdown, button, list…), nhập hay chỉ hiển thị, bắt buộc hay không. Với mỗi item: giá trị mặc định, giới hạn độ dài hoặc khoảng giá trị, format, placeholder, điều kiện hiển thị / ẩn / disable , khác biệt login vs guest, text hiển thị nguyên văn.
+ Hình thức Bảng No · 項目名 · コントロール · I/O · 必須 · 備考 Basic 
+
+ 3
+ Event イベント仕様 
+ Mỗi thao tác trên màn hình gây ra điều gì: mở màn hình lấy dữ liệu gì từ đâu, bấm nút gọi API nào, đổi dropdown cập nhật gì, mở hay đóng section nào khác.
+ Hình thức Bảng No · Event · Trigger · Xử lý · Ghi chú Basic 
+
+ 4
+ Validation & message lỗi バリデーション仕様 
+ Từng rule kiểm tra input: bắt buộc, format, độ dài, khoảng giá trị, và rule nghiệp vụ (vượt tồn kho, hết hạn, trạng thái không hợp lệ). Rule chạy ở FE, BE hay cả hai. Message lỗi đúng từng chữ. 
+ Hình thức Bảng No · FE/BE · Item · Nội dung check · Message Basic 
+
+ 5
+ Design / Wireframe デザイン 
+ Bố cục màn hình, vị trí các item, các trạng thái chính (mặc định, lỗi, thành công). Link Figma hoặc ảnh mockup.
+ Hình thức Link hoặc ảnh Basic 
+
+ 6
+ Flow nghiệp vụ & quy tắc xử lý ビジネスロジック詳細 
+ Chia business logic thành từng đơn vị: một quy tắc hiển thị, một xử lý submit, một chuyển trạng thái, một mail… Với mỗi logic mô tả ba thứ. (1) Flow xử lý theo step: ai làm gì và hệ thống phản hồi gì ở mỗi bước. (2) Các case cần cover: case bình thường, case biên và case lỗi, với điều kiện có số, toán tử (> hay ≥), múi giờ, giá trị mặc định khi config trống, thứ tự ưu tiên khi nhiều case cùng đúng. (3) Kết quả mong đợi của từng case: hiển thị gì, nút ở trạng thái nào, lưu gì, gửi mail gì, message gì. Thiếu case nào thì Executor phải đoán ở đúng chỗ đó.
+ Hình thức Mỗi logic một mục con: bảng step + bảng Case · Điều kiện · Kết quả mong đợi. Sequence diagram cho flow end-to-end. Detailed 
+
+ 7
+ Ràng buộc, ca bất thường liên logic, điều chưa chốt 制約・イレギュラー・確認中 
+ Phần gom chung sau khi từng logic đã có case riêng. Ràng buộc kỹ thuật / nghiệp vụ và cách giảm nhẹ. Ca bất thường cắt ngang nhiều logic: dữ liệu đổi giữa lúc hiển thị và lúc submit, gửi trùng, mở link hai lần, mail fail sau khi đã lưu. Lỗi hệ thống chung: log, alert, message chung cho user. Điều đang chờ xác nhận kèm giả định hiện tại , gom một bảng riêng, không rải trong bài.
+ Hình thức 3–4 bảng ngắn Detailed 
+
+ 8
+ Xác thực & phân quyền 認証・認可 
+ Từng actor (member, guest, staff, admin) xác thực bằng gì và làm được gì, không được gì. Giữa các hệ thống: đường truyền nào xác thực bằng gì.
+ Hình thức 2 bảng Detailed 
+
+ 9
+ Luồng dữ liệu & API データ連携・API仕様 
+ Các hệ thống tham gia và quan hệ. Mỗi lần trao đổi: khi nào, từ đâu tới đâu, gửi hay nhận dữ liệu gì, field nào chỉ gửi trong điều kiện nào. Mỗi API: trigger, payload, response thành công / thất bại làm gì. Khi tích hợp thất bại: retry, message, log, alert, gửi lại tay.
+ Hình thức Sơ đồ hệ thống + bảng timing Detailed 
+
+ 10
+ Data model, performance, security 技術仕様 
+ Field lưu trữ: tên, ý nghĩa, bắt buộc, giới hạn, khi nào null, field do server tự tính. Mục tiêu tốc độ và giới hạn API, ghi rõ số nào là giả định. Bảo mật: mã hóa đường truyền, quản lý key và thông tin cá nhân, log và alert. Cuối cùng: tài liệu tham chiếu.
+ Hình thức 3 bảng + danh sách link Technical

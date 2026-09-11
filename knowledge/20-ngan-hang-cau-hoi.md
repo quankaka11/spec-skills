@@ -23,12 +23,14 @@ Tham số: **5 câu hỏi · mỗi lượt đúng 1 câu · 5.000 token cho cả
 
 **Quy tắc phụ:** mỗi câu trả lời khác mặc định ngành → ghi ⚠ ngay vào RTM (§5) và log (§6). Với 4 câu dữ liệu, số dòng ⚠ thu được thường chỉ 8–20 dòng — nhỏ hơn kit cũ giả định (111 dòng ở diễn tập 08/09). Phần còn lại của spec là giả định có xếp hạng, không phải lỗ hổng quy trình.
 
-## 2. Ngân hàng câu hỏi (104 câu, 14 nhóm) — hai công dụng mới
+## 2. Ngân hàng câu hỏi (158 câu, 20 nhóm N0–N19) — hai công dụng mới
 
 Chỉ 5 câu được gửi đi thật, nên ngân hàng này **không còn là danh sách để hỏi**. Nó có hai việc:
 
 1. **Nguyên liệu để gọt 5 câu ở §3.** Mỗi câu trong 5 câu gộp 8–15 ID của ngân hàng thành một bảng. Bảng ánh xạ ID → câu nào: cuối §3.
 2. **Danh sách phải-tự-điền.** Mọi ID không được câu nào trong 5 câu phủ tới là một ô spec vẫn phải có luật. Điền bằng **mặc định ngành** (§4 + 10 §6), gắn `[GIẢ ĐỊNH]`, xếp hạng rủi ro, và ứng viên rủi ro cao nhất đi vào câu 5. Không bỏ trống, không sáng tạo giá trị mới (30 §1b).
+
+> **N15–N19 (49 câu, thêm 11/09)** phục vụ bốn vùng hoàn toàn mới của cấu trúc spec BTC 10 mục (knowledge/33 §1): mục 2 item màn hình, mục 3 event, mục 4 validation & message lỗi, mục 9 API, mục 7 ràng buộc/bất thường/chưa chốt. Với hạn mức 5 câu, **phần lớn N15–N19 phải tự điền** — xem bảng phủ cuối §3 và khối §3b.
 
 Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng (chọn 1 hoặc liệt kê tên). Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
 
@@ -197,6 +199,61 @@ Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `kn
 - **N14-03** [P1·DS] Luật kênh POS vs luật online khác nhau: bên nào thắng?
 - **N14-04** [P1·ĐS] Cấu hình riêng theo SKU / nhóm khách có ghi đè mặc định toàn hệ thống không?
 
+### N15. Item trên màn hình (mục 2 BTC)
+
+- **N15-01** [P0·DS] Màn hình/chức năng cần đặc tả tên là gì? Liệt kê các khu vực trên màn hình, mỗi dòng ≤6 từ.
+- **N15-02** [P0·B] Bảng: mỗi item hiển thị | nhập hay chỉ xem | bắt buộc hay không.
+- **N15-03** [P0·B] Item nào có giá trị mặc định? Bảng "Item | Mặc định".
+- **N15-04** [P0·B] Giới hạn độ dài / khoảng giá trị từng ô nhập: bảng "Item | Min | Max | Đơn vị".
+- **N15-05** [P0·B] Item nào bị **ẩn / disable** và trong điều kiện nào? Bảng "Item | Ẩn hay disable | Điều kiện".
+- **N15-06** [P0·B] **Khác biệt giữa khách đăng nhập và guest** trên màn hình: bảng "Item | Login | Guest".
+- **N15-07** [P1·DS] Text hiển thị nguyên văn của các nút chính (giữ hàng, hủy, gia hạn)?
+- **N15-08** [P1·DS] Format hiển thị số lượng, tiền, thời gian còn lại (ví dụ mẫu 1 dòng)?
+- **N15-09** [P1·ĐS] Có hiển thị số tồn còn lại cho khách không? Nếu có, hiển thị số thật hay khoảng?
+- **N15-10** [P2·DS] Placeholder của các ô nhập là gì?
+
+### N16. Event màn hình (mục 3 BTC)
+
+- **N16-01** [P0·B] Khi **mở màn hình**, hệ thống lấy những dữ liệu gì, từ đâu? Bảng "Dữ liệu | Nguồn".
+- **N16-02** [P0·B] Mỗi nút bấm gọi xử lý gì? Bảng "Nút | Xử lý | Kết quả".
+- **N16-03** [P0·DS] Bấm nút giữ hàng **hai lần liên tiếp** (double-click): tạo mấy hold?
+- **N16-04** [P1·B] Đổi dropdown / đổi số lượng thì cập nhật lại gì trên màn hình?
+- **N16-05** [P1·ĐS] Màn hình có tự làm mới (auto refresh) tồn kho / đồng hồ đếm ngược không? Chu kỳ?
+- **N16-06** [P1·DS] Sau khi tạo hold thành công, màn hình chuyển đi đâu hay ở lại?
+- **N16-07** [P2·ĐS] Có xác nhận (popup) trước khi hủy hold không? Text nguyên văn?
+
+### N17. Validation & message lỗi (mục 4 BTC)
+
+- **N17-01** [P0·B] Bảng mọi rule kiểm tra: "Item | Nội dung check | Message hiển thị (nguyên văn)".
+- **N17-02** [P0·B] Rule nào chạy ở **FE**, rule nào ở **BE**, rule nào cả hai? Bảng "Rule | FE/BE/Cả hai".
+- **N17-03** [P0·DS] Message nguyên văn khi **vượt tồn khả dụng**?
+- **N17-04** [P0·DS] Message nguyên văn khi **hold đã hết hạn**?
+- **N17-05** [P0·DS] Message nguyên văn khi **trạng thái không hợp lệ** (gia hạn hold đã hủy…)?
+- **N17-06** [P1·DS] Message nguyên văn khi **thanh toán cọc thất bại**?
+- **N17-07** [P1·ĐS] Nhiều lỗi cùng lúc: hiện tất cả hay chỉ lỗi đầu tiên? Theo thứ tự nào?
+- **N17-08** [P1·DS] Lỗi hệ thống chung (API chết): message chung cho user là gì?
+- **N17-09** [P2·DS] Message hiển thị ở đâu: cạnh item, đầu trang, hay popup?
+
+### N18. Luồng dữ liệu & API (mục 9 BTC)
+
+- **N18-01** [P0·B] Các hệ thống tham gia và quan hệ: bảng "Hệ thống | Vai trò | Nhận/gửi gì".
+- **N18-02** [P0·B] Mỗi lần trao đổi dữ liệu: bảng "Khi nào | Từ → Tới | Dữ liệu | Đồng bộ hay bất đồng bộ".
+- **N18-03** [P0·DS] Khi gọi hệ thống ngoài **thất bại**: retry mấy lần, cách nhau bao lâu, rồi làm gì?
+- **N18-04** [P0·DS] Tồn kho lấy **real-time từ ERP/WMS** hay từ cache? Nếu cache, trễ bao lâu?
+- **N18-05** [P1·ĐS] Có gửi dữ liệu hold sang hệ thống khác không? Field nào chỉ gửi trong điều kiện nào?
+- **N18-06** [P1·DS] Khi mail/thông báo gửi thất bại **sau khi đã lưu hold**: xử lý thế nào?
+- **N18-07** [P1·DS] Có alert cho vận hành khi tích hợp lỗi không? Ngưỡng nào?
+- **N18-08** [P2·B] Field nào do server tự tính (không nhận từ client)?
+
+### N19. Ràng buộc & ca bất thường liên logic (mục 7 BTC)
+
+- **N19-01** [P0·DS] **Dữ liệu đổi giữa lúc hiển thị và lúc submit** (tồn/giá đổi sau khi khách mở màn hình): xử lý thế nào?
+- **N19-02** [P0·DS] **Gửi trùng** (submit 2 lần, mở link xác nhận 2 lần): kết quả là gì?
+- **N19-03** [P0·DS] Ràng buộc kỹ thuật/nghiệp vụ đã biết (giới hạn hệ thống, quy định công ty): liệt kê tên.
+- **N19-04** [P1·DS] Điều gì trong tính năng này **đang chờ xác nhận / chưa chốt**? Liệt kê tên.
+- **N19-05** [P1·DS] Mục tiêu tốc độ (thời gian phản hồi) và giới hạn số request có quy định không? Số cụ thể?
+- **N19-06** [P2·DS] Yêu cầu bảo mật/thông tin cá nhân riêng cho tính năng này?
+
 ## 3. Năm câu hỏi — bản soạn sẵn, copy-paste
 
 Ngân sách: **5.000 token** cho cả 5 câu (hỏi + trả lời). Kế hoạch dưới ước ~3.500 token, chừa ~1.500 cho câu trả lời dài hơn dự kiến. Gửi C1–C4 xong trước **10:20**; C5 gửi lúc **11:05**, sau khi có bản nháp spec.
@@ -274,8 +331,38 @@ Mỗi phát biểu **phải có con số hoặc trạng thái cụ thể** — "
 | N8 | 01, 03 | 02, 04, 05, 06 |
 | N9 | 01 | 02…11 |
 | N10–N14 | — | toàn nhóm |
+| N15 (item màn hình) | — | toàn nhóm; mục 2 viết bằng mặc định UI + brief, trừ 06 (guest) nếu đổi được một nửa câu — xem §3b |
+| N16 (event) | — | toàn nhóm; 03 (double-click) đã nằm trong C4 ca (1)/(2) qua luật 0.10 |
+| N17 (validation & message) | — | toàn nhóm. **Đây là hở lớn nhất của kế hoạch 5 câu** — xem §3b |
+| N18 (API) | — | toàn nhóm; 03/06 (thất bại phụ thuộc ngoài) đã được C4 phủ gián tiếp |
+| N19 (ràng buộc, bất thường) | — | 01, 02 nằm trong C4 ca (5) và ca (1)/(2); còn lại tự điền |
 
 Đây là bảng phải in ra và dán lên bàn: **~70% ngân hàng câu hỏi không được hỏi**. Mỗi ô ở cột phải là một luật vẫn phải viết, bằng mặc định ngành, có gắn `[GIẢ ĐỊNH]`, và là ứng viên cho C5 nếu rủi ro cao.
+## 3b. Hở mới sau tài liệu BTC 11/09 — quyết định trước 9:30
+
+Cấu trúc 10 mục thêm bốn vùng bắt buộc (mục 2, 3, 4, 9) mà kế hoạch C1–C5 ở §3 **không phủ**, vì C1–C5 được soạn khi template còn là 11 mục luật nghiệp vụ. Hai vùng trong đó là chỗ Executor đoán sai nhiều nhất (50 §1 loại #22 message, #23 guest):
+
+| Vùng | Tự điền được không | Rủi ro nếu tự điền |
+|---|---|---|
+| Mục 2 item, mục 3 event | **Được** — suy từ brief + mặc định UI; sai thì cũng chỉ sai hiển thị | Thấp–TB |
+| Mục 9 API | **Được** — C4 đã hỏi ca thất bại phụ thuộc ngoài, phần còn lại là hình thức | Thấp |
+| **Mục 4 message lỗi nguyên văn** (N17-01/03/04/05) | Không suy được — chuỗi nguyên văn là dữ kiện, không phải mặc định ngành | **Cao**: đối thủ bắn "hiện message gì" là loại đạn rẻ nhất của họ |
+| **Guest vs login** (N15-06) | Một phần — mặc định ngành là chặn guest hoặc rào định danh | TB–Cao |
+
+**Ba phương án, chọn một trước 9:30** (không có phương án nào miễn phí — hạn mức là 5 câu):
+
+1. **Giữ C1–C5 như §3.** Mục 4 điền message do đội tự viết. Theo 30 §1b-2, giá trị tự nghĩ ra là ca *duy nhất* tệ hơn im lặng — nhưng với message thì im lặng cũng mất điểm vì BTC bắt mục 4 phải có message nguyên văn. Chấp nhận hở; dồn phòng thủ vào catch-all và bảng Case.
+2. **Đổi nửa sau của C1** ("điều PHẢI ngăn") **thành bảng message** (N17-01 + N17-03/04/05 + N17-02). Mất nguyên liệu bảng Mục tiêu↔Luật (05 §2), phải suy "điều PHẢI ngăn" từ brief.
+3. **Cắt ca (7) và (8) của C4** (hai ca có mặc định ngành an toàn: FCFS theo thời điểm server; guest bị chặn) **và nối một nửa câu message** vào C4. Rẻ nhất về mất mát, nhưng C4 thành câu hai chủ đề — rủi ro AI trả lời hụt nửa sau (luật 4 §1).
+
+**Đề xuất: phương án 3.** Nửa câu dán được:
+
+```
+… (6) kiểm kê hạ tồn xuống dưới số đang giữ của một lượt giữ đã cọc; và hệ thống hiển thị message lỗi nguyên văn nào trong ba trường hợp: vượt tồn khả dụng, lượt giữ đã hết hạn, thao tác trên lượt giữ đã hủy?
+```
+
+Nếu chọn phương án 1, ghi ngay bốn dòng `G-xx` vào RTM cho N17-01/03/04/05 và xếp hạng rủi ro cao để chúng vào danh sách phát biểu C5.
+
 ## 4. Ba mươi mốt phát biểu Đúng/Sai (mặc định phổ biến e-commerce)
 
 Bảng này có **hai công dụng, cả hai đều quan trọng hơn trước**:

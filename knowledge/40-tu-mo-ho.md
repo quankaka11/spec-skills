@@ -63,7 +63,7 @@ Chạy nhóm 17–22 trên bản **nộp**, không phải bản nội bộ (nhó
 
 ## 3. Kiểm tra cấu trúc (ngoài từ ngữ)
 
-Mọi ví dụ trong file dùng quy ước [a,b) của knowledge/30-viet-spec.md §2 dòng 0.3; nếu spec khai báo quy ước khác, lint theo quy ước đã khai báo.
+Mọi ví dụ trong file dùng quy ước [a,b) của knowledge/30-viet-spec.md §2 (catch-all) dòng 0.3; nếu spec khai báo quy ước khác, lint theo quy ước đã khai báo.
 
 Mức: **Cao** = Executor gần chắc trả lời khác specs thật; **Trung** = lệch khi tình huống bắn đúng biên; **Thấp** = mất điểm thẩm mỹ/kháng nghị, hiếm bị TRÚNG.
 
@@ -95,18 +95,27 @@ Mức: **Cao** = Executor gần chắc trả lời khác specs thật; **Trung**
 | S25 | **Nghĩa vụ tiền chỉ có một mốc** | Câu về thu/hoàn/trừ tiền không tách "khởi tạo" khỏi "hoàn tất"; không có trường trạng thái hoàn tiền | Cao | Mẫu 32 §3.1 |
 | S26 | **Không có luật cho ca hoàn tiền thất bại** | Grep `hoàn` → không có nhánh `NẾU … thất bại` | Cao | Thêm nhánh + phương án 2; số ngày phải hỏi, không đoán |
 | S27 | **Coi việc giữ tài nguyên là chắc thành công** | Điều kiện dạng `ATP ≥ q` / `còn hàng` → tạo hold, không có nhánh ghi thất bại | Cao | 32 §3.2 luật 3; nguồn: giữ tồn không phải khóa cứng [IBM], compare-and-swap [Shopify] |
-| S28 | **Rào bảo vệ đặt sau khi đã khóa tài nguyên** | Đọc §7 luồng chính: thứ tự các bước — tài nguyên (tồn, giá, slot) bị khóa trước khi kiểm định danh / thu tiền / hạn mức | Cao khi brief có mục tiêu chống lạm dụng | Đảo thứ tự, hoặc hỏi mốc khóa tài nguyên (N0-03) |
+| S28 | **Rào bảo vệ đặt sau khi đã khóa tài nguyên** | Đọc bảng step của mục 6: thứ tự các bước — tài nguyên (tồn, giá, slot) bị khóa trước khi kiểm định danh / thu tiền / hạn mức | Cao khi brief có mục tiêu chống lạm dụng | Đảo thứ tự, hoặc hỏi mốc khóa tài nguyên (N0-03) |
 | S29 | **Phạm vi NGOÀI tự đặt rộng hơn brief** | Từng dòng NGOÀI phạm vi: brief có nhắc nghiệp vụ đó không? | Cao | Nghiệp vụ brief nhắc tường minh không được tự đẩy ra ngoài — 0.10 sẽ trả lời "không thuộc tài liệu này" cho việc brief có nói. Chốt danh sách NGOÀI bằng N1-02, không tự đặt |
 | S30 | **Bản nộp chứa câu nói về chính nó** | Nhóm lint 22 | Thấp (nhưng luôn cắt) | Chuyển sang `spec.md` nội bộ / `review.md` |
+| S31 | **Thiếu mục bắt buộc** (cấu trúc BTC 10 mục) | Đối chiếu mục lục với knowledge/33 §1: thiếu mục nào trong 1–10 | Cao | Mục vắng = cả vùng nghiệp vụ bỏ trống; thêm mục, tối thiểu một bảng |
+| S32 | **Message lỗi không nguyên văn** (mục 4) | Mục 4 mô tả "hiện thông báo lỗi" / "báo lỗi phù hợp" mà không có chuỗi trong ngoặc kép | Cao | "báo lỗi" → `"Số lượng vượt tồn khả dụng (còn {n})."` — Executor sẽ bị hỏi message gì |
+| S33 | **Rule không ghi FE/BE** (mục 4) | Bảng validation thiếu cột FE/BE hoặc ô trống | Trung | Ghi rõ FE / BE / Cả hai từng rule |
+| S34 | **Bảng Case thiếu loại case** (mục 6) | Mỗi logic: đếm case bình thường / biên / lỗi — thiếu loại nào | Cao | Thêm case biên (chạm đúng mốc) và case lỗi; BTC: "thiếu case nào thì Executor phải đoán ở đúng chỗ đó" |
+| S35 | **Bảng Case thiếu 5 gạch bắt buộc** (mục 6) | Mỗi bảng Case kiểm: có số? có toán tử `>`/`≥`? có múi giờ? có giá trị mặc định khi config trống? có thứ tự ưu tiên khi nhiều case cùng đúng? | Cao | Bổ sung gạch thiếu; ưu tiên "toán tử" và "ưu tiên khi nhiều case cùng đúng" |
+| S36 | **Không phân biệt login vs guest** (mục 2, 8) | Mục 2 thiếu cột guest; mục 8 thiếu dòng Guest | Cao | Thêm cột/dòng Guest — vùng Executor đoán sai nhiều nhất |
+| S37 | **Điều chưa chốt rải rác** (mục 7.4) | `[GIẢ ĐỊNH]`, "TBD", "đang xác nhận" nằm rải trong bài mà không có bảng gom ở mục 7.4 | Trung | Gom một bảng riêng mục 7.4 kèm giả định hiện tại — BTC yêu cầu "không rải trong bài" |
+| S38 | **Sơ đồ thay bảng** | Có khối ```mermaid `stateDiagram-v2` nhưng KHÔNG có bảng state × event; hoặc sơ đồ hệ thống thay cho bảng timing | Cao | Sơ đồ chỉ vẽ chuyển hợp lệ → mọi cặp (trạng thái × sự kiện) không vẽ đều là chỗ Executor đoán. Giữ cả hai; hết chỗ thì bỏ sơ đồ, giữ bảng (knowledge/33 §7.2) |
+| S39 | **Sơ đồ Mermaid không có phần chữ** | Khối ```mermaid không kèm 1–2 câu tóm tắt ngay dưới; hoặc nhãn tiếng Việt có dấu không bọc ngoặc kép | Trung | Render lỗi là mất trắng nội dung sơ đồ — luôn kèm câu chữ; bọc nhãn `A["Khách đăng nhập"]` |
 
 ## 4. Định dạng báo cáo lint
 
 Một file cho spec mình (11:45), một file cho mỗi spec đối thủ (13:00). Sắp theo Mức giảm dần.
 
-| Vị trí (mục/dòng) | Trích | Loại (mục 1–3) | Mức | Viết lại đề xuất | Nếu spec đối thủ: tình huống bắn |
+| Vị trí (mục/dòng) | Trích | Loại (§1–§3 file này) | Mức | Viết lại đề xuất | Nếu spec đối thủ: tình huống bắn |
 |---|---|---|---|---|---|
-| §3.2 / d.41 | "Hold có hiệu lực đến hết ngày." | 10 deixis + S2 + S3 | Cao | "Hết hạn tại T0 + 120 phút UTC+7, khoảng [T0, T0 + 120′): giây 7200 đã hết" | "Khách tạo hold 23:50; 00:05 hôm sau khách bấm thanh toán, hold còn hiệu lực không?" |
-| §4 / bảng trạng thái | Ô EXPIRED × "khách bấm gia hạn" trống | S13 + S17 | Cao | "Từ chối, lỗi E-03, không tạo hold mới" | "Hold hết hạn lúc 12:00:00; 12:00:01 khách bấm gia hạn. Gia hạn thành công hay bị từ chối?" |
+| mục 6 / d.41 | "Hold có hiệu lực đến hết ngày." | 10 deixis + S2 + S3 | Cao | "Hết hạn tại T0 + 120 phút UTC+7, khoảng [T0, T0 + 120′): giây 7200 đã hết" | "Khách tạo hold 23:50; 00:05 hôm sau khách bấm thanh toán, hold còn hiệu lực không?" |
+| mục 6.3 / bảng trạng thái | Ô EXPIRED × "khách bấm gia hạn" trống | S13 + S17 | Cao | "Từ chối, lỗi E-03, không tạo hold mới" | "Hold hết hạn lúc 12:00:00; 12:00:01 khách bấm gia hạn. Gia hạn thành công hay bị từ chối?" |
 
 Chuyển hit → tình huống bắn (vai CÔNG):
 1. Chỉ bắn hit trong core flow (tạo / gia hạn / hết hạn / hủy / chuyển đơn / hạn mức / tồn kho) — tránh VÔ HIỆU [HD §2.1 ④].
@@ -118,12 +127,14 @@ Chuyển hit → tình huống bắn (vai CÔNG):
 
 Sửa từ trên xuống; hết giờ thì dừng.
 
-1. **Ô trống bảng trạng thái / ma trận chuyển (S13, S17)** — đối thủ đọc bảng là thấy lỗ.
+0. **Thiếu hẳn một mục trong 10 mục BTC (S31)** — cả vùng trống, đối thủ bắn thẳng.
+1. **Ô trống bảng trạng thái / ma trận chuyển / bảng Case (S13, S17, S34, S35)** — đối thủ đọc bảng là thấy lỗ.
 2. **Câu ⚠ chưa có BR (RTM thiếu)** [HD §2.4] — TRÚNG gần chắc chắn.
 2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **đưa vào câu C5** dưới dạng phát biểu Đúng/Sai (20 §3). Hết câu hỏi rồi thì viết luật bao quát an toàn hai chiều (32 §3.3), hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]`.
 2c. **Mốc "hoàn tất" hứa hộ bên ngoài (S25, nhóm 17)** — mọi tình huống hoàn tiền của đối thủ đều bắn trúng dòng này.
 2d. **Hạn mức trang trí (S28, nhóm 18)** — một câu hỏi "bot dùng email mới thì sao" là spec hoặc im lặng hoặc trả lời phi lý.
-2e. **Kịch bản suy biến có tiền dính vào còn hở (S24, S26, S27)** — bốn luật §0 ở 32 §3.2 phủ 8/12 ca với ~90 từ; đây là tỷ lệ chắn / từ tốt nhất trong toàn bộ file này.
+2e. **Kịch bản suy biến có tiền dính vào còn hở (S24, S26, S27)** — bốn luật catch-all ở 32 §3.2 phủ 8/12 ca với ~90 từ; đây là tỷ lệ chắn / từ tốt nhất trong toàn bộ file này.
+2f. **Message lỗi không nguyên văn (S32); không phân biệt guest (S36)** — hai vùng Executor đoán sai nhiều nhất ở cấu trúc 10 mục.
 3. **Tham chiếu ra ngoài / trực giác ngầm (S12, nhóm 6)** — Executor đoán theo prior.
 4. **Số không đơn vị, khoảng không biên, giờ không timezone (S1–S3)** — "đúng 120 phút", "23:59" là mẫu bắn phổ biến nhất.
 5. **Thiếu luật bao quát cuối mục (S20)** — 1 câu chặn cả nhóm tình huống.

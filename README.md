@@ -20,19 +20,20 @@ Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Bat
 
 Bảng đầy đủ + cách đo token + 7 ô còn hở: [`knowledge/00-luat-choi.md`](knowledge/00-luat-choi.md) §A.
 
-**Ba tham số đổi cả chiến thuật, không chỉ đổi con số:**
-1. **5 câu hỏi, không memory** — question bank 104 câu không còn là danh sách để hỏi; nó là nguồn **mặc định ngành để tự điền** cho ~70% spec (`knowledge/30` §1b) và kho phát biểu cho câu restate.
+**Bốn thay đổi đổi cả chiến thuật, không chỉ đổi con số:**
+1. **5 câu hỏi, không memory** — question bank 158 câu không còn là danh sách để hỏi; nó là nguồn **mặc định ngành để tự điền** cho ~70% spec (`knowledge/30` §1b) và kho phát biểu cho câu restate.
 2. **Công +2 / thủ +1** — trần điểm công 30, trần điểm thủ 15. Cùng một giờ bỏ vào buổi chiều sinh điểm gấp đôi; lời khuyên cũ "cạn giờ thì ưu tiên phòng thủ" đã bị sửa (`knowledge/00` §D1).
 3. **Kháng nghị chỉ cho ca VÔ HIỆU** — rủi ro vai THỦ không có đường lùi, rủi ro vai CÔNG cứu được một phần. Bằng chứng phạm vi phải thu xong lúc 14:30, không phải 16:00.
+4. **Cấu trúc spec = 10 mục BTC** (tài liệu "Spec Battle Anatomy" 11/09) — template 11 mục luật-nghiệp-vụ không còn là cấu trúc nộp. Bốn vùng hoàn toàn mới (item màn hình, event, validation & message lỗi nguyên văn, API) mà kế hoạch 5 câu gần như không phủ được: xem `knowledge/20` §3b để chọn phương án trước 9:30.
 
 ## Cấu trúc thư mục
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `knowledge/00…50-*.md` | 9 file tri thức chưng cất (luật chơi & tham số, hiểu bài toán, domain, 5 câu hỏi + ngân hàng, viết spec, bảng quyết định, khả thi & vận hành, từ mơ hồ, tấn công) — skill đọc trực tiếp |
+| `knowledge/00…50-*.md` | 10 file tri thức chưng cất (luật chơi & tham số, hiểu bài toán, domain, 5 câu hỏi + ngân hàng, viết spec, bảng quyết định, khả thi & vận hành, **cấu trúc spec BTC 10 mục**, từ mơ hồ, tấn công) — skill đọc trực tiếp |
 | `.claude/skills/<tên>/SKILL.md` | 7 skill: `frame`, `elicit`, `spec-write`, `spec-review`, `attack`, `appeal`, `drill` |
 | `.claude/agents/{executor,customer}.md` | 2 agent giả lập, mù bối cảnh thật |
-| `data/` | 16 PDF nguồn (BABOK, ISTQB, NASA SE Handbook, Volere, DMN, Shopify/IBM/Oracle inventory…) |
+| `data/btc/` | Tài liệu BTC gửi, bản trích nguyên văn (đối chiếu khi tranh luận). 16 PDF nguồn đã chưng cất hết vào `knowledge/` và bỏ khỏi repo — xem PROGRESS 11/09 |
 | `hackathon_descriptions.md` | Tài liệu nền hợp nhất (số liệu tiền-09/09; tham số hiện hành ở `knowledge/00` §A) |
 | `battle/` | Tạo khi vào thi thật: brief, log, RTM, spec, test |
 | `drill/` | Fixture & kết quả diễn tập |
@@ -71,6 +72,10 @@ Mỗi câu đi qua **cổng 5 kiểm tra** trước khi in ra: đúng một dấ
                         # in khối "→ C5": 10 phát biểu Đúng/Sai đã viết sẵn
 ```
 
+Spec theo **cấu trúc 10 mục BTC** (tài liệu "Spec Battle Anatomy", 11/09): `1` Tổng quan & phạm vi · `2` Item màn hình · `3` Event · `4` Validation & message lỗi · `5` Wireframe · `6` Flow & quy tắc xử lý · `7` Ràng buộc/bất thường/chưa chốt · `8` Xác thực & phân quyền · `9` Luồng dữ liệu & API · `10` Data model, perf, security. Chi tiết: [`knowledge/33-cau-truc-spec-btc.md`](knowledge/33-cau-truc-spec-btc.md).
+
+Sơ đồ vẽ bằng **Mermaid** (không có Figma trong phòng thi): `block-beta` wireframe · `stateDiagram-v2` state machine · `sequenceDiagram` flow end-to-end · `flowchart LR` sơ đồ hệ thống. Cú pháp mẫu ở [`knowledge/33` §7](knowledge/33-cau-truc-spec-btc.md). **Sơ đồ không thay bảng** — sơ đồ chỉ vẽ chuyển hợp lệ, ô `Từ chối 0.5`/`KHL` chỉ có trong bảng; hết chỗ thì bỏ sơ đồ, giữ bảng.
+
 ### 11:05–11:30 — Câu hỏi cuối, rồi vá
 
 ```bash
@@ -95,7 +100,7 @@ Ba loại phát hiện: `SỬA` (áp được ngay) · `HỎI` (chỉ khi còn c
 ```bash
 /attack cheo A.md B.md C.md      # 13:00 — BẢNG ĐỒNG THUẬN CHÉO 3 SPEC, chạy MỘT LẦN
                                  # → hai spec chỏi nhau · một spec im lặng (#21) · cả ba im lặng
-/attack battle/doi-thu/B.md B    # rồi soi từng spec: cổng F bằng grep, 21 loại lỗ hổng,
+/attack battle/doi-thu/B.md B    # rồi soi từng spec: cổng F bằng grep, 24 loại lỗ hổng,
                                  # gói bằng chứng phạm vi 3 mức, điểm kỳ vọng EV = 2·P(TRÚNG) − P(VÔ HIỆU)
 ```
 

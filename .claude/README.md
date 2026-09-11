@@ -10,7 +10,7 @@ Bộ công cụ dùng chung của đội cho HBLAB AI Hackathon #02 (12/09/2026)
 
 | Lớp | Ở đâu | Vai trò |
 |---|---|---|
-| Tri thức | `knowledge/00…50-*.md` | 9 file chưng cất từ mô tả cuộc thi + 16 PDF (ISTQB, DMN, NASA, Volere, Berry ambiguity, BABOK, PMI, HTSM, Shopify/IBM/Oracle inventory) + ISO/IEC/IEEE 29148 và tài liệu vận hành cổng thanh toán. Skill chỉ dẫn "đọc file X mục Y", không chép lại. |
+| Tri thức | `knowledge/00…50-*.md` | **10 file** chưng cất từ mô tả cuộc thi + tài liệu BTC + 16 PDF (ISTQB, DMN, NASA, Volere, Berry ambiguity, BABOK, PMI, HTSM, Shopify/IBM/Oracle inventory) + ISO/IEC/IEEE 29148 và tài liệu vận hành cổng thanh toán. PDF nguồn đã bỏ khỏi repo sau khi chưng cất (xem PROGRESS 11/09). Skill chỉ dẫn "đọc file X mục Y", không chép lại. **`33-cau-truc-spec-btc.md` = cấu trúc spec 10 mục BTC bắt buộc (11/09)** — đọc trước `30`. |
 | Skills | `.claude/skills/<tên>/SKILL.md` | Quy trình theo từng khoảnh khắc ngày thi. Gõ `/<tên>`. |
 | Agents | `.claude/agents/executor.md`, `customer.md` | Hai tác nhân giả lập của BTC, chạy trong context riêng nên **mù bối cảnh thật**. |
 
@@ -18,8 +18,9 @@ Hai trục kiểm chất lượng, chạy song song:
 
 | Trục | Kiểm gì | File | Cổng |
 |---|---|---|---|
-| **Hình thức** | mơ hồ, ô trống, truy vết, biên, token | 40, 31, 20 §5 | lint 22 nhóm, S1–S30, cổng chất lượng 1–11 |
-| **Nội dung** | hiểu bài toán, khả thi, vận hành, phục vụ mục tiêu, chịu được lạm dụng | **05**, **32** | cổng F (8 kiểm tra), bảng Mục tiêu↔Luật, 12 ca suy biến, cổng chất lượng 12–16 |
+| **Hình thức** | mơ hồ, ô trống, truy vết, biên, token | 40, 31, 20 §5 | lint 22 nhóm, S1–S39, cổng chất lượng 1–17 |
+| **Nội dung** | hiểu bài toán, khả thi, vận hành, phục vụ mục tiêu, chịu được lạm dụng | **05**, **32** | cổng F (8 kiểm tra), bảng Mục tiêu↔Luật, 12 ca suy biến, cổng chất lượng 18–23 |
+| **Cấu trúc BTC** | đủ 10 mục, message nguyên văn, guest, bảng Case đủ 3 loại + 5 gạch | **33**, 40 §3 | B0 của `/spec-review`, S31–S39, cổng chất lượng 1–12 |
 
 Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó đạt **toàn bộ** trục hình thức (0 hit lint Cao, 36/36 ô bảng, 15/15 eval "ĐỦ") mà vẫn có 7 lỗi nội dung mức Cao — 3 trong đó phá thẳng mục tiêu brief nêu. Chi tiết: `knowledge/32` §7.
 
@@ -40,6 +41,14 @@ Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó �
 | 10–11/09 | `/drill <tên> [tính-năng] [tự-động]` | — | `drill/<tên>/` trọn vòng + `ket-qua.md` (8 chỉ số) |
 
 Chuẩn bị `battle/`: tạo thư mục, dán đề bài vào `battle/brief.md`. Các file còn lại skill tự tạo.
+
+## Cấu trúc spec BTC yêu cầu (cập nhật 11/09)
+
+Spec nộp phải theo **10 mục** kiểu thiết kế Nhật — Basic design 基本設計 (mục 1–5, theo màn hình) · Detailed design 詳細設計 (mục 6–9, theo chức năng) · Technical spec 技術仕様 (mục 10):
+
+`1` Tổng quan & phạm vi · `2` Item trên màn hình · `3` Event · `4` Validation & message lỗi · `5` Design/Wireframe · `6` Flow nghiệp vụ & quy tắc xử lý · `7` Ràng buộc, ca bất thường liên logic, điều chưa chốt · `8` Xác thực & phân quyền · `9` Luồng dữ liệu & API · `10` Data model, performance, security
+
+Chi tiết nội dung + hình thức bảng từng mục: `knowledge/33-cau-truc-spec-btc.md`. Ba điểm dễ mất điểm nhất: **mục 4 phải ghi message lỗi nguyên văn**, **mục 2 và 8 phải phân biệt login vs guest**, **mục 6 mỗi logic phải có case bình thường + biên + lỗi kèm 5 gạch** (số · toán tử `>`/`≥` · múi giờ · default khi config trống · thứ tự ưu tiên khi nhiều case cùng đúng).
 
 ## Năm quy tắc cứng của kit
 
@@ -67,4 +76,4 @@ Nếu BTC **không cho dùng AI trong phòng thi**: kit vẫn dùng để diễn
 ## Tùy chỉnh
 
 - Model Executor của BTC là **thông tin bảo mật, BTC không công bố** (00 §H câu 7) — nên giả lập bảo toàn là lựa chọn duy nhất đúng: `/spec-review` khối D luôn gọi reader 2 bằng `model: haiku`. Muốn khắt khe hơn nữa: đổi `model: inherit` → model yếu hơn trong `.claude/agents/executor.md`.
-- `drill/selftest/` là bộ fixture sẵn (specs thật giả lập có 8+ luật phản trực giác, spec lỗi có ≥22 lỗi cài) — dùng lại để luyện /attack và /spec-review.
+- Fixture luyện tập: chạy `/drill <tên>` để sinh mới theo cấu trúc 10 mục. (Bộ self-test 05/09 đã bỏ — dựng theo template 11 mục cũ.)

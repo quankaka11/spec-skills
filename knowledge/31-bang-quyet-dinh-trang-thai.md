@@ -1,4 +1,4 @@
-*Dùng cho người viết §6 (decision table cho luật ≥ 2 điều kiện: TTL/giá/quyền) và §5 (state table vòng đời hold) của template knowledge/30 §1, buổi sáng 10:30–11:30; và cho người soi spec đối thủ 13:00–14:00 tìm ô trống.*
+*Dùng cho người viết mục 6 của spec: decision table cho logic ≥ 2 điều kiện (TTL/giá/quyền) và bảng state × event ở logic 6.3 (vòng đời hold) của template knowledge/30 §1, buổi sáng 10:30–11:30; và cho người soi spec đối thủ 13:00–14:00 tìm ô trống.*
 
 # 31. Decision table & State transition table — dựng và chứng minh không ô trống
 
@@ -9,7 +9,7 @@
 | Input (biến điều kiện: loại khách, loại hàng, kênh…) | Mỗi input một cột; khai báo **danh sách giá trị cho phép** dưới tên cột [DMN 8.2.4] |
 | Input entry / Output entry | Giá trị rời (`VIP`), khoảng (`[0,10)`), `-` / Số + đơn vị (`120 phút`) hoặc mã luật (`Từ chối theo BR-11`) |
 | Rule (một hàng = một tổ hợp input → output) | Đánh số R1, R2… để kháng nghị trích được |
-| Hit policy (xử lý khi >1 rule khớp) | Một chữ cái ở ô góc bảng + một câu giải nghĩa tại §0 |
+| Hit policy (xử lý khi >1 rule khớp) | Một chữ cái ở ô góc bảng + một câu giải nghĩa tại catch-all mục 1.x |
 | `-` (any) | **Chồng lấn với mọi entry** cùng cột [DMN §8.1] → nguồn overlap số 1 |
 
 Định nghĩa để soi [DMN §8.1, 8.2.4]:
@@ -27,7 +27,7 @@
 
 A, O, R: không dùng trong spec thi (kết quả nhiều hàng/undefined = lỗ hổng #5/#8).
 
-Mẫu câu cho §0:
+Mẫu câu cho catch-all mục 1.x:
 > "0.x Mọi bảng quyết định dùng hit policy **U** trừ khi ô góc ghi chữ khác. Bảng **P**: nhiều hàng khớp → lấy output đứng **trước** trong danh sách ưu tiên dưới bảng. `-` = mọi giá trị. `[a,b)`: gồm a, không gồm b."
 
 ## 2. Chứng minh bảng đầy đủ và không chồng lấn
@@ -80,13 +80,13 @@ Kèm mốc bắt đầu TTL (server tạo hold) và hiệu lực `[tạo, tạo+
 
 Luật viết [HD §3.3, §4.7 mục 7]: hàng = trạng thái, cột = event, **mọi ô phải có giá trị**: `→ ĐÍCH + mã hiệu ứng`, hoặc **`KHL`** (từ chối theo §0.5, giữ trạng thái, ghi log). ⚠ ISTQB để trống ô KHL [ISTQB 4.2.4]; spec thi **không được** — Executor tự điền theo lẽ thường [HD §2.2].
 
-Mã hiệu ứng (khai báo một lần ở đầu bảng §5):
+Mã hiệu ứng (khai báo một lần ở đầu bảng state × event trong logic 6.3):
 
 | Nhóm | Mã |
 |---|---|
 | Tồn kho | K0 không đổi · K− *available* → *reserved* · K+ *reserved* → *available* · K→ *reserved* → *committed* |
-| Tiền | T0 không thu/hoàn · T− thu cọc (BR cọc ở §6) · T+ hoàn 100% · Tp hoàn sau phạt (BR phí hủy ở §6) · T→ cọc trừ vào đơn |
-| Thông báo | N0 không · NC khách · NA admin/CSKH (kênh §9) |
+| Tiền | T0 không thu/hoàn · T− thu cọc (BR cọc trong mục 6) · T+ hoàn 100% · Tp hoàn sau phạt (BR phí hủy trong mục 6) · T→ cọc trừ vào đơn |
+| Thông báo | N0 không · NC khách · NA admin/CSKH (kênh ở bảng thông báo 6.9) |
 | Log | L ghi audit log (§0.7), kể cả ô KHL |
 
 **ST-1 vòng đời Hold** (tập trạng thái ứng viên — xác nhận với AI Khách hàng trước khi điền)
@@ -98,11 +98,11 @@ Giá trị K/T/N trong bảng là **MINH HỌA**; trước khi chép vào spec t
 | **(chưa có)** | →PENDING K− T0 NC L | KHL | KHL | KHL | KHL | KHL | KHL | KHL | KHL |
 | **PENDING** | KHL (trùng key → kết quả cũ §0.10) | →ACTIVE K0 T− NC L | KHL | →CANCELLED K+ T0 NC L | →CANCELLED K+ T0 NC+NA L | →EXPIRED K+ T0 NC L | KHL | →CANCELLED K+ T0 NC L | →CANCELLED K+ T0 NC+NA L |
 | **ACTIVE** | KHL | KHL | [lần < 2] →ACTIVE TTL mới K0 T0 NC L; [lần ≥ 2] KHL | →CANCELLED K+ T? NC L | →CANCELLED K+ T? NC+NA L | →EXPIRED K+ T? NC L | →FULFILLED K→ T→ NC L | KHL | →CANCELLED K+ T? NC+NA L |
-| **FULFILLED** | KHL | KHL | KHL | KHL (hủy đơn ngoài §1) | KHL | KHL | KHL | KHL | KHL |
+| **FULFILLED** | KHL | KHL | KHL | KHL (hủy đơn ngoài phạm vi mục 1) | KHL | KHL | KHL | KHL | KHL |
 | **EXPIRED** | KHL (hold mới = E1) | KHL | KHL | KHL | KHL | KHL | KHL | KHL | KHL |
 | **CANCELLED** | KHL (hold mới = E1) | KHL | KHL | KHL | KHL | KHL | KHL | KHL | KHL |
 
-Kiểm: 6 × 9 = 54 ô, điền đủ 54. Mỗi ô hợp lệ trả lời đủ 6 câu [HD §3.3]: ai kích hoạt (event + bảng quyền §3), guard trong `[ ]`, K, T, N, L. Event 2 đích không guard = lỗ hổng #5.
+Kiểm: 6 × 9 = 54 ô, điền đủ 54. Mỗi ô hợp lệ trả lời đủ 6 câu [HD §3.3]: ai kích hoạt (event + bảng quyền mục 8), guard trong `[ ]`, K, T, N, L. Event 2 đích không guard = lỗ hổng #5.
 
 ## 4. Mức phủ khi tự kiểm và khi soi đối thủ [ISTQB 4.2.4]
 
@@ -110,7 +110,7 @@ Kiểm: 6 × 9 = 54 ô, điền đủ 54. Mỗi ô hợp lệ trả lời đủ 
 |---|---|
 | All-states | Yếu nhất; soi đối thủ **đủ tập trạng thái** chưa (gộp EXPIRED với CANCELLED → bắn "hết hạn có bị phạt như tự hủy?") |
 | Valid transitions (0-switch) | Tự kiểm: mỗi ô hợp lệ ST-1 có ≥1 dòng Gherkin/BR |
-| All transitions (gồm mọi chuyển KHL, mỗi test 1 chuyển KHL) | Tự kiểm: mỗi ô KHL suy ra được từ §0.5 |
+| All transitions (gồm mọi chuyển KHL, mỗi test 1 chuyển KHL) | Tự kiểm: mỗi ô KHL suy ra được từ catch-all 0.5 |
 | 1-switch (chuỗi 2 chuyển) | Tình huống "vừa X thì Y": timeout ngay sau extend; checkout cùng giây timeout (#2, #7) |
 
 Chuyển KHL là nguồn test **rẻ nhất**: ST-1 có 54 − 13 = 41 ô KHL, spec happy path im lặng về hầu hết. Ưu tiên ô KHL mà lẽ thường nói **"được"** (hủy hold FULFILLED, extend hold PENDING, admin cancel hold EXPIRED) — đáp án chuẩn có thể là từ chối [HD §2.3].

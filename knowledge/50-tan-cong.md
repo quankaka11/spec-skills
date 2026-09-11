@@ -6,7 +6,9 @@
 
 Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn), `<%CỌC>`, `<TZ>` = số lấy từ AI Khách hàng buổi sáng; điền số thật trước khi nộp. Dùng thời điểm tuyệt đối (10:00:00) thay vì "sau TTL".
 
-## 1. Bảng 21 loại lỗ hổng (#16–#20 thêm 09/09; #21 thêm sau họp BTC)
+## 1. Bảng 24 loại lỗ hổng (#16–#20 thêm 09/09; #21 sau họp BTC; #22–#24 từ cấu trúc 10 mục 11/09)
+
+> Loại #22–#24 sinh ra từ cấu trúc spec BTC 10 mục (knowledge/33). Đội nào viết spec theo lối luật nghiệp vụ thuần (không có mục 2/3/4) sẽ hở toàn bộ ba loại này.
 
 | # | Tên | Dấu hiệu trong spec (Ctrl+F / thiếu mục) | Probe §5 | Tỷ lệ TRÚNG | Rủi ro VÔ HIỆU |
 |---|---|---|---|---|---|
@@ -35,6 +37,11 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 **Vì sao #21 rẻ nhất.** Nó không cần biết specs thật: chỉ cần ba file markdown tải về và một bảng đối chiếu. Hai đội khác viết luật cho nghiệp vụ X là bằng chứng gián tiếp rằng X thuộc phạm vi (họ đã hỏi, hoặc brief có nói), nên rủi ro VÔ HIỆU thấp; còn đội im lặng thì Executor phải đoán. Cẩn trọng duy nhất: **cả 3 im lặng không phải bằng chứng ngoài phạm vi** — đó là điểm mù chung, muốn bắn thì phải có brief hoặc log đỡ.
 
 **Vì sao #16–#20 là đạn tốt nhất năm nay.** Chúng nhắm vào *nội dung* chứ không vào *cách viết*, nên (a) đội nào cũng hở — checklist phổ biến chỉ dạy chống mơ hồ; (b) rủi ro VÔ HIỆU thấp vì đều nằm trong core flow tiền/tồn; (c) đáp án chuẩn dễ có trong log nếu buổi sáng đã hỏi nhóm N0 (20 §2). Đo trên `battle/spec.nop.md` — một spec đạt mọi cổng hình thức: 0 hit mức Cao ở loại #3/#4/#5/#6, nhưng **7 điểm bắn** ở #16–#20 (knowledge/32 §7).
+| 22 | **Message lỗi không nguyên văn** (mục 4 BTC) | Mục 4 vắng, hoặc chỉ ghi "hiển thị thông báo lỗi" / "báo lỗi phù hợp" — không có chuỗi trong ngoặc kép | P53 | **Rất cao** | Thấp |
+| 23 | **Guest vs login không phân biệt** (mục 2, 8 BTC) | Mục 2 không có cột guest; mục 8 không có dòng Guest; Ctrl+F "guest / chưa đăng nhập" = 0 hit | P54 | **Rất cao** | Thấp |
+| 24 | **Trạng thái UI không xác định** (mục 2, 3 BTC) | Không nói nút disable/ẩn khi nào; không nói sau thao tác màn hình hiển thị gì; bảng Case thiếu cột "hiển thị / trạng thái nút" | P55 | Cao | TB |
+
+**Vì sao #22–#24 rẻ.** Ba loại này chỉ cần đọc mục lục và hai bảng của spec đối thủ — không cần biết specs thật, không cần suy luận nghiệp vụ. Mục 4 vắng message nguyên văn là hở gần như chắc chắn ở các đội còn viết theo template luật nghiệp vụ thuần.
 
 ## 2. Quy tắc viết tình huống test
 
@@ -64,11 +71,13 @@ Mẫu câu chuẩn:
 |---|---|---|
 | 1 | #15 / #1 / **#21** — khoảng trống lớn nhất | Danh sách ⚠ × sweep §4 × **bảng đồng thuận chéo §4b** |
 | 2 | **#16 / #18 / #19 — khả thi, cưỡng chế, thất bại phụ thuộc ngoài** | Cổng F trên spec đối thủ (32 §1); P43–P51 |
-| 3 | #2 / #12 — ngoại lệ, lỗi hệ thống, rollback | Probe N12, N5; P39 / P41 / P42 |
-| 4 | #4 / #11 — biên, đơn vị, múi giờ | Probe BVA, Time |
+| 3 | **#22 / #23 / #24 — message nguyên văn, guest vs login, trạng thái UI** (mới 11/09) | Mục 4 và mục 2/8 của spec đối thủ; P53–P55b |
+| 4 | #4 / #11 / #2 / #12 — biên, đơn vị, múi giờ, ngoại lệ & rollback | Probe BVA, Time, N12, N5; P39 / P41 / P42 |
 | 5 | #7 / #8 / #17 — đồng thời, ưu tiên xung đột, tự đánh bại mục tiêu | Probe N4, N14; P45 / P46 |
 
 Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng actor, còn cổng F thì hầu như không đội nào chạy. Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đề. Slot đối thủ quá tốt → thay bằng #15, #19 hoặc #21 thứ hai ở chủ đề khác.
+
+**Slot 3 đổi sau tài liệu BTC 11/09.** Ba loại #22–#24 có mức "Rất cao / Cao" mà rủi ro VÔ HIỆU "Thấp", và phát hiện được chỉ bằng mục lục + hai bảng — rẻ hơn mọi slot khác. Ngoại lệ & rollback (#2/#12) dồn vào slot 4 vì cùng đọc từ bảng Case của mục 6.
 
 **Với 5 câu hỏi buổi sáng, nguồn đạn đã đổi trọng số.** Kit cũ giả định danh sách ⚠ có hàng chục dòng nên slot 1 luôn là #15. Năm nay danh sách ⚠ chỉ 8–20 dòng và 3 spec đối thủ thì tải về được, nên thứ tự nguồn đạn là: (1) ⚠ từ C1–C5 — ít nhưng chắc; (2) **bảng đồng thuận chéo** (#21) — nhiều và rẻ; (3) cổng F trên spec đối thủ (#16–#19) — không cần biết specs thật; (4) catalogue ⚠ của domain (10 §6) — đoán theo mặc định ngành, rủi ro TRƯỢT cao nhất vì Executor cũng đoán y hệt.
 
@@ -76,21 +85,23 @@ Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng 
 
 | Phút | Việc | Đầu ra |
 |---|---|---|
-| 0–2 | Đọc heading; tick 14 nhóm N1–N14 [HD §3.5] có/không | Nhóm KHÔNG có = hạng A |
-| 2–3 | **Cổng F rút gọn** — 4 lệnh grep của knowledge/32 §1 (F1 mốc hoàn tất · F2 hạn mức tự khai · F5 láng giềng không có nhánh lỗi · F8 khóa tài nguyên trước rào) | Mỗi hit = ứng viên #16/#18/#19/#17, **hạng A** |
-| 3–4 | Ctrl+F danh sách đen [HD §4.6] nhóm 1, 3, 4, 6, 8, 11 + nhóm nội dung 17–22 (40 §2) | Mỗi hit = 1 điểm #3, ghi số mục |
-| 4–5,5 | Tìm bảng trạng thái / decision table. Không có → #6/#8. Có → tìm ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Danh sách ô trống |
-| 5,5–7 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
-| 7–8 | **Đối chiếu 12 kịch bản suy biến** (05 §M6) với spec đối thủ; và đọc danh sách NGOÀI phạm vi của họ so với brief (#20) | Mỗi ca không có luật = ứng viên #19 |
+| 0–1,5 | **Tick 10 mục BTC** (knowledge/33 §1) có/không; rồi tick 14 nhóm nghiệp vụ N1–N14 [HD §3.5] (20 §2 tên nhóm) | Mục vắng = hạng A (#1, và #22/#23/#24 nếu là mục 4 / 2 / 3); nhóm KHÔNG có = hạng A |
+| 1,5–3 | **Cổng F rút gọn** — 4 lệnh grep của knowledge/32 §1 (F1 mốc hoàn tất · F2 hạn mức tự khai · F5 láng giềng không có nhánh lỗi · F8 khóa tài nguyên trước rào) | Mỗi hit = ứng viên #16/#18/#19/#17, **hạng A** |
+| 3–4 | **Mục 4** (validation & message): có message **nguyên văn trong ngoặc kép** không? có cột FE/BE không? **Mục 2 + 8**: có cột/dòng **Guest**, có điều kiện ẩn/disable không? | Không nguyên văn = #22 hạng A ("hiện message gì"); vắng Guest = #23/#24 hạng A |
+| 4–5 | Ctrl+F danh sách đen [HD §4.6] nhóm 1, 3, 4, 6, 8, 11 + nhóm nội dung 17–22 (40 §2) | Mỗi hit = 1 điểm #3, ghi số mục |
+| 5–6,5 | **Mục 6**: với từng logic, đếm case **bình thường / biên / lỗi**; kiểm 5 gạch (số · toán tử `>`/`≥` · múi giờ · default khi config trống · ưu tiên khi nhiều case cùng đúng). Bảng trạng thái: không có → #6/#8; có → ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Case thiếu = #2/#4/#6; danh sách ô trống |
+| 6,5–7,5 | **Mục 7**: có 4 ca bất thường BTC nêu đích danh không (dữ liệu đổi giữa hiển thị và submit · gửi trùng · mở link hai lần · mail fail sau khi đã lưu)? Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | Vắng ca nào = tình huống bắn sẵn; 0 hit = hạng A |
+| 7,5–8 | **Đối chiếu 12 kịch bản suy biến** (05 §M6) với spec đối thủ; đọc danh sách NGOÀI phạm vi của họ so với brief (#20) | Mỗi ca không có luật = ứng viên #19 |
 | 8–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; **gói bằng chứng phạm vi (§2-9)**; mở hồ sơ §7 | 5 test điểm ≤1, mỗi test có bằng chứng |
 
-Spec đối thủ là markdown tải về được (00 §A), nên bốn bước đầu chạy bằng grep chứ không bằng mắt:
+Spec đối thủ là markdown tải về được (00 §A), nên các bước grep chạy bằng lệnh chứ không bằng mắt:
 
 ```
 grep -n -i -E "hoàn tất|tiền về|đối soát" B.md            # F1 → #16
 grep -n -i -E "email|số điện thoại|tự khai|khai báo" B.md  # F2 → #18
 grep -n -i -E "cổng|ERP|WMS|job|callback|thông báo" B.md   # đếm nhánh lỗi → #19
 grep -n -i -E "đồng thời|cùng lúc|múi giờ|UTC|ngày lễ|guest|chưa đăng nhập|rollback|kiểm kê|ưu tiên|oversell|safety" B.md   # 0 hit = hạng A
+grep -n -i -E "\"[^\"]{8,}\"" B.md                        # có message nguyên văn không → #22
 grep -c "^|" B.md ; grep -n '```mermaid' B.md              # có bảng không; chỉ có sơ đồ = #6 (31 §5)
 ```
 
@@ -166,6 +177,17 @@ Nguồn: EP [ISTQB 4.2.1]; BVA 3-value [4.2.2]; decision table [4.2.3]; state ta
 | P40 | Hủy rồi tạo lại ngay | Sequences [Hendrickson] | N3 | "Khách hủy hold 10:05, tạo lại hold cùng SKU lúc 10:06. Hold mới được tạo hay bị từ chối?" |
 | P41 | Hủy khi cổng đang xử lý cọc | Interruptions: Cancel [Hendrickson] | N5 | "Khách bấm Hủy lúc cổng thanh toán đang xử lý cọc (chưa callback). Cọc về đâu: không thu / hoàn 100% / giữ?" |
 | P42 | SKU ngừng bán khi hold ACTIVE | State: invalid transition | N12 | "Admin ngừng bán SKU X lúc 10:30 khi hold ACTIVE tới 12:00. Hold ở trạng thái nào?" |
+| **P53** | **Message lỗi nguyên văn** | #22; mục 4 BTC | N17 | "Khách nhập số lượng 5 khi tồn khả dụng còn 2, bấm Giữ hàng. Hệ thống hiển thị message gì, nguyên văn?" |
+| **P53b** | **Nhiều lỗi cùng lúc** | #22; mục 4 | N17 | "Khách để trống số điện thoại VÀ nhập số lượng vượt tồn, bấm Giữ hàng. Hiện một hay nhiều message, message nào trước?" |
+| **P54** | **Guest vs login** | #23; mục 2, 8 BTC | N15 | "Khách CHƯA đăng nhập bấm Giữ hàng cho SKU còn 3 đơn vị. Hold được tạo hay bị từ chối; màn hình hiện gì?" |
+| **P54b** | **Guest xem hold** | #23; mục 8 | N15 | "Guest đã tạo hold lúc 10:00, đóng trình duyệt, mở lại lúc 10:30. Guest có xem được hold của mình không?" |
+| **P55** | **Trạng thái nút** | #24; mục 2, 3 BTC | N15 | "Tồn khả dụng của SKU X = 0 khi khách mở màn hình. Nút Giữ hàng ở trạng thái nào: bật, disable hay ẩn?" |
+| **P55b** | **Sau thao tác hiển thị gì** | #24; mục 3 | N16 | "Khách tạo hold thành công lúc 10:00. Ngay sau đó màn hình hiển thị gì và nút chuyển thành gì?" |
+| **P56** | **Dữ liệu đổi giữa hiển thị và submit** | mục 7.2 BTC | N19 | "Khách mở màn hình lúc 10:00 thấy tồn 3; lúc 10:02 tồn thật còn 1; khách bấm Giữ hàng 2 đơn vị lúc 10:03. Kết quả và message?" |
+| **P57** | **Mở link hai lần** | mục 7.2 BTC | N19 | "Khách mở link xác nhận cọc hai lần trong 5 giây. Có mấy hold, thu cọc mấy lần?" |
+| **P58** | **Mail fail sau khi đã lưu** | mục 7.2 BTC | N18 | "Hold đã lưu thành công nhưng gửi email xác nhận thất bại. Hold ở trạng thái nào, khách thấy gì?" |
+
+**P53–P58** (in đậm ở cuối bảng trên) là probe của cấu trúc 10 mục — loại #22–#24; nguồn: tài liệu BTC "Spec Battle Anatomy" 11/09 (knowledge/33). Ba loại này đọc được bằng mắt từ mục lục và hai bảng của spec đối thủ, không cần biết specs thật.
 
 ### Probe khả thi & mục tiêu (P43–P52) — dùng cho loại #16–#20
 

@@ -13,14 +13,14 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
 `$ARGUMENTS` = `<tên> [tính-năng] [chế-độ]`. Mặc định: tính năng = "đặt giữ hàng e-commerce" (kiểm domain), chế độ = tự-động. Thư mục làm việc `drill/<tên>/` (layout như `battle/`, thêm `true-spec.md`).
 
 **Số lượt hỏi không còn là tham số: luật 09/09 chốt 5 câu, mỗi lượt 1 câu, AI không có memory (00 §A).** Diễn tập phải chạy đúng hạn mức đó — chạy 4 lượt batch như bản cũ sẽ cho kết quả tốt giả và không đo được thứ cần đo.
-Đọc: `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số 09/09), §A1 (ước token), §C, §D1 (công thức điểm); `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md` §6 (catalogue ⚠ để cài luật phản trực giác); `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (21 loại để chấm đa dạng test), §6 luật 8 (điểm kỳ vọng); `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §M5, §M6 (để cài luật vào true-spec ở đúng những chỗ đội hay bỏ); `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (để true-spec nói về phụ thuộc ngoài đúng như hệ thật).
+Đọc: `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số 09/09), §A1 (ước token), §C, §D1 (công thức điểm); `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1–§2 (10 mục BTC + 5 gạch bảng Case — true-spec phải có dữ kiện cho cả 10 mục), §7 (Mermaid); `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md` §6 (catalogue ⚠ để cài luật phản trực giác); `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (24 loại để chấm đa dạng test), §6 luật 8 (điểm kỳ vọng); `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §M5, §M6 (để cài luật vào true-spec ở đúng những chỗ đội hay bỏ); `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (để true-spec nói về phụ thuộc ngoài đúng như hệ thật).
 
 ## Hạn mức phải tôn trọng khi diễn tập (nếu phá, kết quả vô nghĩa)
 - Đúng **5 câu hỏi** cho cả vòng; câu 5 là restate và **chỉ soạn sau khi có bản nháp spec**.
 - Mỗi lần gọi agent `customer` chế độ HỎI chỉ chứa **một câu hỏi**. Agent sẽ trả lời câu đầu và đánh dấu phần dư bị bỏ — coi phần bị bỏ là **mất thật**, không gọi lại.
 - Mỗi lần gọi là một **phiên độc lập**: không đưa câu hỏi/câu trả lời trước vào prompt (giả lập "không có memory").
 - Cộng dồn token ước (00 §A1); vượt 5.000 thì dừng hỏi, dù chưa hết 5 câu.
-- Spec: đích ≤5.400 token, tuyệt đối ≤6.000, markdown, không ảnh.
+- Spec: đích ≤5.400 token, tuyệt đối ≤6.000, markdown, không ảnh, **đủ 10 mục BTC**.
 
 ## Ranh giới thông tin (quy tắc cứng)
 - Agent `executor` KHÔNG BAO GIỜ nhận đường dẫn `true-spec.md`, RTM, log, brief — chỉ `spec.md` + tình huống.
@@ -31,6 +31,8 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
 1. `mkdir -p drill/<tên>/tests`. Ghi `drill/<tên>/README.md`: tham số drill, timestamp (Bash date).
 2. **Sinh `true-spec.md`** (specs thật của BTC giả lập): ≥25 luật có mã `TS-xx`; TRONG/NGOÀI phạm vi tường minh (NGOÀI ≥5 mục); actor & quyền; bảng trạng thái đầy đủ; con số có đơn vị; ≥8 luật ⚠ cố ý khác mặc định phổ biến (lấy ý từ knowledge/10 §6 hoặc tương đương cho tính năng khác).
    **Bắt buộc thêm, để drill đo được đúng lỗ hổng mà kit vừa vá:** (a) ≥1 luật cho **mỗi** kịch bản trong 12 ca knowledge/05 §M6 — nhất là hoàn tiền thất bại, callback trùng/sai thứ tự, job ngừng chạy, ghi giữ thất bại; (b) một **đơn vị neo hạn mức tường minh** (tài khoản / SĐT đã OTP / thẻ) và một luật chặn kẻ đổi danh tính; (c) hai mốc riêng cho mọi nghĩa vụ hoàn tiền (khởi tạo + hoàn tất, số thực tế theo knowledge/32 §2 — ngày làm việc, không phải giờ); (d) một luật nói **ai chịu phí** khi hold bị bỏ. Nếu true-spec không có bốn nhóm này thì drill sẽ báo "đội chắn tốt" một cách giả, vì không có gì để bắn ở đúng những chỗ đội hay hở.
+   - **Phải có dữ kiện cho cả 10 mục BTC** (knowledge/33 §1), gồm bốn vùng mới: **item màn hình** (control, mặc định, ẩn/disable, khác biệt login vs guest), **event** (mở màn hình lấy gì, nút gọi gì, double-click), **validation & message lỗi nguyên văn** (≥5 message đầy đủ chữ), **API/tích hợp** (nguồn tồn kho, retry khi thất bại). Nếu thiếu, đội diễn tập không có gì để hỏi ở lượt 7 và bài học sẽ sai.
+   - Trong ≥8 luật ⚠, đặt **ít nhất 2 luật ⚠ thuộc vùng message/guest/trạng thái nút** (ví dụ: message vượt tồn ghi số còn lại; guest được tạo hold nhưng không xem lại được) — đây là loại lỗ hổng #22/#17/#18.
    Ghi `true-spec.answers.md`: bảng `W-xx | TS-xx | phát biểu | mặc định phổ biến nó đi ngược | loại # (knowledge/50 §1)`.
 3. **Sinh `brief.md`** 150–250 từ, mơ hồ như BTC, không lộ bất kỳ ⚠ nào, không nêu con số. **Bắt buộc có ≥2 mục tiêu nghiệp vụ tường minh** (kiểu "để tăng X", "chống Y") và **ít nhất một cặp câu chỏi nhau** — đó là chất liệu cho `/frame` M1 và bảng Mục tiêu↔Luật, và là thứ brief thật của BTC luôn có.
 3b. **Dựng mô hình bài toán**: chạy quy trình `/frame drill/<tên>` (đọc `${CLAUDE_PROJECT_DIR}/.claude/skills/frame/SKILL.md`) → `mo-hinh-bai-toan.md` + danh sách câu hỏi P0. Khi đóng vai đội, chỉ đọc `brief.md`, không mở `true-spec.md`.
@@ -49,7 +51,8 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
    - Bảng: test | loại # | ĐỘ PHỦ executor | KẾT QUẢ | lý do đối chiếu (rút gọn).
    - Tỷ lệ TRÚNG / TRƯỢT / VÔ HIỆU trên số test đã nộp, **và điểm quy đổi theo công thức 09/09**: `TRÚNG×2 − VÔ HIỆU×1` cho vai CÔNG; số test TRƯỢT × 1 cho vai THỦ nếu tính ngược lại. So với điểm nếu bỏ các test `EV ≤ 0` — để kiểm quy tắc "bỏ slot còn hơn bắn bừa".
    - **Lỗ hổng elicitation**: số dòng `W-xx` trong `true-spec.answers.md` KHÔNG có dòng RTM tương ứng (đội không hỏi tới) — liệt kê, kèm câu hỏi nên thêm vào knowledge/20 §2 (ID nhóm N).
-   - **Lỗ hổng viết**: số `W-xx` có trong RTM (⚠) nhưng không có BR trong spec hoặc BR viết sai — liệt kê, kèm dòng template knowledge/30 cần sửa.
+   - **Lỗ hổng viết**: số `W-xx` có trong RTM (⚠) nhưng không có BR trong spec hoặc BR viết sai — liệt kê, kèm dòng template knowledge/30 hoặc knowledge/32 cần sửa.
+   - **Phủ 10 mục BTC**: bảng mục 1–10 | spec có / thiếu / rỗng | dữ kiện có trong RTM không. Mục thiếu mà RTM CÓ dữ kiện = lỗ hổng viết; mục thiếu mà RTM KHÔNG có = lỗ hổng elicitation.
    - **Lỗ hổng tấn công**: test TRƯỢT vì Executor đoán trùng specs thật → ghi để sửa knowledge/50 §2-11 nếu lặp lại.
    - **Lỗ hổng khả thi**: với mỗi `W-xx` thuộc loại #16–#20, đối chiếu spec đội — spec có luật đúng, có luật sai, hay im lặng. Đây là chỉ số đo trực tiếp cổng F có hoạt động không.
    - **Lỗ hổng mục tiêu**: cặp câu chỏi nhau ở brief (bước 3) — đội có phát hiện và hỏi lại không, hay tự hoà giải rồi viết luật một chiều? Đo bằng: `/frame` bước 9 có xếp cặp đó vào nhóm 1 không, và C1 có hỏi tới không.
@@ -62,7 +65,7 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
 
 ## Output bắt buộc
 - [ ] `drill/<tên>/`: true-spec.md, true-spec.answers.md, brief.md, mo-hinh-bai-toan.md, log-khach-hang.md, rtm.md, spec.md, review.md, eval-set.md, tests/doi-minh.md, ket-qua.md.
-- [ ] `ket-qua.md` có 8 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, **lỗ hổng giả định**, **hiệu quả câu restate**) và 3 bài học.
+- [ ] `ket-qua.md` có 8 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, **lỗ hổng giả định**, **hiệu quả câu restate**) **bảng phủ 10 mục BTC của spec đội viết**, và 3 bài học.
 
 ## Không được
 - Đưa true-spec cho executor; đưa spec đội cho customer; tự đọc true-spec khi đóng vai đội (kể cả khi dựng mô hình bài toán ở bước 3b).

@@ -16,9 +16,10 @@ Người dùng có thể dán thêm sau lệnh: câu trả lời của AI Khách
 
 Đọc trước:
 - `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số), §A1 (cách ước token), §A2 (hai ô còn hở đổi kế hoạch: ảnh có tính token, AI còn mở sau 12:00).
-- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md`: §1 (10 quy tắc + **cổng 5 kiểm tra**), §2 (ngân hàng nguyên liệu), §3 (**5 câu soạn sẵn C1–C5 + bảng ánh xạ ID → câu**), §4 (31 phát biểu mặc định ngành), §5 (RTM hai loại dòng), §6 (log).
+- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md`: §1 (10 quy tắc + **cổng 5 kiểm tra**), §2 (ngân hàng nguyên liệu), §3 (**5 câu soạn sẵn C1–C5 + bảng ánh xạ ID → câu**), §3b (hở mục 4 message / guest — quyết định trước 9:30), §4 (31 phát biểu mặc định ngành), §5 (RTM hai loại dòng), §6 (log).
 - `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §4 — bảng "ô mô hình → đi vào câu nào, nếu không hỏi được thì làm gì".
 - `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md`: §1 (nhận diện biến thể), §6 (catalogue ⚠ — dùng khi nạp và khi chọn mặc định ngành).
+- `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1 — 10 mục spec BTC yêu cầu; mỗi câu trong 5 câu phải góp dữ kiện cho ít nhất một mục, và tới 11:05 phải biết mục nào còn trắng để `/spec-write` điền bằng mặc định ngành.
 - `<thư-mục>/mo-hinh-bai-toan.md` — "Câu hỏi P0", "Mâu thuẫn nội tại của brief".
 
 ## Sổ hạn mức (đọc/ghi ở đầu `log-khach-hang.md`)
@@ -66,6 +67,7 @@ Không có file → tạo với `0/5`, `0/5.000`, `0/3`, `chưa rõ`.
 4. **Không bịa, không suy diễn.** Ý nào AI không trả lời rõ → `G-xx` với giá trị mặc định ngành, không phải `A-xx` với giá trị đoán.
 5. **Sau khi nạp câu 4** (hoặc sau câu cuối trong C1–C4 đã gửi): sinh **toàn bộ dòng `G-xx`** — mỗi ô mô hình còn `?` và mỗi nhóm ID ở cột phải của bảng ánh xạ 20 §3 thành một dòng `G-xx` với giá trị mặc định ngành đề xuất (nguồn: 20 §4 / 10 §6) và cột Rủi ro để trống cho `/spec-write` chấm. Đây là bước biến "chưa hỏi" thành "đã có kế hoạch viết", và là điều kiện để `/spec-write` không bỏ trắng mục nào.
 6. Cập nhật dòng "Trích rút → RTM:" trong khối log.
+6b. **Bảng phủ 10 mục BTC**: với mỗi mục 1–10 (knowledge/33 §1), đếm số dòng RTM đã có dữ kiện cho mục đó. Mục nào 0 dòng → in cảnh báo "mục n chưa có dữ kiện, sẽ viết bằng mặc định ngành" kèm nhóm ID lẽ ra phủ nó (mục 2 → N15, mục 3 → N16, mục 4 → N17, mục 9 → N18, mục 7 → N19). Với 5 câu, các mục 2/3/9 gần chắc trắng — điều đó **bình thường** (20 §3b), nhưng mục 4 trắng thì mọi dòng `G-xx` message phải được xếp rủi ro **Cao** để vào C5.
 7. In ra: bảng ⚠ mới (ID, nội dung, vì sao phản trực giác) · số dòng `A-xx` / `G-xx` / tổng ⚠ · mâu thuẫn với dòng RTM cũ (gắn `↔`, đưa vào hàng đợi C5) · token còn lại · câu còn lại.
 
 ## Ảnh (tối đa 3 lần)
@@ -75,6 +77,7 @@ Mặc định **không dùng** (20 §1-9): một ảnh ≈ 1.000–1.600 token, 
 - [ ] Khối câu hỏi copy-paste được, đã qua cổng 5 kiểm tra (chế độ `cau`/`restate`), hoặc bảng ⚠ mới (chế độ `nap`).
 - [ ] `log-khach-hang.md` có sổ hạn mức ở dòng đầu, timestamp, nguyên văn.
 - [ ] `rtm.md` có cả dòng `A-xx` và `G-xx`; không dòng nào thiếu cả hai cột "Mã BR" và "Rủi ro".
+- [ ] Chế độ `nap`: bảng phủ 10 mục BTC, nêu rõ mục nào chưa có dữ kiện.
 - [ ] Một dòng `Token: … / 5.000 · câu còn lại: …` ở cuối mọi output.
 
 ## Không được
