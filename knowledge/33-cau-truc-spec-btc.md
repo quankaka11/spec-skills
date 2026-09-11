@@ -74,44 +74,55 @@ Năm gạch đầu dòng ở (2) là checklist bắt buộc cho MỌI bảng Cas
 
 **Bốn mục hoàn toàn mới phải hỏi AI Khách hàng buổi sáng: 2, 3, 4, 9.** Không hỏi = bốn vùng trống lớn.
 
-## 5. Ngân sách token cho 10 mục
+## 5. Ngân sách token cho 10 mục — tính theo **%** của hạn mức `L`
 
-Hạn mức thật là **token, không phải từ**: **≤ 10.000 token**, **đích bản nộp 9.000 token** (10% đệm để vá sau các lượt xác nhận) — cách đo ở knowledge/00 §A1. 9.000 token ≈ **3.500–3.700 từ tiếng Việt**.
+Hạn mức `L` **đọc từ brief mỗi đề** (00 §A3), không hardcode. Đích bản nộp `0,90 × L`; sàn "chưa viết xong" `0,75 × L`; cách đo ở 00 §A1.
 
-**Hạn mức 10.000 đổi bài toán, không chỉ đổi con số.** Với 6.000, việc khó là *cắt cái gì*; với 10.000, việc khó là **không bỏ trắng ô nào** — thừa chỗ mà vẫn viết "hiển thị thông báo lỗi phù hợp" là cách mất điểm ngớ ngẩn nhất. Ba hệ quả:
-
-1. **Sơ đồ từ "cắt đầu tiên" thành "phải có".** BTC yêu cầu tường minh ba sơ đồ (mục 5 wireframe, mục 6 sequence, mục 9 sơ đồ hệ thống); cả bộ 5 sơ đồ chỉ ~1.100 token = 12% ngân sách. Không vẽ = mất điểm hình thức ở đúng chỗ BTC ghi rõ trong đề bài.
-2. **Bảng 5 cột của mục 6 dùng được lại** cho tới ~60 dòng RTM (trước là 40) — dễ soi ô trống hơn danh sách (30 §5).
-3. **Mục 4 và mục 7 được nhân đôi ngân sách**: message nguyên văn và ca bất thường liên logic là hai vùng Executor đoán sai nhiều nhất, và cả hai đều **không nén được** — mỗi message là một chuỗi, mỗi ca là một dòng.
-
-| Mục | Token | ≈ Từ | So với bản 6k | Ghi chú |
+| Mục | % của `L` | `L`=2.500 | `L`=10.000 | Ghi chú |
 |---|---|---|---|---|
-| 1 Tổng quan & phạm vi (gồm catch-all 1.x, glossary 1.y) | 850 | 340 | +170 | bullet + 15 dòng catch-all. Tỷ lệ chắn/token tốt nhất trong spec |
-| 2 Item màn hình | 850 | 340 | +275 | bảng; đủ chỗ cho cột login vs guest **và** cột ẩn/disable tách riêng |
-| 3 Event | 500 | 200 | +200 | bảng; thêm được event hệ thống (job, webhook), không chỉ event người bấm |
-| 4 Validation & message | 1.000 | 400 | +375 | **message nguyên văn tốn token nhưng không nén được**; đủ chỗ cho ~12–15 rule |
-| 5 Design/Wireframe | 350 | 140 | +250 | mermaid `block-beta` + bảng 3 trạng thái màn hình (mặc định / lỗi / thành công) |
-| 6 Flow & quy tắc xử lý | 3.200 | 1.280 | +1.300 | **lớn nhất** — mỗi logic: bảng step + bảng Case + (logic phức tạp nhất) một lưu đồ `flowchart TD` |
-| 7 Ràng buộc, bất thường, chưa chốt | 900 | 360 | +325 | 4 bảng; 7.2 đủ chỗ cho ≥ 8 ca liên logic |
-| 8 Xác thực & phân quyền | 450 | 180 | +150 | 2 bảng; phủ được cả thao tác chỉ-đọc và System/Job |
-| 9 Luồng dữ liệu & API | 550 | 220 | +350 | `flowchart LR` + bảng timing + bảng API (trigger/payload/response) |
-| 10 Data model, perf, security | 350 | 140 | +175 | 3 bảng; `erDiagram` nếu quan hệ dữ liệu không hiển nhiên |
-| **Tổng** | **9.000** | **~3.600** | +3.570 | còn 1.000 đệm dưới 10.000 |
+| 1 Tổng quan & phạm vi (catch-all 1.x, glossary 1.y) | 9,5% | 240 | 850 | tỷ lệ chắn/token tốt nhất trong spec |
+| 2 Item màn hình | 9,5% | 240 | 850 | mọi trần/định dạng ở đây là **giá trị**, phải qua thang §5b |
+| 3 Event | 5,5% | 140 | 500 | gồm cả event hệ thống, không chỉ nút bấm |
+| 4 Validation & message | 11% | 275 | 1.000 | message nguyên văn **không nén được** và **không có mặc định ngành** |
+| 5 Design/Wireframe | 4% | 100 | 350 | mermaid; cắt đầu tiên khi `L` chật |
+| 6 Flow & quy tắc xử lý | 35,5% | 890 | 3.200 | lớn nhất ở mọi `L` |
+| 7 Ràng buộc, bất thường, chưa chốt | 10% | 250 | 900 | 7.4 (điều chưa chốt) **không cắt** |
+| 8 Xác thực & phân quyền | 5% | 125 | 450 | |
+| 9 Luồng dữ liệu & API | 6% | 150 | 550 | |
+| 10 Data model, perf, security | 4% | 100 | 350 | |
+| **Tổng** | **100%** | **2.510** | **9.000** | = đích `0,90 × L`, còn 10% đệm |
 
-**Bản nộp là markdown, không có ảnh** (00 §A): mục 5 dùng mermaid trong văn bản, không dùng link Figma hay ảnh mockup dù BTC nêu hình thức đó.
+**Bản nộp là markdown, không có ảnh** (00 §A): mục 5 dùng mermaid trong văn bản.
 
-**Cách tiêu 3.570 token thêm, theo thứ tự lãi giảm dần** — dùng bảng này khi đo thấy còn đệm lúc 11:30:
+Khi `L` chật, bảng này chỉ nói *tỷ lệ*, không nói *phải điền đủ*. Cái quyết định điền gì là thang dưới đây.
 
-| Ưu tiên | Tiêu vào đâu | Vì sao |
+## 5b. Thang bằng chứng — thứ tự đổ token, cắt ở đâu hết hạn mức
+
+Đây là bất biến của kit: **thứ tự không đổi theo `L`; `L` chỉ quyết định cắt ở bậc nào.** Đổ từ bậc 1 xuống, hết hạn mức thì dừng — dừng ở bậc 6 là một bản nộp hợp lệ, không phải bản chưa xong.
+
+| Bậc | Nội dung | Vì sao ở bậc này |
 |---|---|---|
-| 1 | **Thêm case lỗi và case biên** cho mỗi logic mục 6 | "Thiếu case nào thì Executor phải đoán ở đúng chỗ đó" — lời BTC, và là công thức TRÚNG của đối thủ |
-| 2 | **Thêm message nguyên văn** (mục 4) cho mọi nhánh từ chối trong mục 6 | Mỗi từ chối không có message là một câu hỏi "hiện gì?" mà Executor phải bịa |
-| 3 | **Ca bất thường liên logic** (7.2) từ 4 lên 8–10 ca | Vùng đạn rẻ nhất của đối thủ |
-| 4 | **Lưu đồ `flowchart TD`** cho 1–2 logic nhiều nhánh nhất (§7.5) | Nhánh nào cũng phải kết thúc ở một kết quả — sơ đồ làm lộ nhánh cụt mà bảng giấu được |
-| 5 | **Bảng 3 trạng thái màn hình** ở mục 5 + `erDiagram` mục 10 | Hai mục BTC chấm hình thức, rẻ |
-| 6 | Nới bảng quyền mục 8 sang thao tác chỉ-đọc | 0.4 biến mọi im lặng thành CẤM, nên bảng thiếu dòng = cấm nhầm |
+| 1 | Luật có `A-xx` — nguyên văn lời khách | Bằng chứng trực tiếp; cũng là đạn kháng nghị |
+| 2 | Khung 10 mục + catch-all bắt buộc (1.x) | Hình thức BTC chấm; catch-all chắn nhiều test nhất trên mỗi token |
+| 3 | **Message nguyên văn** cho mọi nhánh từ chối | Vùng duy nhất **không có mặc định ngành** — im lặng ở đây là Executor bịa chắc chắn |
+| 4 | Case biên và case lỗi **phái sinh từ bậc 1** | Không thêm giá trị mới, chỉ trải luật đã có bằng chứng ra các ca ghép |
+| 5 | Luật `G-xx` **tra được** mặc định ngành, rủi ro Thấp | Executor mù đoán trùng ⇒ viết ra không xấu hơn im lặng, mà khử được đa nghĩa |
+| 6 | Ba sơ đồ BTC yêu cầu tường minh (mục 5, 6, 9) | Điểm hình thức, rẻ |
+| 7 | Luật `G-xx` **tra được**, rủi ro Trung | |
+| — | **▁▁▁ ĐƯỜNG ĐỎ ▁▁▁** | dưới đây là **giá trị không tra được mặc định ngành** |
+| 8 | Luật an toàn hai chiều (32 §3.3) — phát biểu *quan hệ / thứ tự* mà không chốt con số | Đúng ở cả hai phương án; không tạo khẳng định sai |
+| 9 | Một con số tự chọn cho ô không tra được | **Chỉ khi** còn hạn mức **và** đã có dòng trong bảng 7.4 **và** đã hết nhịp hỏi |
 
-**Không** tiêu đệm vào: viết lại luật cho "mượt", thêm phần mở bài, giải thích vì sao chọn giá trị, hay chép lại brief. Ba thứ đó tốn token mà không chắn thêm một test nào.
+**Luật đường đỏ:** vượt bậc 8 xuống bậc 9 để "cho spec đầy" là **lỗi Cao**. Lý do là số học, không phải khẩu hiệu (30 §1b-2): một giá trị tự nghĩ ra — khác cả mặc định ngành lẫn specs thật — là ca **duy nhất** tệ hơn im lặng, vì nó biến một TRƯỢT tiềm năng thành TRÚNG gần chắc chắn cho đối thủ.
+
+**Bậc 8 trông như thế nào.** Thay vì chốt một con số không có nguồn, phát biểu cái bất biến:
+- ✗ bậc 9: `数量は1〜99の整数` (trần tự nghĩ ra) → ✓ bậc 8: `数量の選択肢は1から上限までの整数のみ。0は選べず、減らす場合は削除ボタンを使う。` (quan hệ + hành vi, không con số)
+- ✗ bậc 9: `コードは20文字以内` → ✓ bậc 8: `コード長が規定と異なる場合は適用せず、コード不正のエラーを表示する。`
+- ✗ bậc 9: `有効期限は適用時と確定時の両方で判定` (chọn hộ hai mốc) → ✓ bậc 8: `有効期限の判定時点は一つであり、その時点で期限内なら適用を妨げない。`
+
+Bậc 8 mất điểm khi specs thật có con số và đối thủ bắn đúng con số đó — nhưng chỉ mất bằng im lặng, không mất thêm. Bậc 9 sai thì mất chắc.
+
+**Khi còn đệm (chế độ RỘNG, 00 §A3)**, tiêu theo đúng thang này từ bậc đang dừng đi xuống — **không** tiêu vào: viết lại luật cho "mượt", thêm mở bài, giải thích vì sao chọn giá trị, chép lại brief. Ba thứ đó tốn token mà không chắn thêm một test nào.
 
 ## 6. Thứ tự cắt khi quá hạn mức
 
@@ -119,7 +130,7 @@ Cắt: **10 → 9 → 5 → 3 → 2**. KHÔNG cắt: **1** (phạm vi + catch-al
 
 Lý do: mục 1, 6, 7 là nơi chống TRÚNG; mục 4 và 8 là hai vùng Executor hay đoán sai nhất (message và quyền guest).
 
-**Với hạn mức 10.000, cắt hiếm khi phải dùng tới.** Lỗi thường gặp hơn theo chiều ngược lại: spec dừng ở 6.000–7.000 token vì đội quen ngân sách cũ, trong khi vẫn còn ô trống ở mục 4 và 7. Đo token lúc 11:30; **dưới 7.500 mà có ô trống thì đó là lỗi, không phải tiết kiệm** — tiêu tiếp theo bảng ưu tiên ở §5.
+**Cắt hay tiêu — đo chế độ trước, đừng đoán (00 §A3).** Ở chế độ **RỘNG** (`T_A < 0,75 × L`), cắt hiếm khi phải dùng tới và lỗi thường gặp là **dừng sớm**: dưới `0,75 × L` mà thang bằng chứng (§5b) còn bậc chưa đổ là lỗi, không phải tiết kiệm. Ở chế độ **CHẬT** (`T_A ≥ 0,75 × L`), bảng cắt dưới đây mới là thứ dùng tới, và spec ngắn là **đúng** — điền thêm cho đầy bằng giá trị dưới đường đỏ là lỗi Cao.
 
 ## 7. Mermaid — sáu loại sơ đồ, cú pháp đã kiểm
 
@@ -282,6 +293,6 @@ Không có tool render trong phòng thi, nên đây là cách duy nhất kiểm.
 
 ### 7.8 Ngân sách & thứ tự cắt sơ đồ
 
-Cả sáu sơ đồ ≈ **1.100–1.300 token ≈ 12% của 9.000**, đã nằm trong ngân sách mục 5 (350), 6 (3.200), 9 (550), 10 (350) ở §5 — không xin thêm token.
+Cả sáu sơ đồ ≈ **12% của đích bản nộp**, đã nằm trong ngân sách mục 5 (4%), 6 (35,5%), 9 (6%), 10 (4%) ở §5 — không xin thêm token. Ở hạn mức chật, sơ đồ là **bậc 6** của thang §5b: vẽ khi đã đổ xong bậc 1–5, không vẽ trước.
 
 Khi quá hạn mức, cắt theo thứ tự **7.6 erDiagram → 7.1 wireframe → 7.5 lưu đồ → 7.4 sơ đồ hệ thống → 7.3 sequence → 7.2 state machine**, mỗi lần cắt thay bằng 1–2 câu chữ. Hai sơ đồ cuối danh sách cắt sau cùng vì chúng mô tả thứ BTC hỏi tới nhiều nhất. **Bảng đi kèm không bao giờ bị cắt.**

@@ -34,11 +34,18 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 6. **M5 mô hình lạm dụng** — 6 kẻ cố định. Với mỗi kẻ: được lợi gì trong đúng tính năng này · lách bằng cách nào · luật nào phải chặn · đã có gì trong brief chưa. Kết khối bằng câu: **mọi hạn mức mà brief nhắc tới đang neo vào cái gì, khách có tự đổi được không?**
 7. **M6 kịch bản suy biến** — copy 12 ca, đánh dấu ca nào brief đã trả lời (hiếm), còn lại `✗`.
 8. **Mâu thuẫn nội tại của brief** — liệt kê từng cặp câu brief chỏi nhau, kèm số câu.
+8b. **Dựng `mac-dinh-nganh.md` cho miền của đề này** (6 phút, knowledge/20 §4b). Đây là **toán hạng** của quy tắc "không sáng tạo giá trị" (30 §1b); thiếu file này thì quy tắc đó rỗng và người viết sẽ tự nghĩ ra số mà không biết mình đang nghĩ ra. Gọi tên miền từ brief → kê ô theo **chín trục** (ngưỡng · bậc · trần&khoảng · đơn vị&bội số · định dạng · mốc thời gian · thứ tự · kết hợp · **số phần tử của danh sách đóng**) → mỗi ô ghi `Ô | mặc định | nguồn`. Ghi `KHÔNG BIẾT` là kết quả **hợp lệ và quan trọng nhất** — nó đẩy ô đó lên đầu hàng đợi. Cuối cùng chạy **hiệu chỉnh thiên lệch** (20 §4b bước 4): dòng nào đang đoán *rộng và đẹp* (khoảng rộng, độ dài linh hoạt, kiểm nhiều mốc, đơn vị mịn, ngưỡng phẳng, công thức suy ra được) thì sửa về *hẹp và tuỳ tiện*, hoặc hạ xuống `KHÔNG BIẾT`.
+   - Miền của đề **không** phải "đặt giữ hàng" ⇒ bảng 31 phát biểu 20 §4 và catalogue 10 §6 là **ví dụ hình dạng**, không phải nguồn tra. Tra miền A trong bảng miền B luôn ra "không thấy".
+   - In ra số dòng và tỷ lệ `KHÔNG BIẾT`. Tỷ lệ cao **không** phải thất bại — nó là bản đồ hàng đợi hỏi.
+8c. **Quét hằng số** (3 phút, knowledge/20 §4c). Duyệt khung 10 mục, kê **mọi ô sẽ cần một con số trong bản nộp**, kể cả các ô ở **mục 2 và mục 4** và **số phần tử của mọi danh sách đóng** (mấy loại / mấy trạng thái / mấy điều kiện) — trần/độ dài/tập ký tự/bước nhảy/giá trị mặc định của từng ô nhập, số lượng và thứ tự điều kiện kiểm, mã của từng điều kiện, mỗi cột tiền chưa thuế hay đã thuế. Đối chiếu `mac-dinh-nganh.md`; ô nào `KHÔNG BIẾT` thì vào nhóm 1 ở bước 9, **xếp trên mọi câu hỏi quan hệ**.
+   Ghi bảng này vào `mo-hinh-bai-toan.md` thành khối `M7 — Hằng số`. Ô nào chưa có con số tới lúc viết spec thì đi theo 30 §1b-2b, **không** tự điền.
+
 9. **Phân loại mọi ô `?` thành ba nhóm.** Số câu hỏi không còn bị chặn (00 §A), nhưng **nhịp chờ chặn**, nên đây là bước xếp hạng chứ không phải bước chọn. Theo bảng knowledge/05 §4:
    - **Nhóm 1 — trên đường cắt**: ô mà đảo lại thì đổi hướng tiền / trạng thái cuối / ai thắng, **và** Executor mù sẽ đoán khác. Xếp hạng giảm dần; ghi rõ mỗi ô hỏi bằng **dạng** nào (nhị phân / một con số / có–không / mở).
    - **Nhóm 2 — dưới đường cắt**: ô đáng hỏi nhưng sẽ không kịp; giữ nguyên thứ tự để gửi thêm nếu chạy nhanh hơn dự kiến.
-   - **Nhóm 3 — tự điền mặc định ngành**: mọi ô còn lại, kèm **giá trị dự kiến** lấy từ 20 §4 hoặc 10 §6 (không tự nghĩ ra — 30 §1b).
-   Ưu tiên trong nhóm 1: mâu thuẫn nội tại của brief → **ô không có mặc định ngành** (message nguyên văn, danh sách phạm vi) → M1 điều cấm → M5 neo hạn mức → M3 nguồn chân lý → M2 thất bại tiền → M4 trễ → M6 ca ✗.
+   - **Nhóm 3 — tự điền mặc định ngành**: mọi ô còn lại **tra được** trong `mac-dinh-nganh.md`, kèm giá trị dự kiến (không tự nghĩ ra — 30 §1b).
+   - **Nhóm 4 — không tra được, không hỏi kịp**: ô có `KHÔNG BIẾT` ở `mac-dinh-nganh.md` mà rơi dưới đường cắt. Nhóm này **không** được tự điền: nó đi vào spec dưới dạng **luật an toàn hai chiều** (bậc 8 thang bằng chứng 33 §5b) hoặc im lặng + một dòng bảng 7.4. In riêng thành một danh sách — đây là danh sách nguy hiểm nhất của ngày.
+   Ưu tiên trong nhóm 1: mâu thuẫn nội tại của brief → **hằng số `KHÔNG BIẾT` ở M7** (con số đi trước quan hệ — 20 §4c) → **ô không có mặc định ngành** (message nguyên văn, danh sách phạm vi) → M1 điều cấm → M5 neo hạn mức → M3 nguồn chân lý → M2 thất bại tiền → M4 trễ → M6 ca ✗.
    **Đường cắt đặt ở đâu:** `(số phút pha hỏi ÷ nhịp chờ) − 2`, so với `4.000 ÷ token trung bình mỗi lượt`, lấy số nhỏ hơn (00 §A1).
 9b. **Đọc brief §3/§4 trước, hỏi BTC phần brief không nói** (không tốn token — 00 §A2): nhịp chờ bao nhiêu giây · 4.000 token của cả đội hay mỗi người · giao diện có hiển thị token không · AI còn mở sau giờ khóa spec không · **lý do VÔ HIỆU của đề này có gồm "sai phạm vi" không**. Bốn ô đầu đổi đường cắt; ô cuối đổi thứ hạng của lượt hỏi về NGOÀI phạm vi.
 10. Ghi `<thư-mục>/mo-hinh-bai-toan.md` theo template knowledge/05 §3, có timestamp (Bash `date`).
@@ -51,14 +58,16 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 4. Kết luận in ra:
    - Mục tiêu có cột 2 trống ⇒ **lỗi Cao**, spec bỏ trắng đúng phần brief nhấn mạnh.
    - Ô cột 3 có chữ ⇒ **lỗi Cao**, chuyển thành **một lượt nhị phân** (knowledge/32 §6) và chèn lên đầu phần hàng đợi còn lại. Hết giờ hỏi rồi ⇒ chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` (30 §1b-3).
-   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt đầu tiên nếu bản nộp vượt 10.000 token, xếp trước cả mục 9/10.
+   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt đầu tiên nếu bản nộp vượt hạn mức `L` (00 §A3), xếp trước cả mục 9/10.
 5. Ghi phần bảng này append vào `mo-hinh-bai-toan.md` và vào `review.md` nếu file đã tồn tại.
 
 ## Output bắt buộc
 - [ ] `mo-hinh-bai-toan.md` có đủ M1–M6, không khối nào trống.
 - [ ] Mọi ô chưa biết là `?` hoặc `[SUY RA]`/`[NGÀNH]` — không có phỏng đoán ghi trần.
 - [ ] Danh sách mâu thuẫn nội tại của brief.
-- [ ] Ba nhóm ô `?`: trên đường cắt (xếp hạng + dạng câu hỏi) · dưới đường cắt (xếp hạng) · tự điền mặc định ngành (có giá trị dự kiến).
+- [ ] `mac-dinh-nganh.md` cho **miền của đề này**, kê theo 8 trục, đã chạy hiệu chỉnh thiên lệch, có tỷ lệ `KHÔNG BIẾT`.
+- [ ] Khối `M7 — Hằng số`: mọi ô cần một con số trong bản nộp, gồm cả ô ở mục 2 và mục 4.
+- [ ] **Bốn** nhóm ô `?`: trên đường cắt (xếp hạng + dạng câu hỏi) · dưới đường cắt · tự điền mặc định ngành (có giá trị) · **không tra được & không hỏi kịp** (danh sách riêng).
 - [ ] Đường cắt đã tính bằng số, kèm con số nào đang chặn (nhịp hay token).
 - [ ] Danh sách ô cần đọc brief / hỏi BTC ở bước 9b.
 - [ ] Chế độ `muc-tieu-luat`: bảng Mục tiêu↔Luật, mỗi BR được gán đúng một nhãn.

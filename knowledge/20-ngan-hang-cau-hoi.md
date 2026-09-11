@@ -54,7 +54,7 @@ Câu bị từ chối **không trừ token và không reset nhịp chờ** (00 �
 | Message hiển thị | **mở, chấp nhận đắt** | "…khi vượt tồn khả dụng thì màn hình hiện message gì?" |
 | Danh sách phạm vi | **mở, một lượt duy nhất** | "…những nghiệp vụ nào nằm ngoài phạm vi của ba màn hình này?" |
 
-**Ngân sách:** ước `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)` (00 §A1). Một lượt nhị phân ≈ 100–170 token cả hỏi lẫn trả lời; một lượt mở ≈ 250–450. Hàng đợi 17 lượt hỗn hợp ≈ 2.500–3.200 token — **dưới 4.000, nên token gần như không bao giờ là thứ chặn**; nhịp chờ mới là.
+**Ngân sách:** ước `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)` (00 §A1). Một lượt nhị phân ≈ 100–170 token cả hỏi lẫn trả lời; một lượt mở ≈ 250–450. Hàng đợi 17 lượt hỗn hợp ≈ 2.500–3.200 token — với ngân sách hỏi `Q` cỡ 4.000 thì **token gần như không bao giờ là thứ chặn**; nhịp chờ mới là. Đo lại `Q` từ brief mỗi đề.
 
 **Quy tắc phụ:** mỗi câu trả lời khác mặc định ngành → ghi ⚠ ngay vào RTM (§5) và log (§6). Số dòng ⚠ thu được với 15–20 lượt thường là 12–25 dòng. Phần còn lại của spec vẫn là giả định có xếp hạng, không phải lỗ hổng quy trình.
 
@@ -433,7 +433,11 @@ Cấu trúc 10 mục (knowledge/33 §1) thêm bốn vùng mà kế hoạch C1–
 
 **Quyết định duy nhất còn phải cân trước giờ mở AI:** ba lượt mở (#8, #9, #25 hoặc #26) ăn ~1.100 token và 3 nhịp. Giữ cả ba khi brief có message hiển thị trong phạm vi; bỏ #26 trước tiên nếu brief **không** liệt kê "ngoài phạm vi" trong các lý do VÔ HIỆU (00 §A2-5).
 
-## 4. Ba mươi mốt phát biểu Đúng/Sai (mặc định phổ biến e-commerce)
+## 4. Bảng mặc định ngành — **VÍ DỤ cho miền "đặt giữ hàng"**
+
+> ⚠ **Bảng này chỉ đúng cho miền đặt giữ hàng.** Đề ngày thi gần như chắc chắn ở miền khác (giỏ hàng & khuyến mãi, đặt lịch, hoàn tiền, ví/điểm, duyệt nhiều cấp…). Dùng nó như **ví dụ về hình dạng** một bảng mặc định, rồi dựng bảng cho miền thật theo **§4b**. Tra một ô của miền A trong bảng của miền B luôn trả về "không thấy" — và "không thấy" phải đi theo nhánh 30 §1b-2b, **không** được im lặng điền bừa.
+>
+> Đây là lỗ hổng đã làm hỏng bản nộp thi thử 11/09: kit bảo "lấy mặc định từ 20 §4", đề lại ở miền khác, bảng tra rỗng 0/31, nên sáu giá trị được nghĩ ra tại chỗ và cả sáu đều sai.
 
 Bảng này có **hai công dụng, cả hai đều quan trọng hơn trước**:
 
@@ -475,6 +479,77 @@ Nếu AI trả lời **Sai** ⇒ đó là ⚠ phản trực giác: viết ngay t
 | 29 | Hủy hold không mất phí. | Phí hủy |
 | 30 | Hold đã hết hạn/hủy không khôi phục được. | Reactivate |
 | 31 | Admin đổi tham số dùng chung chỉ áp cho hold tạo sau khi đổi; hold đang mở giữ tham số cũ. | Hồi tố tham số lên hold đang mở, mốc tính lại |
+
+## 4b. Dựng bảng mặc định cho **miền của đề này** — 6 phút, chạy trong `/frame`
+
+Output: `battle/mac-dinh-nganh.md`. Đây là **toán hạng** của quy tắc "không sáng tạo giá trị" (30 §1b). Không có file này thì quy tắc đó vô nghĩa.
+
+**Bước 1 — gọi tên miền** từ brief bằng 2–4 chữ ("giỏ hàng & khuyến mãi", "đặt lịch khám", "hoàn tiền đơn"). Kể tên 2–3 sản phẩm có thật trong miền đó mà mình biết hành vi (đó là nguồn mặc định; không kể được tên nào ⇒ ghi thẳng "miền này tôi không có mặc định" và mọi ô của nó vào nhánh 30 §1b-2b).
+
+**Bước 2 — mỗi ô một dòng, theo tám trục.** Tám trục này là chỗ specs thật hay có luật riêng, và cũng là chỗ người viết spec hay tự nghĩ ra nhất:
+
+| # | Trục | Hỏi bản thân | Ví dụ ô |
+|---|---|---|---|
+| 1 | **Ngưỡng** | con số nào chia hai hành vi? | mốc miễn phí, mức tối thiểu, hạn mức |
+| 2 | **Bậc** | ngưỡng đó **phẳng hay chia hạng**? | theo hạng thành viên / theo vùng / theo loại hàng |
+| 3 | **Trần & khoảng** | mỗi ô nhập cho nhập từ đâu tới đâu? | số lượng, số tiền, số dòng |
+| 4 | **Đơn vị & bội số** | dùng theo bội số bao nhiêu, làm tròn hướng nào? | điểm, tiền lẻ, phút |
+| 5 | **Định dạng** | độ dài, tập ký tự, có phân biệt hoa thường? | mã, mã số, SĐT |
+| 6 | **Mốc thời gian** | luật xét tại **thời điểm nào**, và có mấy mốc? | lúc áp / lúc chốt / lúc giao |
+| 7 | **Thứ tự** | nhiều điều kiện cùng hỏng thì theo thứ tự nào? | thứ tự kiểm, thứ tự dòng trong bảng tiền |
+| 8 | **Kết hợp** | hai thứ cùng loại dùng chung được không, mấy cái? | phiếu, ưu đãi, phương thức |
+| 9 | **Số phần tử của danh sách đóng** | danh sách này có **đúng mấy** phần tử? | mấy loại phiếu · mấy trạng thái đơn · mấy điều kiện kiểm · mấy dòng trong bảng tiền |
+
+Trục 9 là trục hay bị bỏ nhất vì nó trông như đã biết. Đội thi thử 11/09 viết "có 2 loại phiếu" trong khi thật ra có 3, và viết một bảng điều kiện kiểm thiếu hẳn một dòng mà họ không biết là tồn tại. Một danh sách đóng **thiếu phần tử** không hiện ra ở bất cứ cổng kiểm nào — chỉ có hỏi thẳng "có mấy…" mới lộ.
+
+**Bước 3 — mỗi dòng ghi ba cột:** `Ô | Mặc định ngành (hoặc "KHÔNG BIẾT") | Nguồn (tên sản phẩm có thật / suy từ đâu)`. Cột giữa ghi `KHÔNG BIẾT` là **kết quả hợp lệ và quan trọng nhất** — nó tự động đẩy ô đó lên đầu hàng đợi hỏi.
+
+**Bước 4 — hiệu chỉnh thiên lệch.** Người viết spec đoán **rộng và đẹp**; nghiệp vụ thật **hẹp và tuỳ tiện**. Soát lại từng dòng vừa viết theo bảng dưới, dòng nào rơi vào cột trái thì sửa về cột phải hoặc hạ xuống `KHÔNG BIẾT`:
+
+| Thiên lệch của người viết | Thực tế thường gặp |
+|---|---|
+| khoảng **rộng** cho an toàn (`1〜99`) | khoảng **hẹp**, thường là dropdown ngắn (`1〜10`) |
+| độ dài **linh hoạt** (`≤20 ký tự`) | độ dài **cố định** (`đúng 12 ký tự`) |
+| kiểm ở **nhiều mốc** cho chắc | kiểm ở **một mốc** duy nhất, và mốc đó là dữ kiện nghiệp vụ |
+| đơn vị **mịn** (`1 điểm`) | đơn vị **thô** theo bội số (`100 điểm`) |
+| ngưỡng **phẳng**, một con số | ngưỡng **chia bậc** theo hạng/vùng |
+| một **công thức** suy ra được (`trần = tổng − phí ship`) | một **tỷ lệ hoặc con số áp đặt** (`50% của小計`) |
+| danh sách **gọn** (2 loại) | danh sách **dài hơn ta nghĩ** (3 loại) |
+
+Nếu một ô có hai phương án và ta đang chọn phương án "kỹ sư" ở cột trái ⇒ ô đó là ứng viên hạng đầu của hàng đợi hỏi, **không** phải ô tự điền.
+
+## 4c. Quét hằng số — bắt buộc, chạy trước khi xếp hàng đợi
+
+**Mọi con số sẽ xuất hiện trong bản nộp đều phải có một dòng RTM trước khi được gõ ra.** Phần lớn hằng số không nằm ở mục 6 (nơi mọi người soi) mà nằm rải ở **mục 2 và mục 4** — nơi không ai soi, và là nơi 6/19 lỗi của bản thi thử 11/09 nằm.
+
+Cách chạy (3 phút, ngay sau §4b):
+
+1. Duyệt khung 10 mục (33 §1) và liệt kê **mọi ô sẽ cần một con số**, không cần biết giá trị:
+   - **mục 2** — mỗi ô nhập: trần/sàn, độ dài, tập ký tự, bước nhảy, giá trị mặc định, điều kiện ẩn/disable; mỗi cột tiền: chưa thuế hay đã thuế.
+   - **mục 4** — số lượng điều kiện, thứ tự, mã của từng điều kiện.
+   - **mục 6** — mọi ngưỡng, tỷ lệ, bội số, hướng làm tròn, mốc thời gian, thứ tự dòng của mỗi bảng tiền.
+   - **mọi mục** — **số phần tử của từng danh sách đóng** (trục 9 §4b): mấy loại, mấy trạng thái, mấy điều kiện, mấy dòng. Đây là hằng số ẩn: nó không xuất hiện dưới dạng chữ số trong spec, nên không cổng nào bắt được — chỉ có hỏi mới biết.
+   - **mục 7** — mọi hạn (ngày giữ, hạn huỷ).
+2. Mỗi ô thành một dòng: `Ô | tra §4b thấy gì | KHÔNG BIẾT? | hạng ưu tiên hỏi`.
+3. Dòng `KHÔNG BIẾT` **lên đầu hàng đợi**, trước mọi câu hỏi quan hệ.
+
+**Xếp hàng đợi theo XÁC SUẤT Ô TỒN TẠI, không theo dạng câu.** Đây là bản sửa sau drill "lich-hen" (12 lượt đo thật) — cách phát biểu cũ "hằng số luôn đi trước quan hệ" **sai**: đo được hai lượt mà câu quan hệ trả về nhiều dữ kiện hơn câu hằng số cùng ô.
+
+Thứ quyết định là **specs thật có ô đó hay không**:
+
+| Hạng | Loại ô | Vì sao | Đo được ở drill |
+|---|---|---|---|
+| 1 | **Hằng số** (ngưỡng, trần, độ dài, bội số, mốc thời gian, số phần tử danh sách) | spec nào cũng phải ghi ra con số ⇒ gần như luôn có câu trả lời | 6/6 lượt có dữ kiện |
+| 2 | **Quan hệ giữa một khái niệm và chính nó** ("huỷ lúc nào được", "mốc xét ở đâu") | vẫn là một ô spec có | 3/3 có dữ kiện, một lượt còn lộ thêm 2 hằng số |
+| 3 | **Giao giữa HAI khái niệm** ("phí huỷ có áp cho loại hẹn X không", "điểm có trừ vào phí Y không") | đây là chỗ spec thật hay **không phủ** ⇒ trả về deflection | 1/2 trả về `Không có quy định riêng.` |
+
+Lỗi thật 11/09 nằm đúng hạng 3: hỏi "điểm có trừ vào phí ship không" (giao điểm × phí ship) nhận deflection, rồi đội tự chế trần. Ô cần biết là hạng 1 — *trần bao nhiêu, bội số bao nhiêu* — và hạng 1 thì luôn có câu trả lời.
+
+**Vẫn giữ: con số sai thì cả cụm luật quanh nó sai.** Biết `判定額 ≥ しきい値 ⇒ miễn ship` mà `しきい値` sai là hỏng cả cụm. Bản thi thử hỏi 5 câu hạng 2–3, **0 câu hạng 1**, và 11/19 lỗi là hằng số.
+
+**Nhận deflection ⇒ đổi hạng, đừng đổi cách nói.** Một câu hạng 3 trả về "không có quy định riêng" nghĩa là ô đó không tồn tại trong specs thật — hỏi lại cùng ô bằng câu khác cũng vô ích. Việc phải làm là tìm **ô hạng 1 nằm gần nó**: `điểm có trừ vào phí ship không` (hạng 3, deflection) → `trần dùng điểm là bao nhiêu` + `bội số bao nhiêu` (hạng 1, cả hai đều có đáp án).
+
+**Cảnh giác câu trả lời SUY DIỄN.** Đo được ở drill: hỏi một ô hạng 3, khách trả lời `Được — trong bảng tiền có cả dòng này lẫn dòng kia`. Đó là khách **suy ra từ một chỗ khác**, không phải luật tường minh. Ghi vào RTM thì đánh dấu là suy diễn, **không** dùng làm bằng chứng kháng nghị, và nếu ô đó có tiền dính vào thì hỏi lại bằng một ô hạng 1.
 
 ## 5. Mẫu RTM ngược — có cả dòng giả định
 

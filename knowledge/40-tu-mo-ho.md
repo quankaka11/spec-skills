@@ -146,4 +146,4 @@ Sửa từ trên xuống; hết giờ thì dừng.
 11. **Đại từ trôi, "chỉ" sai chỗ, phạm vi phủ định (nhóm 7, 14, 15, S6, S7)**.
 12. **Mã BR trùng, tham chiếu chết (S10)** — chỉ ảnh hưởng kháng nghị.
 
-11:48–11:52: đếm token bản nộp, đích ≤ 9.000, sàn 7.500 (30 §1); sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").
+Pha cuối: đếm token bản nộp, đích ≤ `0,90 × L`; ngưỡng dưới xét theo chế độ CHẬT/RỘNG (00 §A3), **không** mặc định là lỗi. Sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").

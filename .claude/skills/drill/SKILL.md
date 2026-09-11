@@ -1,6 +1,6 @@
 ---
 name: drill
-description: Diễn tập trọn vòng Spec Battle với AI Khách hàng giả lập theo luật 11/09 (không giới hạn số câu, một ý mỗi lượt, cấm câu chứa chỉ thị, có nhịp chờ, không memory, 4.000 token; spec ≤10.000 token; điểm +2/+1/−1) — sinh specs thật ẩn có luật phản trực giác, brief mơ hồ, chạy /elicit ↔ agent customer, /spec-write, /spec-review, /attack chính spec vừa viết, chấm bằng executor + customer, tổng kết điểm và 10 chỉ số. Chỉ chạy khi người dùng gõ /drill (10–11/09 trước ngày thi).
+description: Diễn tập trọn vòng Spec Battle với AI Khách hàng giả lập theo luật 11/09 (không giới hạn số câu, một ý mỗi lượt, cấm câu chứa chỉ thị, có nhịp chờ, không memory, 4.000 token; spec ≤ hạn mức L đọc từ brief; điểm +2/+1/−1) — sinh specs thật ẩn có luật phản trực giác, brief mơ hồ, chạy /elicit ↔ agent customer, /spec-write, /spec-review, /attack chính spec vừa viết, chấm bằng executor + customer, tổng kết điểm và 10 chỉ số. Chỉ chạy khi người dùng gõ /drill (10–11/09 trước ngày thi).
 argument-hint: "<tên> [tính-năng] [tự-động|thủ-công]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(LC_ALL=C.UTF-8 wc *), Bash(mkdir *), Bash(date *), Agent
@@ -20,9 +20,9 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
 - Agent sẽ **từ chối** câu chứa chỉ thị hoặc câu gộp nhiều ý. Lượt bị từ chối: **không cộng token**, nhưng **cộng 1 nhịp**, và phải chạy `/elicit tu-choi` để sửa — đúng như ở hệ thật.
 - **Nhịp chờ:** chọn một con số trước khi bắt đầu (mặc định 45 giây), ghi vào `README.md` của drill. Không cần chờ thật, đếm nhịp bằng sổ. **Trần lượt = (số phút pha hỏi ÷ nhịp) − 2**, ghi rõ trước khi gửi lượt đầu tiên.
 - Mỗi lần gọi là một **phiên độc lập**: không đưa câu hỏi/câu trả lời trước vào prompt (giả lập "không có memory").
-- Cộng dồn token ước (00 §A1); vượt **4.000** thì dừng hỏi, dù hàng đợi còn.
+- Cộng dồn token ước (00 §A1); vượt ngân sách hỏi `Q` của đề thì dừng hỏi, dù hàng đợi còn. **`Q` và `L` chọn trước mỗi lần drill và ghi vào `README.md` của drill** — drill với `L` khác nhau (chật / rộng) là hai bài tập khác nhau, phải chạy cả hai.
 - **Viết spec song song**: bắt đầu viết từ sau lượt thứ 3, không đợi hỏi xong — đây là một trong những thứ drill phải đo.
-- Spec: đích **9.000 token**, tuyệt đối ≤10.000, **sàn 7.500** (dưới mức đó mà còn ô trống = chưa viết xong), markdown, không ảnh, **đủ 10 mục BTC** và **đủ 3 sơ đồ mermaid BTC yêu cầu** (mục 5, 6, 9).
+- Spec: đích **`0,90 × L`**, tuyệt đối ≤ `L`; ngắn hơn `0,75 × L` thì phán quyết theo chế độ CHẬT/RỘNG (00 §A3), **không mặc định là lỗi**. Markdown, không ảnh, đủ 10 mục BTC; ba sơ đồ mermaid BTC yêu cầu nếu thang bằng chứng đã đổ tới bậc 6 (33 §5b).
 
 ## Ranh giới thông tin (quy tắc cứng)
 - Agent `executor` KHÔNG BAO GIỜ nhận đường dẫn `true-spec.md`, RTM, log, brief — chỉ `spec.md` + tình huống.
@@ -65,13 +65,19 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
    - **Chi phí bị từ chối**: số lượt bị từ chối / tổng lượt, tách theo hai nhãn (chứa chỉ thị / nhiều ý). Mỗi lần từ chối = một nhịp mất trắng. >10% nghĩa là cổng 8 kiểm tra ở `/elicit` chưa chặn được thứ đáng lẽ phải chặn — ghi thành bài học sửa `knowledge/20` §1.
    - **Đúng nhịp hay không**: số lượt thật sự gửi / trần lượt đã tính ở bước 4. Dưới 70% = đội ngồi chờ câu trả lời, hoặc viết spec nối tiếp thay vì song song.
    - **Độ chính xác ước token**: token thật (nếu đo được) / ước theo `max(từ×2,5; ký tự/2,2)` — cho cả lượt hỏi và cho spec; lệch >20% thì chỉnh hệ số ở 00 §A1.
-   - Token spec (cả hai công thức) + đệm còn lại dưới 10.000 + khoảng cách tới sàn 7.500, **token thực tế từng mục so với ngân sách knowledge/33 §5**, thời gian từng pha (nếu đo được).
-   - **Dùng hết ngân sách chưa**: số logic mục 6 có < 5 case · số nhánh từ chối chưa có message ở mục 4 · số ca ở 7.2 · số sơ đồ mermaid (phải ≥ 3). Đây là chỉ số mới của hạn mức 10.000 — spec dừng ở 6.500 token với các con số này thấp là **thất bại kiểu mới**, không phải thành tích.
+   - Token spec (cả hai công thức) + `L` + đệm + **chế độ CHẬT/RỘNG kèm `T_A`** + **bậc dừng trên thang bằng chứng**, token thực tế từng mục so với **% của `L`** (33 §5), thời gian từng pha (nếu đo được).
+   - **Dùng hết ngân sách chưa** *(chỉ chấm ở chế độ RỘNG)*: số nhánh từ chối chưa có message ở mục 4 · số logic mục 6 dưới ngưỡng case · số ca ở 7.2 · số sơ đồ mermaid. Ở chế độ CHẬT các con số này thấp là **đúng**, không phải thiếu.
+   - **Hằng số không nguồn** *(chỉ số mới, quan trọng nhất)*: chạy quét hằng số 20 §4c trên bản nộp; đếm `số hằng số không trỏ về A-xx/G-xx nào`. Mục tiêu **= 0**. Tách riêng số hằng số nằm ở **mục 2 và mục 4** — đây là vùng mù cũ của cổng G-7.
+   - **Vượt đường đỏ**: số luật ở bậc 9 (con số tự chọn) trong khi bậc 8 chưa thử hoặc còn nhịp hỏi. Mục tiêu **= 0**.
+   - **Bốn kiểu G-9**: số hit ở G-9a (ngoài phạm vi → cấm) · G-9b (luật rộng hơn danh từ đã hỏi) · G-9c (con số trên câu deflection) · G-9d (mã lỗi suy rộng). Mục tiêu **= 0** cả bốn.
+   - **Danh từ lạ bị bỏ qua**: đếm danh từ mới xuất hiện trong câu trả lời của customer; bao nhiêu cái có lượt truy theo. Tỷ lệ truy theo dưới 50% ⇒ hàng đợi đang bỏ phí nguồn dữ kiện rẻ nhất.
+   - **Hằng số trước quan hệ**: trong các lượt đã gửi, đếm `số câu hằng số` / `số câu quan hệ`, và liệt kê hằng số nào bị viết vào spec mà **chưa từng có một lượt hỏi**. Đây là chỉ số đo trực tiếp bài học lớn nhất của thi thử 11/09.
+   - **`HỎI` có được thực thi không**: số mục trong danh sách `HỎI` của `/spec-review` · bao nhiêu mục thật sự được gửi trước khi nộp · **ngân sách hỏi còn thừa lúc nộp**. Nộp khi còn >30% ngân sách và danh sách `HỎI` chưa rỗng là **thất bại quy trình**, ghi riêng thành một dòng đỏ ở đầu `ket-qua.md`.
    - 3 bài học hành động được: mỗi bài = file knowledge + mục + câu cần thêm/sửa. Không tự sửa knowledge — đề xuất để người dùng duyệt.
 
 ## Output bắt buộc
 - [ ] `drill/<tên>/`: true-spec.md, true-spec.answers.md, brief.md, mo-hinh-bai-toan.md, log-khach-hang.md, rtm.md, spec.md, review.md, eval-set.md, tests/doi-minh.md, ket-qua.md.
-- [ ] `ket-qua.md` có 10 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, lỗ hổng giả định, hiệu quả pha xác nhận, **chi phí bị từ chối**, **đúng nhịp hay không**) **bảng phủ 10 mục BTC của spec đội viết**, và 3 bài học.
+- [ ] `ket-qua.md` có 16 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, lỗ hổng giả định, hiệu quả pha xác nhận, chi phí bị từ chối, đúng nhịp hay không, **hằng số không nguồn**, **vượt đường đỏ**, **bốn kiểu G-9**, **danh từ lạ bị bỏ qua**, **hằng số trước quan hệ**, **`HỎI` có được thực thi không**), bảng phủ 10 mục BTC, và 3 bài học.
 
 ## Không được
 - Đưa true-spec cho executor; đưa spec đội cho customer; tự đọc true-spec khi đóng vai đội (kể cả khi dựng mô hình bài toán ở bước 3b).

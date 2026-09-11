@@ -7,8 +7,8 @@
 **Điều kiện vào:** `mo-hinh-bai-toan.md` (knowledge/05) phải tồn tại trước khi gõ chữ đầu tiên. Spec viết mà không có mô hình bài toán thì đạt mọi cổng hình thức và vẫn sai bài toán — bằng chứng đo được ở knowledge/05 §0 và 32 §7.
 
 **Ba luật ngân sách (00 §A):**
-- **Hạn mức là 10.000 TOKEN. Đích của bản nộp là 9.000 token ước lượng** (10% đệm để vá sau các lượt xác nhận). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). 9.000 token ≈ **3.500–3.700 từ tiếng Việt**. Phân bổ từng mục: knowledge/33 §5.
-  **Rủi ro đổi chiều so với bản 6.000:** thứ đáng sợ không còn là tràn hạn mức mà là **dừng sớm** — spec 6.500 token với mục 4 thiếu message và 7.2 chỉ có 4 ca là spec chưa viết xong, không phải spec gọn. Đo token lúc 11:30; **dưới 7.500 mà còn ô trống ⇒ tiêu tiếp theo bảng ưu tiên knowledge/33 §5.**
+- **Hạn mức là `L` TOKEN, đọc từ brief mỗi đề (00 §A3) — không hardcode. Đích của bản nộp là `0,90 × L`** (10% đệm để vá sau các lượt xác nhận). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). Quy đổi: 1.000 token ≈ 390–410 từ tiếng Việt. Phân bổ từng mục theo **% của `L`**: knowledge/33 §5; thứ tự đổ token: §5b.
+  **Rủi ro đi theo hai chiều, tuỳ chế độ (00 §A3).** Chế độ **RỘNG**: thứ đáng sợ là **dừng sớm** — spec thiếu message ở mục 4 là spec chưa viết xong, không phải spec gọn; tiêu tiếp theo thang bằng chứng 33 §5b. Chế độ **CHẬT**: thứ đáng sợ là **điền bừa** — mỗi ô điền không bằng chứng là một khẳng định sai. Đo `T_A` trước khi kết luận spec đang thiếu hay đang đủ.
 - **Bản nộp là markdown, không có ảnh.** Bảng dùng tự do. Sơ đồ chỉ ở dạng mermaid trong văn bản — xem quy tắc mermaid ở cuối §1 và cú pháp ở knowledge/33 §7.
 - **Bản nộp không chứa câu nói về chính nó.** "36/36 ô đã điền", "Phân hoạch 2×2×2 = 8 tổ hợp; phủ 4+2+2 = 8" là chứng minh gửi cho người rà, không phải luật cho Executor. Chúng thuộc `spec.md` nội bộ và `review.md`; bỏ khỏi `spec.nop.md`.
 
@@ -75,7 +75,7 @@ Ba trạng thái màn hình BTC nêu đích danh (mặc định / lỗi / thành
 
 Bảng này rẻ (~80 token) và nối thẳng vào cột "trạng thái nút" + "message" của bảng Case mục 6 — hai trong bảy chiều kết quả. **Không bỏ trống mục.**
 
-### Mục 6. Flow nghiệp vụ & quy tắc xử lý ビジネスロジック詳細 — 3.200 token (≈1.280 từ)
+### Mục 6. Flow nghiệp vụ & quy tắc xử lý ビジネスロジック詳細 — 35,5% của `L`
 **Mục lớn nhất, nơi quyết định TRÚNG/TRƯỢT.** Chia thành từng LOGIC, mỗi logic một mục con. Danh sách logic tối thiểu cho miền giữ hàng:
 
 `6.1 Hiển thị tồn khả dụng` · `6.2 Tạo hold` · `6.3 Chuyển trạng thái hold (state machine)` · `6.4 Gia hạn` · `6.5 Hủy` · `6.6 Hết hạn (job)` · `6.7 Chuyển thành đơn` · `6.8 Tranh chấp đồng thời` · `6.9 Gửi thông báo/mail`
@@ -107,7 +107,7 @@ Mỗi logic viết đủ **ba thứ** (knowledge/33 §2):
 | Lỗi | [ATP < qty] | [từ chối; giữ nguyên kho; message "[..]"; nút giữ nguyên disable] | BR-04 | A-.. |
 | Ưu tiên | [hai case cùng đúng] | [áp dụng [..] trước, theo 0.6] | BR-05 | A-.. |
 
-**Ngân sách 3.200 token của mục 6 tiêu thế nào** (9 logic là điển hình cho miền giữ hàng):
+**Ngân sách mục 6 tiêu thế nào** (9 logic là điển hình cho miền giữ hàng; tỷ lệ giữ nguyên ở mọi `L`):
 
 | Thành phần | Mỗi logic | × 9 logic | Ghi chú |
 |---|---|---|---|
@@ -117,7 +117,7 @@ Mỗi logic viết đủ **ba thứ** (knowledge/33 §2):
 | `stateDiagram-v2` + `sequenceDiagram` + một `flowchart TD` | — | ~800 | §7.2, §7.3, §7.5 của knowledge/33 |
 | Bảng mốc thông báo (6.9) | — | ~120 | |
 
-Số case tối thiểu mỗi logic là **5** (1 bình thường + 2 biên + 2 lỗi). Với 6.000 token cũ, nhiều logic phải dừng ở 3 case; với 3.200 token thì **không còn lý do gì để dưới 5** — và "thiếu case nào thì Executor phải đoán ở đúng chỗ đó" là câu BTC viết trong đề bài.
+Số case mỗi logic **tỷ lệ với ngân sách**: ≥5 (1 bình thường + 2 biên + 2 lỗi) khi mục 6 có ≥2.000 token; ≥3 (1 bình thường + 1 biên + 1 lỗi) khi chật hơn. "Thiếu case nào thì Executor phải đoán ở đúng chỗ đó" là câu BTC viết trong đề bài — nhưng case phải **phái sinh từ luật đã có bằng chứng** (bậc 4 của thang 33 §5b), không phải case bịa thêm giá trị mới.
 
 **Logic nhiều nhánh nhất của spec (thường là 6.2 tạo hold) kèm thêm một lưu đồ `flowchart TD`** theo knowledge/33 §7.5. Lưu đồ này không phải trang trí: nó là cách duy nhất làm lộ **nhánh cụt** (một điều kiện chỉ có nhánh Có mà không có nhánh Không) và nó chốt **thứ tự kiểm** — tức trả lời luôn gạch thứ 5 "thứ tự ưu tiên khi nhiều case cùng đúng". Thứ tự trên lưu đồ phải **khớp** thứ tự trong bảng Case và cột FE/BE của mục 4; lệch nhau là mâu thuẫn nội tại (loại lỗ hổng #5).
 
@@ -219,13 +219,60 @@ Chạy **lint 10 dòng ở knowledge/33 §7.7** trước khi nộp — không c�
 
 Kể cả khi bỏ trần số câu, nhịp chờ vẫn khiến **~65% ngân hàng câu hỏi không được hỏi** (bảng 20 §3.5). Phần spec không có nguồn từ AI Khách hàng vẫn phải có luật. Quy tắc chọn giá trị:
 
-1. **Điền bằng mặc định phổ biến của ngành**, lấy từ 31 phát biểu ở 20 §4 và catalogue ⚠ ở 10 §6. Gắn `[GIẢ ĐỊNH]` ở bản nội bộ.
+1. **Điền bằng mặc định phổ biến của ngành**, tra ở `battle/mac-dinh-nganh.md` — bảng dựng cho **miền của đề này** tại `/frame` theo phương pháp 20 §4b. Bảng mẫu miền "đặt giữ hàng" ở 20 §4 và catalogue ⚠ ở 10 §6 chỉ là **ví dụ của phương pháp**, không dùng cho miền khác. Gắn `[GIẢ ĐỊNH]` ở bản nội bộ.
 2. **Không sáng tạo giá trị mới.** Lý do là số học, không phải khẩu hiệu: Executor mù khi gặp spec im lặng sẽ đoán theo mặc định ngành. Nếu specs thật = mặc định ngành thì viết mặc định ra → TRƯỢT (giữ điểm), im lặng → cũng TRƯỢT. Nếu specs thật ≠ mặc định ngành thì viết mặc định → TRÚNG, im lặng → cũng TRÚNG. **Viết mặc định ngành ra không làm xấu đi ca nào**, mà lại loại được đa nghĩa ở các ca ghép (hai luật cùng áp dụng, biên, thứ tự ưu tiên) — nơi im lặng khiến hai reader ra hai kết quả. Ngược lại, viết một giá trị *tự nghĩ ra* (khác cả mặc định ngành lẫn specs thật) là ca duy nhất tệ hơn im lặng: nó biến một TRƯỢT tiềm năng thành TRÚNG chắc chắn.
+2b. **Nhánh thứ ba: tra KHÔNG THẤY mặc định ngành cho ô đó.** Đây là nhánh kit 10/09 thiếu, và thiếu nó thì quy tắc "không sáng tạo" tự thoái hoá thành "sáng tạo" mà không kêu một tiếng: bảng tra rỗng, người viết vẫn phải điền một ô, nên điền bừa. Ba lối ra, theo thứ tự, **không được nhảy cóc**:
+   - (a) **Còn nhịp hỏi** ⇒ một lượt nhị phân, chèn lên đầu hàng đợi. Ô không tra được mặc định là ô có giá trị hỏi cao nhất, vì cả ta lẫn Executor mù đều không đoán được nó.
+   - (b) **Hết nhịp** ⇒ viết **luật an toàn hai chiều** (32 §3.3): phát biểu quan hệ, thứ tự, hoặc hành vi khi lệch — đúng ở cả hai phương án, không chốt con số. Đây là bậc 8 của thang bằng chứng (33 §5b).
+   - (c) Chỉ khi (a) và (b) đều không dùng được ⇒ một con số tự chọn, **và** một dòng trong bảng 7.4. Đây là bậc 9, dưới đường đỏ.
+   **Không bao giờ** viết một con số tự chọn chỉ vì mục đó đang có ô trống.
+
 3. **Ba trường hợp không được tự điền, phải chèn thành một lượt hỏi (ưu tiên dạng nhị phân) hoặc dùng luật an toàn hai chiều (32 §3.3):** (a) luật làm hỏng mục tiêu brief (nhãn `⚡`, cổng F7); (b) hạn mức không cưỡng chế được (cổng F2); (c) giả định mà đảo lại thì đổi hướng tiền. Ba loại này là chỗ specs thật gần chắc có luật riêng, và đoán sai thì mất điểm ở đúng core flow.
 4. **Xếp hạng mọi `[GIẢ ĐỊNH]`** theo ba tiêu chí ở `/spec-write` bước 14, **và xếp liên tục trong lúc viết, không đợi tới cuối** — mỗi dòng rủi ro Cao chấm sớm là một lượt hỏi còn kịp gửi (20 §3.4).
 5. Bản nộp **bỏ nhãn** `[GIẢ ĐỊNH]` — nhãn đó cho đội đọc, còn với Executor thì một luật có nhãn "giả định" là một luật yếu, mời nó tự suy diễn.
 
 Hệ quả cho cổng chất lượng: "mọi luật truy vết về RTM" không còn nghĩa là "mọi luật có `← A-xx`". Nó có nghĩa **mọi luật có một dòng RTM**, loại `A-xx` (có câu trả lời) hoặc `G-xx` (giả định có xếp hạng) — 20 §5.
+
+## 1c. Bốn cách biến bằng chứng thành khẳng định sai
+
+Bốn lỗi này **không** phải lỗi elicit — chúng xảy ra lúc gõ spec, trên nền bằng chứng đúng, và mỗi cái đều tự nhiên tới mức không ai thấy mình vừa làm. Kiểm bốn cái này trên từng luật trước khi để nó vào bản nộp.
+
+### 1c-1. `NGOÀI PHẠM VI` ≠ `BỊ CẤM` ≠ `KHÔNG TỒN TẠI`
+Khách nói "X ngoài phạm vi" nghĩa là **đừng viết luật cho X**. Nó *không* cho phép viết một luật **cấm** X, vì luật cấm cũng là một khẳng định về X — và nếu specs thật cho X tồn tại với đúng một hành vi nhỏ, luật cấm của ta sai ngay.
+
+| Khách nói | ✗ Viết thành | ✓ Viết thành |
+|---|---|---|
+| "giỏ hàng của khách vãng lai ngoài phạm vi" | `khách vãng lai không dùng được ba màn hình này` | (§1 NGOÀI phạm vi: `khách vãng lai の giỏ hàng`) — và **không** một luật nào khác nhắc tới họ |
+| "phát hành phiếu là việc màn quản trị" | `không thể phát hành phiếu` | (§1 NGOÀI phạm vi) |
+
+**Hệ quả cho catch-all 0.4** ("im lặng = CẤM"): 0.4 áp cho **hành động của hệ thống**, không áp cho **ai được vào màn hình nào**. Một dòng 0.4 chồng lên một mục NGOÀI phạm vi sẽ biến mọi khoảng trống thành khẳng định sai — đúng cơ chế đã làm hỏng hai mục của bản thi thử 11/09.
+
+### 1c-2. Phạm vi của câu trả lời = phạm vi **danh từ** trong câu hỏi
+Một câu trả lời cấp phép đúng cái danh từ nó nói tới. Mở rộng một chữ là một giả định mới, phải có dòng `G-xx`.
+
+| Hỏi về | Trả lời | ✗ Suy rộng thành | Vì sao sai |
+|---|---|---|---|
+| bảng tiền (金額表) hiện tiền chưa thuế hay đã thuế | "小計 chưa thuế, 合計 đã thuế" | đơn giá **từng dòng hàng** cũng chưa thuế | dòng hàng không phải bảng tiền |
+| trần dùng **chung** một mã là bao nhiêu | "không có trần chung" | "**không có** trần nào cả" | phủ định phạm vi hẹp ≠ phủ định phạm vi rộng |
+
+Luật gõ: khi chuyển `A-xx` thành BR, **dán lại đúng danh từ của câu hỏi** vào luật. Luật rộng hơn danh từ đó ⇒ tách phần rộng ra thành `G-xx` riêng.
+
+### 1c-3. "Không có quy định riêng" không cấp phép cho một luật khẳng định
+Câu deflection của khách phủ định **sự tồn tại của một quy định trong phạm vi câu hỏi**. Nó không nói ô đó trống, và tuyệt đối không cấp phép cho ta chốt một giá trị rồi gắn `A-xx`. Ô đó thành `G-xx`, rồi đi tiếp theo nhánh 2b.
+
+**Cạm bẫy: luật khẳng định không có con số vẫn là khẳng định.** Hai ví dụ có thật, cả hai đều sai so với đáp án chuẩn, và cả hai đều **không chứa một chữ số nào**:
+
+| Khách trả lời | Đội viết | Thực tế |
+|---|---|---|
+| "trần dùng **chung** thì không quy định" | `số lần dùng một mã không có trần` | có loại phiếu "mỗi người một lần", hỏng thì báo lỗi riêng |
+| "điểm có trừ vào phí ship hay không thì không quy định" | `điểm không trừ vào phí ship; trần = tổng − phí ship` | trần là 50% của小計, và ô cần hỏi thật ra là *trần bao nhiêu / bội số bao nhiêu* |
+
+Cả hai đều tới từ việc hỏi một ô **hằng số** bằng một câu **quan hệ** (20 §4c). Nhận deflection ⇒ đổi dạng câu rồi hỏi lại, đừng chuyển deflection thành luật.
+
+### 1c-4. Bảng mã lỗi **không được suy rộng từ một dữ kiện**
+Biết `E-101` ứng với điều kiện số 1 **không** cho biết `E-102`…`E-10n` ứng với gì, cũng không cho biết *danh sách điều kiện có mấy dòng*. Ánh xạ mã ↔ điều kiện là dữ liệu tuỳ tiện của khách, không có mặc định ngành, và specs thật thường có một điều kiện mà ta không biết là có (ví dụ "giỏ không có món nào thuộc đối tượng").
+- Còn nhịp ⇒ hỏi **từng mã một** (`E-104 ứng với điều kiện nào?` — một ý, qua được cổng MULTI_QUESTION).
+- Hết nhịp ⇒ bậc 8: viết **thứ tự kiểm bằng lời** và luật "chỉ hiện một lỗi, lỗi của điều kiện sớm nhất", **không** gắn mã cho những điều kiện chưa hỏi.
 
 ## 2. KHUNG CATCH-ALL (đặt tại mục 1.x của spec)
 
@@ -321,7 +368,7 @@ Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều 
 
 | Số dòng RTM | Dạng mục 6 | Lý do |
 |---|---|---|
-| < 60 | bảng 5 cột (Mã · Luật · K/T/N/L · KHÔNG ĐƯỢC · RTM) | với 3.200 token cho mục 6 thì đủ ngân sách, và bảng **dễ soi ô trống** hơn hẳn danh sách |
+| < 60 | bảng 5 cột (Mã · Luật · K/T/N/L · KHÔNG ĐƯỢC · RTM) | với ngân sách 35,5% của `L` cho mục 6 thì đủ chỗ, và bảng **dễ soi ô trống** hơn hẳn danh sách |
 | ≥ 60 | **danh sách** `**BR-xx** — luật. Cấm: … ← A-yy` | mỗi hàng bảng 5 cột tốn ~6 token chỉ riêng dấu `\|`; 70 BR = ~420 token dấu bảng |
 
 Ngưỡng này là **40 ở bản 6.000 token, nâng lên 60 ở bản 10.000**. Mặc định nên là bảng: ô trống trong bảng thì nhìn thấy, ô trống trong danh sách thì không — mà "không ô trống" là dòng 16 của cổng chất lượng.
@@ -360,15 +407,15 @@ Viết theo thứ tự **ăn điểm**, không theo thứ tự số mục.
 | 11:05–11:20 | Trong lúc các lượt xác nhận chạy, theo thứ tự ăn điểm: **mục 4** (message nguyên văn) → **mục 8** (Guest, System/Job) → **mục 2** → **mục 3** → **mục 7** (7.2 bất thường liên logic, 7.4 chưa chốt); mục 9/10/5 gọn nếu còn đệm | Đủ 10 mục |
 | 11:20–11:30 | Nạp các lượt xác nhận: mọi câu trả lời khác giả định sửa ngay (đổi cả BR liên quan); rà catch-all 1.x theo giá trị mới; thêm 0.11–0.14 nếu chưa có | Catch-all khớp câu trả lời; ý "Sai" đã vá |
 | 11:30–11:38 | **Cổng F** (knowledge/32 §1) trên từng BR + bảng Mục tiêu↔Luật (`/frame muc-tieu-luat`) + **đo token giữa kỳ** | 0 ✗ ở F1/F5; mọi mục tiêu có luật phục vụ; biết còn bao nhiêu đệm |
-| ⟳ nếu < 7.500 token | **Tiêu đệm theo thứ tự lãi** (knowledge/33 §5 bảng cuối): thêm case lỗi/biên mục 6 → thêm message mục 4 → thêm ca 7.2 → lưu đồ `flowchart TD` → bảng 3 trạng thái mục 5 | Không còn ô trống; token 8.000–9.000 |
+| ⟳ nếu < `0,75 × L` **và** chế độ RỘNG (00 §A3) | **Tiêu đệm theo thang bằng chứng** (33 §5b), từ bậc đang dừng đi xuống, **dừng ở đường đỏ**: message mục 4 → case lỗi/biên phái sinh → `G-xx` tra được rủi ro Thấp → ba sơ đồ BTC → `G-xx` rủi ro Trung | Đã chạm đường đỏ hoặc token ≈ `0,90 × L`. Chế độ CHẬT ⇒ bỏ qua dòng này |
 | 11:38–11:48 | Red team: eval set qua **hai** Executor mù độc lập; Ctrl+F danh sách đen knowledge/40 §2 (22 nhóm) + §3 S1–S39 | Lỗ hổng đã vá; 0 ca hai reader lệch nhau |
-| 11:48–11:52 | Đếm token trên bản nộp, đích ≤ 9.000; cắt theo knowledge/33 §6 nếu vượt; bỏ câu nói về chính spec; nộp; lưu bản copy | Đã nộp, còn đệm |
+| Pha cuối | Đếm token trên bản nộp, đích ≤ `0,90 × L`; cắt theo knowledge/33 §6 nếu vượt; bỏ câu nói về chính spec; **chỉ nộp khi `/spec-review` kết luận NỘP ĐƯỢC, hoặc kết luận CHƯA mà danh sách `HỎI` đã rỗng vì hết nhịp**; lưu bản copy | Đã nộp, còn đệm |
 
 Cạn giờ → cắt theo knowledge/33 §6: **BR "không thuộc mục tiêu nào" (05 §2)** trước tiên, rồi **mục 10 → 9 → 5 → 3 → 2**. KHÔNG cắt **mục 1, 6, 7, 4, 8** và không cắt bốn luật catch-all 0.11–0.14.
 
 Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài toán + RTM + **bấm gửi hàng đợi hỏi đúng nhịp** + xếp hạng giả định + mục 1 & 7 + cổng F + red team.
 
-## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP — 25 dòng [HD §5.9]
+## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP — 30 dòng [HD §5.9]
 
 Đánh ✓ từng dòng; một dòng chưa ✓ = sửa trước khi nộp.
 
@@ -395,7 +442,13 @@ Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài
 | 19 | Bảng **Mục tiêu↔Luật** (knowledge/05 §2) đã lập; mọi mục tiêu của brief có ≥1 luật phục vụ; mọi ô "làm hỏng mục tiêu" đã hỏi AI Khách hàng hoặc đã xử lý? |
 | 20 | **12 kịch bản suy biến** (knowledge/05 §M6) đều ✓ có luật, hoặc ⛔ nằm trong danh sách NGOÀI phạm vi tường minh? |
 | 21 | Mọi nghĩa vụ tiền đã tách mốc "khởi tạo" (ta kiểm soát) khỏi mốc "hoàn tất" (bên ngoài), và có luật cho ca **hoàn tiền thất bại**? |
-| 22 | **Đủ ba sơ đồ BTC yêu cầu** (mục 5 wireframe · mục 6 sequence end-to-end · mục 9 sơ đồ hệ thống), mỗi sơ đồ kèm 1–2 câu chữ tóm tắt; đã chạy **lint 10 dòng knowledge/33 §7.7**; catch-all có dòng 0.15 "bảng và luật có mã thắng"? |
+| 22 | Ba sơ đồ BTC yêu cầu (mục 5 wireframe · mục 6 sequence end-to-end · mục 9 sơ đồ hệ thống) — bắt buộc **nếu thang bằng chứng 33 §5b đã đổ tới bậc 6**; mỗi sơ đồ kèm 1–2 câu chữ tóm tắt; đã chạy **lint 10 dòng knowledge/33 §7.7**; catch-all có dòng 0.15 "bảng và luật có mã thắng"? |
 | 22b | Logic nhiều nhánh nhất của mục 6 có **lưu đồ `flowchart TD`**, và thứ tự kiểm trên lưu đồ **khớp** bảng Case + cột FE/BE mục 4? |
-| 23 | **Token ≤ 10.000, đích ≤ 9.000 trên bản nộp** (đã bỏ `← A-xx`, nhãn `[M-x]`, `[GIẢ ĐỊNH]`), bản nộp **không chứa câu nói về chính nó**, không có ảnh, và đã lưu bản copy nội bộ cho kháng nghị? Đo bằng `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `max(từ × 2,5 ; ký tự / 2,2)`; **không** dùng `wc` thiếu `LC_ALL=C.UTF-8` (locale `C` đếm sai ký tự đa byte `—` `→` `✓` `≥` `§`). Giao diện nộp hiển thị token thì lấy số đó. Còn ≥ 1.000 token đệm dưới 10.000? |
-| 24 | **Ngưỡng dưới:** bản nộp ≥ 7.500 token, hoặc nếu thấp hơn thì đã chứng minh không mục nào còn ô trống và mọi logic mục 6 có ≥ 5 case? Dừng ở 6.500 token với hạn mức 10.000 là **bỏ chỗ trống cho Executor đoán**, không phải gọn. |
+| 23 | **Token ≤ `L`, đích ≤ `0,90 × L`** trên bản nộp (đã bỏ `← A-xx`, nhãn `[M-x]`, `[GIẢ ĐỊNH]`), bản nộp **không chứa câu nói về chính nó**, không có ảnh, và đã lưu bản copy nội bộ cho kháng nghị? `L` đọc từ brief (00 §A3). Đo bằng `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `max(từ × 2,5 ; ký tự / 2,2)`; **không** dùng `wc` thiếu `LC_ALL=C.UTF-8` (locale `C` đếm sai ký tự đa byte `—` `→` `✓` `≥` `§`). Giao diện nộp hiển thị token thì lấy số đó. |
+| 24 | **Ngưỡng dưới — chỉ chấm sau khi đo chế độ.** Tính `T_A` (00 §A3). Chế độ **RỘNG** (`T_A < 0,75 × L`): bản nộp phải ≥ `0,75 × L`, hoặc đã đổ thang bằng chứng tới đường đỏ. Chế độ **CHẬT** (`T_A ≥ 0,75 × L`): dòng này **không áp dụng** — spec ngắn vì bằng chứng ít là đúng. |
+| 25 | **Hằng số có nguồn:** quét mọi chữ số và mẫu định lượng trên **bản nộp** (20 §4c), bỏ mã định danh; mỗi hằng số còn lại trỏ về một `A-xx` hoặc `G-xx`? Quét trên chữ, **không** duyệt sổ RTM — hằng số ở mục 2 và mục 4 là vùng mù kinh điển. |
+| 26 | **Đường đỏ:** không luật nào ở bậc 9 (con số tự chọn) trong khi bậc 8 (luật an toàn hai chiều) chưa thử hoặc còn nhịp hỏi? (33 §5b) |
+| 27 | **G-9a:** không mục nào trong danh sách NGOÀI phạm vi bị nhắc lại ở chỗ khác dưới dạng lệnh CẤM; không catch-all "im lặng = CẤM" nào phủ lên actor ngoài phạm vi? (§1c-1) |
+| 28 | **G-9b:** mọi BR có `← A-xx` đều **không rộng hơn danh từ** trong câu hỏi đã sinh ra nó? (§1c-2) |
+| 29 | **G-9c:** không BR nào chứa một con số mà nguồn `A-xx` của nó là câu trả lời "không có quy định riêng"? (§1c-3) |
+| 30 | **G-9d:** mọi mã lỗi trong mục 4 có `A-xx` đỡ; điều kiện chưa hỏi thì mô tả bằng lời, không đánh mã? (§1c-4) |
