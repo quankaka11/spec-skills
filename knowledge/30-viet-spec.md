@@ -6,8 +6,9 @@
 
 **Điều kiện vào:** `mo-hinh-bai-toan.md` (knowledge/05) phải tồn tại trước khi gõ chữ đầu tiên. Spec viết mà không có mô hình bài toán thì đạt mọi cổng hình thức và vẫn sai bài toán — bằng chứng đo được ở knowledge/05 §0 và 32 §7.
 
-**Ba luật ngân sách (tham số chốt 09/09 — 00 §A):**
-- **Hạn mức là 6.000 TOKEN, không phải 3.000 từ. Đích của bản nộp là 5.400 token ước lượng** (10% đệm để vá sau các lượt xác nhận). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). 5.400 token ≈ **2.100–2.200 từ tiếng Việt** — chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư, nên ngân sách từng mục ở knowledge/33 §5 đã được cắt lại theo tỷ lệ đó.
+**Ba luật ngân sách (00 §A):**
+- **Hạn mức là 10.000 TOKEN. Đích của bản nộp là 9.000 token ước lượng** (10% đệm để vá sau các lượt xác nhận). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). 9.000 token ≈ **3.500–3.700 từ tiếng Việt**. Phân bổ từng mục: knowledge/33 §5.
+  **Rủi ro đổi chiều so với bản 6.000:** thứ đáng sợ không còn là tràn hạn mức mà là **dừng sớm** — spec 6.500 token với mục 4 thiếu message và 7.2 chỉ có 4 ca là spec chưa viết xong, không phải spec gọn. Đo token lúc 11:30; **dưới 7.500 mà còn ô trống ⇒ tiêu tiếp theo bảng ưu tiên knowledge/33 §5.**
 - **Bản nộp là markdown, không có ảnh.** Bảng dùng tự do. Sơ đồ chỉ ở dạng mermaid trong văn bản — xem quy tắc mermaid ở cuối §1 và cú pháp ở knowledge/33 §7.
 - **Bản nộp không chứa câu nói về chính nó.** "36/36 ô đã điền", "Phân hoạch 2×2×2 = 8 tổ hợp; phủ 4+2+2 = 8" là chứng minh gửi cho người rà, không phải luật cho Executor. Chúng thuộc `spec.md` nội bộ và `review.md`; bỏ khỏi `spec.nop.md`.
 
@@ -17,7 +18,7 @@ Quy ước file: `[..]` = chỗ điền · ⚠ = lấy từ dòng ⚠ trong RTM 
 
 Copy nguyên khối; điền hết ô mọi bảng [HD §4.8-7]. Ngân sách token từng mục: knowledge/33 §5. Thứ tự cắt khi quá hạn mức: knowledge/33 §6.
 
-### Mục 1. Tổng quan & phạm vi 概要 — 680 token (≈270 từ)
+### Mục 1. Tổng quan & phạm vi 概要 — 850 token (≈340 từ)
 4–5 bullet: tên hệ thống, tên màn hình/chức năng, trạng thái tài liệu, chức năng này làm gì.
 
 NGOÀI phạm vi nêu tường minh để Executor trả lời "không thuộc tài liệu này" (0.9). Lấy **nguyên văn** câu trả lời của lượt hỏi về phạm vi (20 §3.2 lượt 26); danh sách này còn là rào chống VÔ HIỆU của chính đội khi bắn (50 §6).
@@ -34,7 +35,7 @@ NGOÀI phạm vi nêu tường minh để Executor trả lời "không thuộc t
 | Hold | [Yêu cầu giữ 1..N HoldLine (SKU + qty) cho một khách trong TTL] |
 | TTL | [.. phút, tính từ `created_at`] |
 
-### Mục 2. Item trên màn hình 画面項目仕様 — 575 token (≈230 từ)
+### Mục 2. Item trên màn hình 画面項目仕様 — 850 token (≈340 từ)
 Chia theo khu vực (header / danh sách sản phẩm / khối cọc / footer nút). **Bắt buộc có cột khác biệt login vs guest.** Text hiển thị ghi nguyên văn trong ngoặc kép.
 
 | No | 項目名 (Item) | コントロール | I/O | 必須 | 備考 (mặc định, giới hạn, format, placeholder, hiển thị/ẩn/disable, login vs guest) |
@@ -44,7 +45,7 @@ Chia theo khu vực (header / danh sách sản phẩm / khối cọc / footer n�
 
 Ô không có dữ liệu từ RTM → ghi `[GIẢ ĐỊNH — ..]`, không để trống.
 
-### Mục 3. Event イベント仕様 — 300 token (≈120 từ)
+### Mục 3. Event イベント仕様 — 500 token (≈200 từ)
 
 | No | Event | Trigger | Xử lý | Ghi chú |
 |---|---|---|---|---|
@@ -52,7 +53,7 @@ Chia theo khu vực (header / danh sách sản phẩm / khối cọc / footer n�
 | 2 | Bấm "Giữ hàng" | [click] | [gọi API tạo hold (mục 9); chạy validation mục 4] | [chặn double-click: idempotency 0.10] |
 | 3 | Đổi [dropdown] | [change] | [tính lại [..]] | [..] |
 
-### Mục 4. Validation & message lỗi バリデーション仕様 — 625 token (≈250 từ)
+### Mục 4. Validation & message lỗi バリデーション仕様 — 1.000 token (≈400 từ)
 **Message ghi đúng từng chữ** — Executor sẽ bị hỏi "hiện message gì". Có cả rule nghiệp vụ (vượt tồn, hết hạn, trạng thái không hợp lệ), không chỉ rule format.
 
 | No | FE/BE | Item | Nội dung check | Message |
@@ -61,10 +62,20 @@ Chia theo khu vực (header / danh sách sản phẩm / khối cọc / footer n�
 | 2 | BE | Hold | [trạng thái phải ACTIVE] | "[Yêu cầu giữ hàng đã hết hạn.]" |
 | 3 | FE | [SĐT] | [format [..]] | "[..]" |
 
-### Mục 5. Design / Wireframe デザイン — 100 token (≈40 từ)
-Có link Figma/ảnh thì dán. Không có → vẽ **Mermaid `block-beta`** (hoặc `flowchart TD` nếu cần an toàn render) theo mẫu knowledge/33 §7.1, kèm 1–2 câu chữ mô tả thứ tự khu vực từ trên xuống. Ba trạng thái (mặc định, lỗi, thành công) ghi bằng bảng ngắn, không vẽ ba sơ đồ. **Không bỏ trống mục.**
+### Mục 5. Design / Wireframe デザイン — 350 token (≈140 từ)
+Bản nộp không có ảnh ⇒ vẽ **Mermaid `block-beta`** (hoặc `flowchart TD` nếu cần an toàn render) theo mẫu knowledge/33 §7.1, kèm 1–2 câu chữ mô tả thứ tự khu vực từ trên xuống.
 
-### Mục 6. Flow nghiệp vụ & quy tắc xử lý ビジネスロジック詳細 — 1.900 token (≈760 từ)
+Ba trạng thái màn hình BTC nêu đích danh (mặc định / lỗi / thành công) ghi bằng **bảng**, không vẽ ba sơ đồ:
+
+| Trạng thái | Hiện gì | Nút chính | Message |
+|---|---|---|---|
+| Mặc định | [..] | [enable / disable] | — |
+| Lỗi | [..] | [..] | mục 4 dòng [..] |
+| Thành công | [..] | [đổi text thành "[..]"] | [..] |
+
+Bảng này rẻ (~80 token) và nối thẳng vào cột "trạng thái nút" + "message" của bảng Case mục 6 — hai trong bảy chiều kết quả. **Không bỏ trống mục.**
+
+### Mục 6. Flow nghiệp vụ & quy tắc xử lý ビジネスロジック詳細 — 3.200 token (≈1.280 từ)
 **Mục lớn nhất, nơi quyết định TRÚNG/TRƯỢT.** Chia thành từng LOGIC, mỗi logic một mục con. Danh sách logic tối thiểu cho miền giữ hàng:
 
 `6.1 Hiển thị tồn khả dụng` · `6.2 Tạo hold` · `6.3 Chuyển trạng thái hold (state machine)` · `6.4 Gia hạn` · `6.5 Hủy` · `6.6 Hết hạn (job)` · `6.7 Chuyển thành đơn` · `6.8 Tranh chấp đồng thời` · `6.9 Gửi thông báo/mail`
@@ -96,9 +107,34 @@ Mỗi logic viết đủ **ba thứ** (knowledge/33 §2):
 | Lỗi | [ATP < qty] | [từ chối; giữ nguyên kho; message "[..]"; nút giữ nguyên disable] | BR-04 | A-.. |
 | Ưu tiên | [hai case cùng đúng] | [áp dụng [..] trước, theo 0.6] | BR-05 | A-.. |
 
+**Ngân sách 3.200 token của mục 6 tiêu thế nào** (9 logic là điển hình cho miền giữ hàng):
+
+| Thành phần | Mỗi logic | × 9 logic | Ghi chú |
+|---|---|---|---|
+| Bảng step 2–4 dòng | ~90 | 810 | logic đơn giản (6.9 mail) chỉ cần 2 dòng |
+| Bảng Case ≥ 5 dòng (bình thường · 2 biên · 2 lỗi) | ~210 | 1.890 | **đây là chỗ ăn điểm; thiếu chỗ thì cắt logic khác, không cắt case** |
+| Bảng state × event (6.3) | — | ~250 | 100% ô, kể cả `Từ chối 0.5` / `KHL` |
+| `stateDiagram-v2` + `sequenceDiagram` + một `flowchart TD` | — | ~800 | §7.2, §7.3, §7.5 của knowledge/33 |
+| Bảng mốc thông báo (6.9) | — | ~120 | |
+
+Số case tối thiểu mỗi logic là **5** (1 bình thường + 2 biên + 2 lỗi). Với 6.000 token cũ, nhiều logic phải dừng ở 3 case; với 3.200 token thì **không còn lý do gì để dưới 5** — và "thiếu case nào thì Executor phải đoán ở đúng chỗ đó" là câu BTC viết trong đề bài.
+
+**Logic nhiều nhánh nhất của spec (thường là 6.2 tạo hold) kèm thêm một lưu đồ `flowchart TD`** theo knowledge/33 §7.5. Lưu đồ này không phải trang trí: nó là cách duy nhất làm lộ **nhánh cụt** (một điều kiện chỉ có nhánh Có mà không có nhánh Không) và nó chốt **thứ tự kiểm** — tức trả lời luôn gạch thứ 5 "thứ tự ưu tiên khi nhiều case cùng đúng". Thứ tự trên lưu đồ phải **khớp** thứ tự trong bảng Case và cột FE/BE của mục 4; lệch nhau là mâu thuẫn nội tại (loại lỗ hổng #5).
+
 Logic `6.3` dùng bảng state × event (điền 100% ô — `→ ĐÍCH (BR-xx)` / `Từ chối 0.5` / `KHL`); mẫu bảng và mã hiệu ứng K/T/N/L: knowledge/31 §3. Kèm **Mermaid `stateDiagram-v2`** (knowledge/33 §7.2) cho trực quan — nhưng sơ đồ KHÔNG thay bảng: ô "Từ chối 0.5" và "KHL" chỉ có trong bảng, mà đó mới là chỗ Executor đoán sai. Hết chỗ thì bỏ sơ đồ, giữ bảng. Logic có ≥ 2 điều kiện → decision table hit policy U, đếm tổ hợp = tích, ô không hợp lệ ghi "Từ chối 0.5" (knowledge/31 §1–§2).
 
-Tập trạng thái ứng viên cho `6.3`: `[PENDING_DEPOSIT], ACTIVE, [EXTENDED], CONVERTED, EXPIRED, CANCELLED_CUSTOMER, CANCELLED_STAFF` — xác nhận bằng C2 trước khi chốt; trạng thái cuối (terminal) không có chuyển tiếp ra.
+Tập trạng thái ứng viên cho `6.3`: `[PENDING_DEPOSIT], ACTIVE, [EXTENDED], CONVERTED, EXPIRED, CANCELLED_CUSTOMER, CANCELLED_STAFF`; trạng thái cuối (terminal) không có chuyển tiếp ra.
+
+**Cách dựng bảng state × event trong chế độ hỏi một-ý.** Bản cũ lấy cả bảng từ một câu hỏi gộp (C2). Câu đó **không còn gửi được** — gộp nhiều ý sẽ bị từ chối (20 §1). Bảng giờ **ghép lại từ nhiều nguồn**, và đó là việc của người viết spec, không phải của người hỏi:
+
+| Nguồn | Cho ô nào của bảng |
+|---|---|
+| Các lượt nhị phân đã trả lời về vòng đời (mốc khóa tồn, hết hạn, hủy, chuyển đơn, gia hạn) | các chuyển tiếp chính — dòng `A-xx` |
+| Mặc định ngành 20 §4 + catalogue 10 §6 | phần lớn ô còn lại — dòng `G-xx` |
+| Catch-all 0.5 | **mọi ô không có luật riêng**: "Từ chối 0.5", giữ nguyên trạng thái, không đổi kho, không đổi tiền |
+| Catch-all 0.4 | ô bị cấm theo quyền actor |
+
+Hệ quả thực tế: với 15–20 lượt hỏi, bảng state × event điển hình có **4–8 ô `A-xx`** và phần còn lại là `G-xx` + `Từ chối 0.5`. Đó là bình thường. Điều **không** bình thường là để ô trống — ô trống là chỗ Executor tự chọn, và bảng trạng thái là nơi bị bắn nhiều thứ hai sau message lỗi.
 
 Logic `6.9` cần một bảng mốc thông báo (cột Message của mục 4 chỉ chở message lỗi, không chở mail):
 
@@ -110,7 +146,7 @@ Logic `6.9` cần một bảng mốc thông báo (cột Message của mục 4 ch
 
 Cuối mục 6: **sequence diagram** cho flow end-to-end (mô tả bằng chữ dạng `Khách → FE → BE → [hệ thống kho]` nếu không vẽ được).
 
-### Mục 7. Ràng buộc, ca bất thường liên logic, điều chưa chốt 制約・イレギュラー・確認中 — 575 token (≈230 từ)
+### Mục 7. Ràng buộc, ca bất thường liên logic, điều chưa chốt 制約・イレギュラー・確認中 — 900 token (≈360 từ)
 Viết SAU khi từng logic ở mục 6 đã có case riêng. Ba–bốn bảng ngắn:
 
 **7.1 Ràng buộc** — kỹ thuật/nghiệp vụ + cách giảm nhẹ.
@@ -127,7 +163,7 @@ Viết SAU khi từng logic ở mục 6 đã có case riêng. Ba–bốn bảng 
 | # | Điều chưa chốt | Giả định hiện tại đang dùng | Ảnh hưởng mục |
 |---|---|---|---|
 
-### Mục 8. Xác thực & phân quyền 認証・認可 — 300 token (≈120 từ)
+### Mục 8. Xác thực & phân quyền 認証・認可 — 450 token (≈180 từ)
 Bảng 1 — actor: ✓ / ✗ / ✓* (có điều kiện, ghi mã). Ô không ✓ = ✗ theo 0.4. **Bắt buộc có Guest và System/Job.** Phải phủ cả thao tác chỉ-đọc (xem hold của mình / mọi hold, xem audit log).
 
 | Hành động | Guest | Member | Staff/CS | Admin | System/Job |
@@ -137,30 +173,45 @@ Bảng 1 — actor: ✓ / ✗ / ✓* (có điều kiện, ghi mã). Ô không �
 
 Bảng 2 — xác thực: mỗi actor xác thực bằng gì; giữa các hệ thống, đường truyền nào xác thực bằng gì.
 
-### Mục 9. Luồng dữ liệu & API データ連携・API仕様 — 200 token (≈80 từ)
+### Mục 9. Luồng dữ liệu & API データ連携・API仕様 — 550 token (≈220 từ)
 Sơ đồ hệ thống bằng **Mermaid `flowchart LR`** (knowledge/33 §7.4) + bảng timing. Chi tiết khi nào gọi / gửi gì / thất bại làm gì nằm ở bảng, không nhồi vào sơ đồ:
 
 | Khi nào | Từ → Tới | Gửi/nhận dữ liệu | Field điều kiện | Thất bại thì làm gì (retry, message, log, alert, gửi tay) |
 |---|---|---|---|---|
 
-Mỗi API: trigger · payload · response thành công / thất bại làm gì.
+Với 550 token, thêm **bảng API** riêng thay vì gộp vào một dòng chữ:
 
-### Mục 10. Data model, performance, security 技術仕様 — 175 token (≈70 từ)
+| API | Trigger | Payload chính | Response thành công | Response thất bại → hệ thống làm gì |
+|---|---|---|---|---|
+| [POST tạo hold] | [bấm "Giữ hàng"] | [sku, qty, idempotency_key] | [201 + hold_id, expires_at] | [409 → message mục 4 dòng 1; 5xx → retry [..] lần, cách [..] giây, rồi [..]] |
+
+### Mục 10. Data model, performance, security 技術仕様 — 350 token (≈140 từ)
 Bảng field (tên, ý nghĩa, bắt buộc, giới hạn, khi nào null, field server tự tính) · mục tiêu tốc độ + giới hạn API (**ghi rõ số nào là giả định**) · bảo mật (mã hóa đường truyền, quản lý key & thông tin cá nhân, log & alert) · tài liệu tham chiếu.
 
 Audit: mọi chuyển trạng thái ghi `hold_id, from, to, actor, timestamp, reason` (0.7). Job hết hạn chạy mỗi [..] phút; sai lệch ≤ [..] giây. Đồng thời: khóa theo SKU, xử lý FCFS (0.8). Idempotency: khóa = [..], hiệu lực [..] phút (0.10).
 
-### Sơ đồ mermaid — khi nào đáng dùng
+Quan hệ dữ liệu **không hiển nhiên** (một hold nhiều dòng SKU, một khách nhiều hold, hold ↔ đơn) → thêm `erDiagram` theo knowledge/33 §7.6. Bản số (`||--|{`) là dữ kiện nghiệp vụ thật, không phải trang trí: vẽ sai bản số là viết sai luật, nên chỉ vẽ phần đã hỏi được hoặc brief nói rõ.
 
-Bản nộp là markdown và sơ đồ được phép ở dạng mermaid (00 §A). Nhưng dưới hạn mức token, sơ đồ **không miễn phí**: một `stateDiagram` 12 chuyển tiếp tốn ~250 token, xấp xỉ 15 luật ngắn của mục 6. Cú pháp bốn loại sơ đồ: knowledge/33 §7.
+### Sơ đồ mermaid — ba cái bắt buộc, ba cái nên có
 
-| Trường hợp | Quyết định |
-|---|---|
-| Sơ đồ vẽ lại đúng nội dung bảng state × event (6.3) | **Không vẽ.** Trả tiền hai lần cho một dữ kiện; bảng đã phủ 100% ô, sơ đồ thì không |
-| Sơ đồ thay được bảng step của một logic mục 6 | Được, nếu đo ra ít token hơn bảng step. Sơ đồ không nêu được số và điều kiện đầy đủ nên phải giữ bảng Case |
-| Sơ đồ cho quan hệ nhiều bên (khách ↔ cổng thanh toán ↔ kho) | Được — đây là chỗ văn xuôi tốn nhiều token nhất |
+Với hạn mức 10.000, câu hỏi đổi từ "có đáng vẽ không" thành "**vẽ đủ chưa**". BTC yêu cầu tường minh ba sơ đồ trong bảng hình thức: **mục 5 wireframe** (BTC ghi "link Figma hoặc ảnh mockup" — bản nộp không có ảnh nên ta thay bằng mermaid), **mục 6 sequence diagram cho flow end-to-end**, **mục 9 sơ đồ hệ thống**. Thiếu một trong ba là mất điểm hình thức ở đúng chỗ đề bài ghi rõ. Cả sáu sơ đồ ≈ 1.100–1.300 token = 12% ngân sách. Cú pháp và lint: knowledge/33 §7.
 
-Nếu có sơ đồ, **bắt buộc thêm dòng 0.15 vào catch-all mục 1.x**: "Sơ đồ chỉ minh họa; khi sơ đồ và bảng/luật có mã chỏi nhau, bảng và luật có mã thắng." Thiếu dòng này là tự tạo một mâu thuẫn nội tại (loại lỗ hổng #5) và Executor có hai cách đọc hợp lệ.
+| Sơ đồ | Quyết định | Lý do |
+|---|---|---|
+| Mục 5 wireframe `block-beta` | **Vẽ** | BTC yêu cầu hình thức; bản nộp không có ảnh |
+| Mục 6 `sequenceDiagram` end-to-end | **Vẽ** | BTC yêu cầu tường minh |
+| Mục 9 `flowchart LR` sơ đồ hệ thống | **Vẽ** | BTC yêu cầu tường minh; cũng là chỗ văn xuôi tốn token nhất |
+| Mục 6.x `flowchart TD` lưu đồ quyết định | **Nên vẽ** cho logic nhiều nhánh nhất | Làm lộ nhánh cụt và chốt thứ tự kiểm — bảng Case giấu được cả hai |
+| Mục 6.3 `stateDiagram-v2` | Nên vẽ | Trực quan vòng đời. **Không thay bảng state × event**: ô `Từ chối 0.5` và `KHL` chỉ có trong bảng, mà đó mới là chỗ Executor đoán sai |
+| Mục 10 `erDiagram` | Vẽ khi quan hệ không hiển nhiên | Bản số là dữ kiện nghiệp vụ thật, không phải trang trí |
+
+Ba luật đi kèm, không được bỏ:
+
+1. **Mỗi sơ đồ kèm 1–2 câu chữ tóm tắt ngay dưới.** Sơ đồ gãy cú pháp thì phần chữ vẫn tải được nghĩa, và Executor đọc thô cũng hiểu.
+2. **Sơ đồ không bao giờ thay bảng.** Bảng chở luật có mã, sơ đồ chở trực quan. Hết chỗ thì bỏ sơ đồ, giữ bảng.
+3. **Có sơ đồ ⇒ bắt buộc dòng 0.15 trong catch-all 1.x**: "Sơ đồ chỉ minh họa; khi sơ đồ và bảng hoặc luật có mã chỏi nhau, bảng và luật có mã thắng." Thiếu dòng này là tự tạo mâu thuẫn nội tại (loại lỗ hổng #5) và Executor có hai cách đọc hợp lệ.
+
+Chạy **lint 10 dòng ở knowledge/33 §7.7** trước khi nộp — không có tool render trong phòng thi, Ctrl+F là cách kiểm duy nhất. Mẹo rẻ nhất: viết nhãn sơ đồ **không dấu**, để phần có dấu ở câu tóm tắt.
 
 Đối xứng cho vai CÔNG: spec đối thủ **chỉ có sơ đồ mà không có bảng** là ứng viên hạng A — sơ đồ luôn thiếu ô "sự kiện không thể xảy ra" và các sự kiện do hệ thống sinh ra (31 §5).
 
@@ -270,8 +321,10 @@ Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều 
 
 | Số dòng RTM | Dạng mục 6 | Lý do |
 |---|---|---|
-| < 40 | bảng 5 cột (Mã · Luật · K/T/N/L · KHÔNG ĐƯỢC · RTM) | đủ ngân sách, dễ soi ô trống |
-| ≥ 40 | **danh sách** `**BR-xx** — luật. Cấm: … ← A-yy` | mỗi hàng bảng 5 cột tốn ~6 token chỉ riêng dấu `\|`; 50 BR = ~300 token dấu bảng |
+| < 60 | bảng 5 cột (Mã · Luật · K/T/N/L · KHÔNG ĐƯỢC · RTM) | với 3.200 token cho mục 6 thì đủ ngân sách, và bảng **dễ soi ô trống** hơn hẳn danh sách |
+| ≥ 60 | **danh sách** `**BR-xx** — luật. Cấm: … ← A-yy` | mỗi hàng bảng 5 cột tốn ~6 token chỉ riêng dấu `\|`; 70 BR = ~420 token dấu bảng |
+
+Ngưỡng này là **40 ở bản 6.000 token, nâng lên 60 ở bản 10.000**. Mặc định nên là bảng: ô trống trong bảng thì nhìn thấy, ô trống trong danh sách thì không — mà "không ô trống" là dòng 16 của cổng chất lượng.
 
 Đếm bằng token đổi vài kết luận so với bản đếm từ:
 
@@ -282,16 +335,16 @@ Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều 
 
 **Với đề ≥ 40 dòng RTM, dồn tác động phụ thành luật chung ở catch-all 0.7** — "mọi chuyển trạng thái cập nhật tồn theo logic 6.1, ghi audit theo mục 10, gửi thông báo theo bảng 6.9, kể cả khi luật cụ thể không nhắc" — thay vì lặp cột K/T/N/L trong từng BR. Tiết kiệm ~1.700 token trên 50 BR mà **không mất** thành phần (4) của mục 3.2 file này, vì catch-all 0.7 là căn cứ hợp lệ cho Executor.
 
-Số đo thực tế (diễn tập 08/09, đề "đặt cọc giữ hàng", 111 dòng ⚠): mục 6 viết đúng template bảng 5 cột tốn **2.235 từ ≈ 5.600 token** — tức một mục ăn hết hạn mức 6.000 của cả spec. Chọn dạng danh sách + §0.7 từ đầu là điều kiện cần để vào được 5.400 token, không phải tối ưu về sau.
+Số đo thực tế (diễn tập 08/09, đề "đặt cọc giữ hàng", 111 dòng ⚠): mục 6 viết đúng template bảng 5 cột tốn **2.235 từ ≈ 5.600 token**. Với hạn mức 10.000 thì con số đó **vẫn vượt** ngân sách 3.200 của mục 6 — nên với đề nhiều dòng RTM như vậy, dạng danh sách + §0.7 vẫn là điều kiện cần. Với đề 30–50 dòng RTM (điển hình khi buổi sáng kịp 15–20 lượt hỏi), bảng 5 cột vừa đủ chỗ.
 
 - Tập luật cùng cấu trúc → một bảng; luật tổng quát + ngoại lệ ("Mọi terminal → Từ chối 0.5, trừ BR-xx") thay liệt kê.
 - "áp dụng BR-07" thay lặp nội dung; bảng step chỉ trỏ mã, không chép lại luật.
 - Công thức (`ATP = OnHand − Reserved − Safety`) thay câu văn.
 - Ký hiệu `[a, b)`, `→ STATE (BR-xx)`, ✓/✗/✓*, ±qty, KHL khai báo một lần ở mục 1.x hoặc đầu bảng — Executor không đoán ký hiệu lạ.
 - Không "vì sao", không mở bài. (Mô tả màn hình KHÔNG cắt — mục 2, 5 bắt buộc có.)
-- Sơ đồ Mermaid tốn ~180–220 từ cho cả 4 cái (knowledge/33 §7.5). Quá từ thì cắt theo thứ tự wireframe → sơ đồ hệ thống → sequence → state machine, mỗi lần thay bằng 1–2 câu chữ. **Không cắt bảng đi kèm** — bảng chở luật, sơ đồ chỉ chở trực quan.
+- Sơ đồ Mermaid tốn ~1.100–1.300 token cho cả sáu loại (knowledge/33 §7.8) = 12% ngân sách — **không còn là ứng viên cắt đầu tiên** như ở bản 6.000 token, và ba trong số đó BTC yêu cầu tường minh. Nếu vẫn phải cắt: thứ tự **erDiagram → wireframe → lưu đồ → sơ đồ hệ thống → sequence → state machine**, mỗi lần thay bằng 1–2 câu chữ. **Không cắt bảng đi kèm** — bảng chở luật, sơ đồ chỉ chở trực quan.
 
-## 6. THỨ TỰ VIẾT DƯỚI ÁP LỰC 10:20–11:52
+## 6. THỨ TỰ VIẾT DƯỚI ÁP LỰC 9:45–11:52
 
 Lịch này khác bản cũ ở chỗ **viết song song với hỏi**: số lượt bị nhịp chờ chặn chứ không bị token chặn, nên người viết bắt đầu từ 9:45 và điền dần theo từng câu trả lời về; các lượt xác nhận gửi khi bảng xếp hạng giả định đã có (00 §B).
 
@@ -299,21 +352,23 @@ Viết theo thứ tự **ăn điểm**, không theo thứ tự số mục.
 
 | Phút | Việc | Đầu ra |
 |---|---|---|
+| 9:45–10:20 | **Viết song song với pha hỏi** (00 §B): dựng khung 10 mục rỗng với heading đúng tên BTC; điền mọi thứ suy được từ brief — mục 1 phạm vi TRONG, mục 2 danh sách item, mục 3 event, danh sách logic của mục 6; ô chưa có câu trả lời để `[..]` | Khung 10 mục; ~2.000 token đã có sẵn trước khi câu trả lời đầu tiên được nạp |
 | 10:20–10:30 | Chốt RTM (đánh ⚠, mở dòng `G-xx` cho mọi ô không hỏi được, gán mã BR dự kiến) + **mục 1** (phạm vi TRONG/NGOÀI + catch-all 1.x từ khung mục 2 file này) | RTM hai loại dòng; mục 1 xong |
 | 10:30–10:55 | **Mục 6** — liệt kê danh sách logic, dòng ⚠ RTM vào logic tương ứng; mỗi logic: bảng step + bảng Case đủ 5 gạch (số · toán tử · múi giờ · default khi config trống · ưu tiên); decision table cho logic ≥ 2 điều kiện | ≥ 15 BR trong các bảng Case |
-| 10:55–11:00 | **Mục 6.3** state machine: bảng state × event 100% ô, từ bảng C2 (mẫu: knowledge/31 §3) | Bảng đầy |
+| 10:55–11:00 | **Mục 6.3** state machine: bảng state × event 100% ô, ghép từ các lượt đã trả lời + mặc định ngành + catch-all 0.5 (mẫu: knowledge/31 §3) | Bảng đầy |
 | 11:00–11:05 | **Xếp hạng rủi ro giả định** → chuyển 8–10 dòng đầu thành **lượt nhị phân rời** và bắt đầu gửi theo nhịp (`/elicit xac-nhan`) | Hàng đợi xác nhận đang chạy |
 | 11:05–11:20 | Trong lúc các lượt xác nhận chạy, theo thứ tự ăn điểm: **mục 4** (message nguyên văn) → **mục 8** (Guest, System/Job) → **mục 2** → **mục 3** → **mục 7** (7.2 bất thường liên logic, 7.4 chưa chốt); mục 9/10/5 gọn nếu còn đệm | Đủ 10 mục |
 | 11:20–11:30 | Nạp các lượt xác nhận: mọi câu trả lời khác giả định sửa ngay (đổi cả BR liên quan); rà catch-all 1.x theo giá trị mới; thêm 0.11–0.14 nếu chưa có | Catch-all khớp câu trả lời; ý "Sai" đã vá |
-| 11:30–11:38 | **Cổng F** (knowledge/32 §1) trên từng BR + bảng Mục tiêu↔Luật (`/frame muc-tieu-luat`) | 0 ✗ ở F1/F5; mọi mục tiêu có luật phục vụ |
+| 11:30–11:38 | **Cổng F** (knowledge/32 §1) trên từng BR + bảng Mục tiêu↔Luật (`/frame muc-tieu-luat`) + **đo token giữa kỳ** | 0 ✗ ở F1/F5; mọi mục tiêu có luật phục vụ; biết còn bao nhiêu đệm |
+| ⟳ nếu < 7.500 token | **Tiêu đệm theo thứ tự lãi** (knowledge/33 §5 bảng cuối): thêm case lỗi/biên mục 6 → thêm message mục 4 → thêm ca 7.2 → lưu đồ `flowchart TD` → bảng 3 trạng thái mục 5 | Không còn ô trống; token 8.000–9.000 |
 | 11:38–11:48 | Red team: eval set qua **hai** Executor mù độc lập; Ctrl+F danh sách đen knowledge/40 §2 (22 nhóm) + §3 S1–S39 | Lỗ hổng đã vá; 0 ca hai reader lệch nhau |
-| 11:48–11:52 | Đếm token trên bản nộp, đích ≤ 5.400; cắt theo knowledge/33 §6; bỏ câu nói về chính spec; nộp; lưu bản copy | Đã nộp, còn đệm |
+| 11:48–11:52 | Đếm token trên bản nộp, đích ≤ 9.000; cắt theo knowledge/33 §6 nếu vượt; bỏ câu nói về chính spec; nộp; lưu bản copy | Đã nộp, còn đệm |
 
 Cạn giờ → cắt theo knowledge/33 §6: **BR "không thuộc mục tiêu nào" (05 §2)** trước tiên, rồi **mục 10 → 9 → 5 → 3 → 2**. KHÔNG cắt **mục 1, 6, 7, 4, 8** và không cắt bốn luật catch-all 0.11–0.14.
 
 Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài toán + RTM + **bấm gửi hàng đợi hỏi đúng nhịp** + xếp hạng giả định + mục 1 & 7 + cổng F + red team.
 
-## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP [HD §5.9]
+## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP — 25 dòng [HD §5.9]
 
 Đánh ✓ từng dòng; một dòng chưa ✓ = sửa trước khi nộp.
 
@@ -340,5 +395,7 @@ Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài
 | 19 | Bảng **Mục tiêu↔Luật** (knowledge/05 §2) đã lập; mọi mục tiêu của brief có ≥1 luật phục vụ; mọi ô "làm hỏng mục tiêu" đã hỏi AI Khách hàng hoặc đã xử lý? |
 | 20 | **12 kịch bản suy biến** (knowledge/05 §M6) đều ✓ có luật, hoặc ⛔ nằm trong danh sách NGOÀI phạm vi tường minh? |
 | 21 | Mọi nghĩa vụ tiền đã tách mốc "khởi tạo" (ta kiểm soát) khỏi mốc "hoàn tất" (bên ngoài), và có luật cho ca **hoàn tiền thất bại**? |
-| 22 | Mọi sơ đồ Mermaid có kèm 1–2 câu chữ tóm tắt (phòng khi render lỗi), nhãn có dấu đã bọc ngoặc kép; catch-all có dòng 0.15 "bảng và luật có mã thắng"? |
-| 23 | **Token ≤ 6.000, đích ≤ 5.400 trên bản nộp** (đã bỏ `← A-xx`, nhãn `[M-x]`, `[GIẢ ĐỊNH]`), bản nộp **không chứa câu nói về chính nó**, không có ảnh, và đã lưu bản copy nội bộ cho kháng nghị? Đo bằng `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `max(từ × 2,5 ; ký tự / 2,2)`; **không** dùng `wc` thiếu `LC_ALL=C.UTF-8` (locale `C` đếm sai ký tự đa byte `—` `→` `✓` `≥` `§`). Giao diện nộp hiển thị token thì lấy số đó. Còn ≥ 500 token đệm dưới 6.000? |
+| 22 | **Đủ ba sơ đồ BTC yêu cầu** (mục 5 wireframe · mục 6 sequence end-to-end · mục 9 sơ đồ hệ thống), mỗi sơ đồ kèm 1–2 câu chữ tóm tắt; đã chạy **lint 10 dòng knowledge/33 §7.7**; catch-all có dòng 0.15 "bảng và luật có mã thắng"? |
+| 22b | Logic nhiều nhánh nhất của mục 6 có **lưu đồ `flowchart TD`**, và thứ tự kiểm trên lưu đồ **khớp** bảng Case + cột FE/BE mục 4? |
+| 23 | **Token ≤ 10.000, đích ≤ 9.000 trên bản nộp** (đã bỏ `← A-xx`, nhãn `[M-x]`, `[GIẢ ĐỊNH]`), bản nộp **không chứa câu nói về chính nó**, không có ảnh, và đã lưu bản copy nội bộ cho kháng nghị? Đo bằng `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `max(từ × 2,5 ; ký tự / 2,2)`; **không** dùng `wc` thiếu `LC_ALL=C.UTF-8` (locale `C` đếm sai ký tự đa byte `—` `→` `✓` `≥` `§`). Giao diện nộp hiển thị token thì lấy số đó. Còn ≥ 1.000 token đệm dưới 10.000? |
+| 24 | **Ngưỡng dưới:** bản nộp ≥ 7.500 token, hoặc nếu thấp hơn thì đã chứng minh không mục nào còn ô trống và mọi logic mục 6 có ≥ 5 case? Dừng ở 6.500 token với hạn mức 10.000 là **bỏ chỗ trống cho Executor đoán**, không phải gọn. |

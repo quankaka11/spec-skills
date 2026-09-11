@@ -51,7 +51,7 @@ Cần: `brief.md`. Người dùng có thể dán thêm ghi chú miệng từ BTC
 4. Kết luận in ra:
    - Mục tiêu có cột 2 trống ⇒ **lỗi Cao**, spec bỏ trắng đúng phần brief nhấn mạnh.
    - Ô cột 3 có chữ ⇒ **lỗi Cao**, chuyển thành **một lượt nhị phân** (knowledge/32 §6) và chèn lên đầu phần hàng đợi còn lại. Hết giờ hỏi rồi ⇒ chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` (30 §1b-3).
-   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt khi thiếu chỗ trong 6.000 token, xếp trước cả §7/§10.
+   - BR "không thuộc mục tiêu nào" ⇒ ứng viên cắt đầu tiên nếu bản nộp vượt 10.000 token, xếp trước cả mục 9/10.
 5. Ghi phần bảng này append vào `mo-hinh-bai-toan.md` và vào `review.md` nếu file đã tồn tại.
 
 ## Output bắt buộc

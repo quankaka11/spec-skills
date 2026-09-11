@@ -25,7 +25,7 @@ Chấm ✓/✗ cho mỗi BR. ✗ ở F1, F2, F5 hoặc F7 = **mức Cao, chặn 
 | **F4** | Chi phí chấp nhận được | Mỗi lần luật này chạy, ai mất bao nhiêu tiền / bao nhiêu phút người? | Hoàn 100% + phí cổng không hoàn; thao tác thủ công không có trần số lượng; thông báo không có trần tần suất | Ghi rõ ai chịu phí; hoặc đặt trần; hoặc đưa ra NGOÀI phạm vi tường minh (§4) |
 | **F5** | Phụ thuộc ngoài thực tế | Luật giả định gì về cổng thanh toán / ERP / job / thông báo? Giả định đó có đúng với hệ thật? | Ngầm giả định: đồng bộ tức thì, đúng thứ tự, giao đúng một lần, không bao giờ lỗi | Đối chiếu bảng §2, viết lại theo ngữ nghĩa thật |
 | **F6** | Đảo được / bù được | Nếu luật chạy sai, có đường về không? | Luật tiêu thụ cái không đảo được (đã capture, đã settle, đã giao) rồi mới kiểm điều kiện | Đổi thứ tự: kiểm trước, tiêu thụ sau; hoặc định nghĩa bút toán bù |
-| **F7** | Phục vụ mục tiêu | Luật này thuộc cột 2 hay cột 3 của bảng Mục tiêu↔Luật (05 §2)? | Ở cột 3 (làm hỏng mục tiêu), hoặc không ở cột nào | Cột 3 ⇒ hỏi AI Khách hàng ngay, đây gần chắc là chỗ specs thật có luật riêng. Không ở cột nào ⇒ ứng viên cắt để lấy chỗ trong 6.000 token |
+| **F7** | Phục vụ mục tiêu | Luật này thuộc cột 2 hay cột 3 của bảng Mục tiêu↔Luật (05 §2)? | Ở cột 3 (làm hỏng mục tiêu), hoặc không ở cột nào | Cột 3 ⇒ hỏi AI Khách hàng ngay, đây gần chắc là chỗ specs thật có luật riêng. Không ở cột nào ⇒ ứng viên cắt đầu tiên nếu vượt 10.000 token |
 | **F8** | Chịu được lạm dụng | Sáu kẻ ở 05 §M5 — kẻ nào có lợi khi luật này chạy như viết? | Luật cấp quyền / khóa tài nguyên **trước** khi có ràng buộc (tiền, xác thực, hạn mức) | Đảo thứ tự rào; hoặc giới hạn tài nguyên bị khóa; hoặc thêm cooldown |
 
 **Thứ tự chạy nhanh (3 phút cho 22 BR):** grep trước, đọc sau.

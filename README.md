@@ -8,7 +8,7 @@ Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Bat
 
 | Tham số | Giá trị |
 |---|---|
-| Nộp spec | **Markdown**, **≤ 6.000 token** (đích 5.400), sơ đồ chỉ dạng mermaid, **không ảnh**, khóa 12:00 |
+| Nộp spec | **Markdown**, **≤ 10.000 token** (đích 9.000, sàn thực tế 7.500), sơ đồ chỉ dạng **mermaid**, **không ảnh**, khóa 12:00 |
 | Hỏi AI Khách hàng | **KHÔNG giới hạn số câu · 4.000 token (hỏi + trả lời) · mỗi lượt đúng MỘT Ý · KHÔNG có memory** |
 | Câu bị từ chối | Câu **chứa chỉ thị** (ép format, cap dòng/từ, "không giải thích") và câu **gộp nhiều ý** đều bị từ chối — không trừ token, không reset nhịp chờ |
 | Nhịp chờ giữa hai lượt | Thi thử **45 giây** — đây thường là ràng buộc thật, không phải token |
@@ -73,14 +73,25 @@ Mỗi lượt đi qua **cổng 8 kiểm tra**: một dấu `?` · đúng một �
 ### 10:20–11:05 — Viết spec
 
 ```bash
-/spec-write             # battle/spec.md, đích ≤5.400 token
+/spec-write             # battle/spec.md, đích 9.000 token (sàn 7.500)
                         # mọi ô không hỏi được: điền MẶC ĐỊNH NGÀNH, mở dòng G-xx, xếp hạng rủi ro
                         # in bảng xếp hạng rủi ro giả định → nguyên liệu cho lượt xác nhận
 ```
 
 Spec theo **cấu trúc 10 mục BTC** (tài liệu "Spec Battle Anatomy", 11/09): `1` Tổng quan & phạm vi · `2` Item màn hình · `3` Event · `4` Validation & message lỗi · `5` Wireframe · `6` Flow & quy tắc xử lý · `7` Ràng buộc/bất thường/chưa chốt · `8` Xác thực & phân quyền · `9` Luồng dữ liệu & API · `10` Data model, perf, security. Chi tiết: [`knowledge/33-cau-truc-spec-btc.md`](knowledge/33-cau-truc-spec-btc.md).
 
-Sơ đồ vẽ bằng **Mermaid** (không có Figma trong phòng thi): `block-beta` wireframe · `stateDiagram-v2` state machine · `sequenceDiagram` flow end-to-end · `flowchart LR` sơ đồ hệ thống. Cú pháp mẫu ở [`knowledge/33` §7](knowledge/33-cau-truc-spec-btc.md). **Sơ đồ không thay bảng** — sơ đồ chỉ vẽ chuyển hợp lệ, ô `Từ chối 0.5`/`KHL` chỉ có trong bảng; hết chỗ thì bỏ sơ đồ, giữ bảng.
+**Lưu đồ bắt buộc dạng Mermaid** (không có Figma trong phòng thi, bản nộp không có ảnh). BTC yêu cầu tường minh **ba** sơ đồ — thiếu là mất điểm hình thức:
+
+| Sơ đồ | Mục | Vai trò |
+|---|---|---|
+| `block-beta` wireframe | 5 | bố cục màn hình + bảng 3 trạng thái (mặc định/lỗi/thành công) |
+| `sequenceDiagram` | 6 (cuối) | flow end-to-end nhiều bên |
+| `flowchart LR` sơ đồ hệ thống | 9 | ai nói chuyện với ai |
+| `flowchart TD` **lưu đồ quyết định** | 6.x | nên có cho logic nhiều nhánh nhất — làm lộ **nhánh cụt** và chốt **thứ tự kiểm** |
+| `stateDiagram-v2` | 6.3 | vòng đời trạng thái |
+| `erDiagram` | 10 | khi quan hệ dữ liệu không hiển nhiên |
+
+Cú pháp đã kiểm + **lint 10 lỗi làm gãy render**: [`knowledge/33` §7](knowledge/33-cau-truc-spec-btc.md). Ba luật không đổi: **sơ đồ không thay bảng** (ô `Từ chối 0.5`/`KHL` chỉ có trong bảng) · mỗi sơ đồ kèm 1–2 câu chữ tóm tắt · có sơ đồ thì catch-all phải có dòng 0.15 "bảng và luật có mã thắng". Mẹo rẻ nhất: viết nhãn sơ đồ **không dấu**, phần có dấu để ở câu tóm tắt.
 
 ### 11:05–11:30 — Lượt xác nhận, rồi vá
 

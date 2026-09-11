@@ -57,7 +57,7 @@ Mỗi hit ở nhóm 17–20 **phải** được chấm cổng F (knowledge/32 §
 19. **Giả định phụ thuộc ngoài hoàn hảo** (→ F5): `(cổng|gateway|ERP|WMS|callback|webhook|job|cron|đồng bộ|thông báo|email|SMS)` — với **mỗi** hit, kiểm spec có luật cho chế độ lỗi của láng giềng đó chưa (knowledge/05 §M4). Có nhắc mà không có luật lỗi = mức **Cao**; nhắc kèm luật lỗi = ✓.
 20. **Việc giao cho người không quan sát được** (→ F3): `(CSKH|chăm sóc khách hàng|nhân viên|Admin|quản trị|thủ công|bằng tay|đối soát|duyệt)` — mỗi hit phải có (a) một dòng ở §9 nói ai được báo, (b) một trường audit, (c) một trần hoặc điều kiện. Thiếu ≥1 = mức Trung.
 21. **Chi phí không ai nhận** (→ F4, `affordable`): `(hoàn 100|hoàn toàn bộ|hoàn đủ|không thu phí|không phí|miễn phí|không giới hạn số lần|không giới hạn)` — kiểm spec có nói ai chịu phí cổng / phí xử lý, hoặc có trần. Mức Trung.
-22. **Câu nói về chính spec** (cắt khỏi bản nộp): `(ô đã điền|đã điền|tổ hợp|phân hoạch|không chồng lấn|đủ, không|phủ \d|hit policy .* vì|chứng minh|/36|/\d+ ô)` — chứng minh độ phủ là thứ gửi cho người rà, không phải luật cho Executor. Mức Thấp về rủi ro TRÚNG, nhưng **luôn cắt** vì nó tiêu token trong ngân sách 6.000. Bản 08/09 tốn ~60 từ ≈ 150 token ở nhóm này.
+22. **Câu nói về chính spec** (cắt khỏi bản nộp): `(ô đã điền|đã điền|tổ hợp|phân hoạch|không chồng lấn|đủ, không|phủ \d|hit policy .* vì|chứng minh|/36|/\d+ ô)` — chứng minh độ phủ là thứ gửi cho người rà, không phải luật cho Executor. Mức Thấp về rủi ro TRÚNG, nhưng **luôn cắt** — không vì token (ngân sách 10.000 dư chỗ) mà vì nó là câu spec nói về chính nó, Executor đọc vào chỉ thêm nhiễu. Bản 08/09 tốn ~60 từ ≈ 150 token ở nhóm này.
 
 Chạy nhóm 17–22 trên bản **nộp**, không phải bản nội bộ (nhóm 22 đúng ra chỉ tồn tại ở bản nội bộ).
 
@@ -146,4 +146,4 @@ Sửa từ trên xuống; hết giờ thì dừng.
 11. **Đại từ trôi, "chỉ" sai chỗ, phạm vi phủ định (nhóm 7, 14, 15, S6, S7)**.
 12. **Mã BR trùng, tham chiếu chết (S10)** — chỉ ảnh hưởng kháng nghị.
 
-11:48–11:52: đếm token bản nộp, đích ≤ 5.400 (30 §1); sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").
+11:48–11:52: đếm token bản nộp, đích ≤ 9.000, sàn 7.500 (30 §1); sau mỗi lần cắt, chạy lại nhóm 4 (cắt câu hay sinh "v.v.", "…").

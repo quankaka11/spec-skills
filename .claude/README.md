@@ -2,7 +2,7 @@
 
 Bộ công cụ dùng chung của đội cho HBLAB AI Hackathon #02 (12/09/2026). Nằm trong repo để `git pull` là dùng được.
 
-**Tham số hiện hành (BTC 09/09, khối hỏi cập nhật sau thi thử 11/09):** nộp markdown ≤ **6.000 token** (đích 5.400), sơ đồ mermaid, không ảnh · hỏi AI Khách hàng **không giới hạn số câu, 4.000 token, mỗi lượt đúng MỘT Ý, không memory; câu chứa chỉ thị hoặc gộp nhiều ý bị TỪ CHỐI (không trừ token); nhịp chờ giữa hai lượt (thi thử 45 giây) mới là ràng buộc thật**; ảnh ≤3 lần và **có tính token** ⇒ không dùng · điểm **+2 công / +1 thủ / −1 vô hiệu** · spec đối thủ tải về được · test không sửa sau khi nộp · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**. Bảng đầy đủ và 9 ô còn hở: `knowledge/00` §A.
+**Tham số hiện hành (BTC 09/09, khối hỏi cập nhật sau thi thử 11/09):** nộp markdown ≤ **10.000 token** (đích 9.000, sàn 7.500), sơ đồ mermaid (**3 sơ đồ BTC yêu cầu tường minh**: mục 5, 6, 9), không ảnh · hỏi AI Khách hàng **không giới hạn số câu, 4.000 token, mỗi lượt đúng MỘT Ý, không memory; câu chứa chỉ thị hoặc gộp nhiều ý bị TỪ CHỐI (không trừ token); nhịp chờ giữa hai lượt (thi thử 45 giây) mới là ràng buộc thật**; ảnh ≤3 lần và **có tính token** ⇒ không dùng · điểm **+2 công / +1 thủ / −1 vô hiệu** · spec đối thủ tải về được · test không sửa sau khi nộp · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**. Bảng đầy đủ và 9 ô còn hở: `knowledge/00` §A.
 
 **Sau khi pull: mở phiên Claude Code MỚI** trong thư mục repo — agent tùy chỉnh (`executor`, `customer`) chỉ được nạp lúc khởi động phiên.
 
@@ -31,7 +31,7 @@ Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó �
 | 9:00–9:30 | `/frame` | `battle/brief.md` | `battle/mo-hinh-bai-toan.md` (M1 mục tiêu · M2 dòng tiền · M3 dòng tồn · M4 biên hệ thống · M5 lạm dụng · M6 12 ca suy biến); mâu thuẫn nội tại của brief; câu hỏi P0 |
 | 9:00–9:30 | `/elicit ke-hoach` | `mo-hinh-bai-toan.md` | `ke-hoach-hoi.md`: 4 câu đã gọt + ước token + **danh sách ô sẽ KHÔNG hỏi kèm giá trị mặc định ngành** |
 | 9:30–10:30 | `/elicit luot n` liên tục theo nhịp, mỗi lượt kèm `/elicit nap`; `/elicit tu-choi n` khi bị từ chối | `brief.md`, `ke-hoach-hoi.md` | Mỗi lượt một dòng câu hỏi qua cổng 8 kiểm tra; `log-khach-hang.md` (sổ hạn mức, timestamp, nguyên văn); `rtm.md` (dòng `A-xx` + `G-xx`) |
-| 10:20–11:05 | `/spec-write` | `mo-hinh-bai-toan.md`, `rtm.md`, log | `battle/spec.md` đích ≤5.400 token, mọi BR có `← A-xx` hoặc `← G-xx` + nhãn mục tiêu; **khối `→ C5`: 10 phát biểu Đúng/Sai** |
+| 10:20–11:05 | `/spec-write` | `mo-hinh-bai-toan.md`, `rtm.md`, log | `battle/spec.md` đích **9.000 token** (sàn 7.500), đủ 3 sơ đồ mermaid, mọi BR có `← A-xx` hoặc `← G-xx` + nhãn mục tiêu; **khối `→ HỎI TIẾP`: 10 câu hỏi nhị phân** |
 | 11:05–11:20 | `/elicit xac-nhan` (các lượt rời, ưu tiên nhị phân) + `/elicit nap` | `spec.md`, bảng xếp hạng rủi ro | Mỗi câu trả lời khác giả định = một việc sửa BR |
 | 11:20–11:38 | `/frame muc-tieu-luat` | `spec.md`, `mo-hinh-bai-toan.md` | Bảng Mục tiêu↔Luật: mục tiêu không có luật, luật phá mục tiêu, BR cắt được |
 | 11:38–11:52 | `/spec-review battle/spec.md 20 sửa` | `spec.md`, `rtm.md`, mô hình | `review.md`: NỘP ĐƯỢC/CHƯA, cổng F + lạm dụng + suy biến + **G-7 giá trị tự nghĩ ra**, eval qua **hai** `executor` mù, đếm token, `SỬA` / `HỎI` / `RỦI RO ĐÃ BIẾT` |

@@ -17,6 +17,7 @@
 | 5 | Dựng 15 artifact thi đấu | ◐ Phần lớn có trong `knowledge/` | Glossary (10 §2), question bank (20 §2–4), template (30 §1–2), attack checklist (50 §1/§4/§6), blacklist (40 §2), RTM/log mẫu (20 §5–6); còn thiếu: in ra giấy, câu hỏi BTC đã có ở 00 §H |
 | 6 | Diễn tập trọn 1 lượt | ❗ **Chưa chạy trên cấu trúc 10 mục và luật hỏi 11/09** | `/drill` trọn vòng **theo hạn mức 11/09** (không giới hạn số câu, một ý mỗi lượt, cấm chỉ thị, nhịp chờ, 4.000 token, spec 6k token). **Không được bỏ** — mọi số đo cũ đều từ chế độ batch hoặc chế độ 5-câu-gộp-bảng, cả hai đều **bị từ chối** ở hệ thật |
 | 7 | Áp tham số chốt 09/09 + cấu trúc BTC 11/09 vào toàn kit | ✅ **Xong 11/09** | 10 file `knowledge/`, 7 skill, 2 agent, 2 README — xem mục "Đã làm" bên dưới |
+| 9 | Áp **hạn mức spec 10.000 token** + nâng khối lưu đồ Mermaid | ✅ **Xong 11/09 chiều** | `knowledge/33` §5 phân bổ lại 10 mục (đích 9.000, **sàn 7.500**) + §6 + §7 viết lại thành **6 loại sơ đồ** (thêm `flowchart TD` lưu đồ quyết định, `erDiagram`) + **§7.7 lint 10 lỗi gãy render** · `knowledge/30` §1/§5/§6/§7 · `knowledge/00` §A/§A1/§B/§I · `/spec-write`, `/spec-review` (khối 5b lint sơ đồ, ngưỡng dưới token), `/frame`, `/drill` · `32`, `40`, 2 README |
 | 8 | Áp **luật hỏi mới sau thi thử 11/09** (bỏ trần 5 câu, một ý/lượt, cấm chỉ thị, nhịp chờ, 4.000 token) | ✅ **Xong 11/09 chiều** | `knowledge/00` §A/§A1/§A2/§B/§C/§F/§H/§I · `knowledge/20` viết lại §1/§2/§3/§3b/§5/§6 · `05` §4 · `30` §1b/§6 · `32` §6 · `50` §2/§4 · `/elicit` viết lại · `/frame`, `/drill`, `/spec-review`, `/appeal` · agent `customer` · 2 README |
 
 ---
@@ -92,6 +93,19 @@ Sơ đồ trong spec dùng **Mermaid** (knowledge/33 §7): `block-beta` wirefram
 
 ## Đã làm
 
+**11/09 chiều (2) — Hạn mức spec 6.000 → 10.000 token; lưu đồ Mermaid thành bắt buộc**
+
+Hạn mức spec nâng lên **10.000 token** (đích 9.000 với 10% đệm). Điều này **đổi loại rủi ro**, không chỉ đổi con số — và đó là phần dễ bỏ sót nhất:
+
+1. **Rủi ro đổi chiều: từ "tràn" sang "dừng sớm".** Với 6.000, việc khó là chọn cắt gì. Với 10.000, spec 6.500 token còn ô trống ở mục 4 (message) và 7.2 (ca bất thường) là spec **chưa viết xong**, không phải spec gọn. Kit vì thế có thêm một **sàn 7.500 token**: dưới mức đó mà còn ô trống là lỗi, và `/spec-review` báo nó như một phát hiện có mức, kèm danh sách "tiêu đệm vào đâu".
+2. **Phân bổ lại 10 mục** (`knowledge/33` §5): mục 6 flow 1.900 → **3.200**, mục 4 validation 625 → **1.000**, mục 7 575 → **900**, mục 2 575 → **850**, mục 9 200 → **550**, mục 5 100 → **350**. Thứ tự tiêu 3.570 token thêm, theo lãi giảm dần: thêm case lỗi/biên → thêm message nguyên văn → nâng 7.2 lên 8–10 ca → lưu đồ → bảng 3 trạng thái màn hình.
+3. **Tối thiểu 5 case mỗi logic** (1 bình thường + 2 biên + 2 lỗi). Với 6.000 nhiều logic phải dừng ở 3; giờ không còn lý do.
+4. **Ngưỡng bảng-hay-danh-sách của mục 6 nâng từ 40 lên 60 dòng RTM** — bảng dễ soi ô trống hơn, giờ đủ chỗ để dùng bảng.
+5. **Lưu đồ Mermaid từ "cắt đầu tiên" thành "phải có".** Đọc lại tài liệu BTC (`data/btc/spec-battle-anatomy.txt`) thì thấy **ba sơ đồ được yêu cầu tường minh trong cột Hình thức**: mục 5 wireframe, mục 6 sequence diagram end-to-end, mục 9 sơ đồ hệ thống. Cả bộ chỉ ~1.100 token = 12% ngân sách, nên thiếu là mất điểm hình thức vô cớ. `knowledge/33` §7 viết lại thành **6 loại sơ đồ** kèm §7.0 bảng "dùng cái nào ở đâu".
+6. **Thêm `flowchart TD` — lưu đồ quyết định** (§7.5), loại sơ đồ kit chưa từng có. Giá trị riêng của nó không phải trực quan: nó làm lộ **nhánh cụt** (node điều kiện chỉ có một nhánh = một case còn thiếu mà bảng Case giấu được) và nó **chốt thứ tự kiểm**, tức trả lời luôn gạch thứ 5 "thứ tự ưu tiên khi nhiều case cùng đúng".
+7. **Thêm §7.7 lint 10 lỗi làm gãy render.** Không có tool render trong phòng thi nên Ctrl+F là cách kiểm duy nhất. Hai lỗi trong đó **chính kit cũ đang mắc**: bọc ngoặc kép sau `:` trong `stateDiagram-v2` và sau `as` trong `sequenceDiagram` — ngoặc sẽ hiện ra trên hình. Các ví dụ ở §7 đã sửa. Mẹo rẻ nhất: viết nhãn sơ đồ **không dấu**, để phần có dấu ở câu tóm tắt.
+8. **Hệ quả cho bài tập nén:** `battle/spec.nop.md` (2.991 từ ≈ 7.500 token) trước đây **vượt** hạn mức 25%; với 10.000 thì nó **nằm đúng vùng đích**. Bài tập đổi từ "nén cho vừa" thành "**dùng chỗ trống mới vào đâu**" — đúng bài tập mà hạn mức mới đòi hỏi.
+
 **11/09 chiều — Thi thử: luật hỏi đổi lần thứ hai, và đổi mạnh hơn lần đầu**
 
 Quan sát từ buổi thi thử (đề giả ハナマルストア, 4.000 token, nhịp 45 giây):
@@ -155,7 +169,7 @@ Vấn đề đo được: `battle/spec.nop.md` (diễn tập 08/09) đạt **to�
    - **hiệu quả pha xác nhận**: lượt xác nhận cứu được mấy BR về sau bị bắn, so với chi phí nhịp; **chi phí bị từ chối** và **tỷ lệ gửi đúng nhịp**;
    - **điểm quy đổi** theo +2/+1/−1, so với điểm nếu bỏ các test `EV ≤ 0`;
    - **độ chính xác ước token**: `max(từ×2,5; ký tự/2,2)` lệch bao nhiêu so với token thật, cho cả lượt hỏi và spec.
-3. **Đo lại `battle/spec.nop.md` bằng token** (2.991 từ ≈ 7.500 token) — bản 08/09 **vượt hạn mức 6.000 khoảng 25%** theo luật mới. Nén theo `knowledge/30` §5 rồi chạy `/spec-review` để xem cắt gì thì mất luật gì; đây là bài tập nén rẻ nhất vì đã có ground truth.
+3. **Đo lại `battle/spec.nop.md` bằng token** (2.991 từ ≈ 7.500 token) — với hạn mức **10.000** thì bản 08/09 **nằm trong vùng đích**, không còn phải nén. Bài tập đổi chiều: chạy `/spec-review` để xem **1.500 token còn lại nên tiêu vào đâu** (case lỗi/biên thiếu, message chưa nguyên văn, ca 7.2, ba sơ đồ BTC yêu cầu) — đây là bài tập rẻ nhất cho hạn mức mới vì đã có ground truth.
 4. **Đọc brief §3/§4 và hỏi BTC các ô đổi đường cắt** (`knowledge/00` §A2): nhịp chờ bao nhiêu giây; 4.000 token của cả đội hay mỗi người; giao diện có hiển thị token không; AI còn mở sau giờ khóa spec không; lý do VÔ HIỆU của đề có gồm "sai phạm vi" không.
 5. Luyện `/attack cheo` — cần 3 spec giả lập cho cùng một brief; sinh bằng `/drill` với ba mức độ hở khác nhau (bộ self-test 05/09 đã bỏ vì dựng theo template 11 mục).
 6. Nếu BTC không cho dùng AI trong phòng: in `knowledge/20` §1 (cổng 8 kiểm tra) + §3.2–3.3 (28 lượt soạn sẵn) + §4, `30` §1–§1b–§2 + §4, `05` §1+§M6, `32` §1–§3, `33` §1–§2+§7, `40` §2, `50` §1/§4/§4b/§6.

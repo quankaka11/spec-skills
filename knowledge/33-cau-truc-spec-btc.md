@@ -76,23 +76,42 @@ Năm gạch đầu dòng ở (2) là checklist bắt buộc cho MỌI bảng Cas
 
 ## 5. Ngân sách token cho 10 mục
 
-Hạn mức thật là **token, không phải từ**: ≤ 6.000 token, **đích bản nộp 5.400 token** (10% đệm để vá sau các lượt xác nhận) — tham số chốt 09/09, cách đo ở knowledge/00 §A1. 5.400 token ≈ **2.100–2.200 từ tiếng Việt**, tức chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư. Phân bổ dưới đây đã cắt theo tỷ lệ đó; ưu tiên mục 6 vì đó là nơi Executor bị bắn nhiều nhất, mục 5 gần như không tốn gì.
+Hạn mức thật là **token, không phải từ**: **≤ 10.000 token**, **đích bản nộp 9.000 token** (10% đệm để vá sau các lượt xác nhận) — cách đo ở knowledge/00 §A1. 9.000 token ≈ **3.500–3.700 từ tiếng Việt**.
 
-| Mục | Token | ≈ Từ | Ghi chú |
-|---|---|---|---|
-| 1 Tổng quan & phạm vi (gồm catch-all) | 680 | 270 | bullet + 10 dòng catch-all. Tỷ lệ chắn/token tốt nhất trong spec |
-| 2 Item màn hình | 575 | 230 | bảng, dồn item cùng khu vực — dấu `\|` là token thật |
-| 3 Event | 300 | 120 | bảng |
-| 4 Validation & message | 625 | 250 | message nguyên văn tốn token nhưng bắt buộc |
-| 5 Design/Wireframe | 100 | 40 | mô tả bố cục bằng chữ + mermaid `block-beta` (§7.1) |
-| 6 Flow & quy tắc xử lý | 1.900 | 760 | **lớn nhất** — mỗi logic: step + bảng Case |
-| 7 Ràng buộc, bất thường, chưa chốt | 575 | 230 | 3–4 bảng ngắn |
-| 8 Xác thực & phân quyền | 300 | 120 | 2 bảng |
-| 9 Luồng dữ liệu & API | 200 | 80 | bảng timing |
-| 10 Data model, perf, security | 175 | 70 | 3 bảng gọn |
-| **Tổng** | **~5.430** | **~2.170** | cắt theo thứ tự §6 dưới |
+**Hạn mức 10.000 đổi bài toán, không chỉ đổi con số.** Với 6.000, việc khó là *cắt cái gì*; với 10.000, việc khó là **không bỏ trắng ô nào** — thừa chỗ mà vẫn viết "hiển thị thông báo lỗi phù hợp" là cách mất điểm ngớ ngẩn nhất. Ba hệ quả:
+
+1. **Sơ đồ từ "cắt đầu tiên" thành "phải có".** BTC yêu cầu tường minh ba sơ đồ (mục 5 wireframe, mục 6 sequence, mục 9 sơ đồ hệ thống); cả bộ 5 sơ đồ chỉ ~1.100 token = 12% ngân sách. Không vẽ = mất điểm hình thức ở đúng chỗ BTC ghi rõ trong đề bài.
+2. **Bảng 5 cột của mục 6 dùng được lại** cho tới ~60 dòng RTM (trước là 40) — dễ soi ô trống hơn danh sách (30 §5).
+3. **Mục 4 và mục 7 được nhân đôi ngân sách**: message nguyên văn và ca bất thường liên logic là hai vùng Executor đoán sai nhiều nhất, và cả hai đều **không nén được** — mỗi message là một chuỗi, mỗi ca là một dòng.
+
+| Mục | Token | ≈ Từ | So với bản 6k | Ghi chú |
+|---|---|---|---|---|
+| 1 Tổng quan & phạm vi (gồm catch-all 1.x, glossary 1.y) | 850 | 340 | +170 | bullet + 15 dòng catch-all. Tỷ lệ chắn/token tốt nhất trong spec |
+| 2 Item màn hình | 850 | 340 | +275 | bảng; đủ chỗ cho cột login vs guest **và** cột ẩn/disable tách riêng |
+| 3 Event | 500 | 200 | +200 | bảng; thêm được event hệ thống (job, webhook), không chỉ event người bấm |
+| 4 Validation & message | 1.000 | 400 | +375 | **message nguyên văn tốn token nhưng không nén được**; đủ chỗ cho ~12–15 rule |
+| 5 Design/Wireframe | 350 | 140 | +250 | mermaid `block-beta` + bảng 3 trạng thái màn hình (mặc định / lỗi / thành công) |
+| 6 Flow & quy tắc xử lý | 3.200 | 1.280 | +1.300 | **lớn nhất** — mỗi logic: bảng step + bảng Case + (logic phức tạp nhất) một lưu đồ `flowchart TD` |
+| 7 Ràng buộc, bất thường, chưa chốt | 900 | 360 | +325 | 4 bảng; 7.2 đủ chỗ cho ≥ 8 ca liên logic |
+| 8 Xác thực & phân quyền | 450 | 180 | +150 | 2 bảng; phủ được cả thao tác chỉ-đọc và System/Job |
+| 9 Luồng dữ liệu & API | 550 | 220 | +350 | `flowchart LR` + bảng timing + bảng API (trigger/payload/response) |
+| 10 Data model, perf, security | 350 | 140 | +175 | 3 bảng; `erDiagram` nếu quan hệ dữ liệu không hiển nhiên |
+| **Tổng** | **9.000** | **~3.600** | +3.570 | còn 1.000 đệm dưới 10.000 |
 
 **Bản nộp là markdown, không có ảnh** (00 §A): mục 5 dùng mermaid trong văn bản, không dùng link Figma hay ảnh mockup dù BTC nêu hình thức đó.
+
+**Cách tiêu 3.570 token thêm, theo thứ tự lãi giảm dần** — dùng bảng này khi đo thấy còn đệm lúc 11:30:
+
+| Ưu tiên | Tiêu vào đâu | Vì sao |
+|---|---|---|
+| 1 | **Thêm case lỗi và case biên** cho mỗi logic mục 6 | "Thiếu case nào thì Executor phải đoán ở đúng chỗ đó" — lời BTC, và là công thức TRÚNG của đối thủ |
+| 2 | **Thêm message nguyên văn** (mục 4) cho mọi nhánh từ chối trong mục 6 | Mỗi từ chối không có message là một câu hỏi "hiện gì?" mà Executor phải bịa |
+| 3 | **Ca bất thường liên logic** (7.2) từ 4 lên 8–10 ca | Vùng đạn rẻ nhất của đối thủ |
+| 4 | **Lưu đồ `flowchart TD`** cho 1–2 logic nhiều nhánh nhất (§7.5) | Nhánh nào cũng phải kết thúc ở một kết quả — sơ đồ làm lộ nhánh cụt mà bảng giấu được |
+| 5 | **Bảng 3 trạng thái màn hình** ở mục 5 + `erDiagram` mục 10 | Hai mục BTC chấm hình thức, rẻ |
+| 6 | Nới bảng quyền mục 8 sang thao tác chỉ-đọc | 0.4 biến mọi im lặng thành CẤM, nên bảng thiếu dòng = cấm nhầm |
+
+**Không** tiêu đệm vào: viết lại luật cho "mượt", thêm phần mở bài, giải thích vì sao chọn giá trị, hay chép lại brief. Ba thứ đó tốn token mà không chắn thêm một test nào.
 
 ## 6. Thứ tự cắt khi quá hạn mức
 
@@ -100,83 +119,169 @@ Cắt: **10 → 9 → 5 → 3 → 2**. KHÔNG cắt: **1** (phạm vi + catch-al
 
 Lý do: mục 1, 6, 7 là nơi chống TRÚNG; mục 4 và 8 là hai vùng Executor hay đoán sai nhất (message và quyền guest).
 
-## 7. Mermaid — cú pháp cho bốn loại sơ đồ spec cần
+**Với hạn mức 10.000, cắt hiếm khi phải dùng tới.** Lỗi thường gặp hơn theo chiều ngược lại: spec dừng ở 6.000–7.000 token vì đội quen ngân sách cũ, trong khi vẫn còn ô trống ở mục 4 và 7. Đo token lúc 11:30; **dưới 7.500 mà có ô trống thì đó là lỗi, không phải tiết kiệm** — tiêu tiếp theo bảng ưu tiên ở §5.
+
+## 7. Mermaid — sáu loại sơ đồ, cú pháp đã kiểm
 
 Spec là văn bản nộp cho máy đọc, không có Figma trong phòng thi. Dùng Mermaid: viết bằng chữ nên Executor đọc được, lại render thành hình nếu BTC xem bằng công cụ hỗ trợ. Đặt trong khối ```` ```mermaid ```` .
 
-**Quy tắc chung:** nhãn tiếng Việt có dấu phải bọc trong ngoặc kép — `A["Khách đăng nhập"]`; không dùng ký tự `|`, `(`, `)` trần trong nhãn; mỗi sơ đồ ≤ 15 node (spec 5.400 token không đủ chỗ cho hơn); **luôn kèm 1–2 câu chữ tóm tắt ngay dưới sơ đồ** — nếu BTC render lỗi hoặc Executor đọc thô, phần chữ vẫn tải được nghĩa.
+### 7.0 Dùng loại nào ở đâu
+
+| Sơ đồ | Mục | Bắt buộc? | ~Token | Vai trò |
+|---|---|---|---|---|
+| `block-beta` wireframe (§7.1) | 5 | **BTC yêu cầu hình thức** (link Figma/ảnh → ta thay bằng mermaid) | 180 | bố cục màn hình theo khu vực |
+| `stateDiagram-v2` (§7.2) | 6.3 | Nên có | 250 | vòng đời trạng thái — **không thay bảng state × event** |
+| `sequenceDiagram` (§7.3) | 6 (cuối) | **BTC yêu cầu tường minh** | 300 | flow end-to-end, nhiều bên tham gia |
+| `flowchart LR` sơ đồ hệ thống (§7.4) | 9 | **BTC yêu cầu tường minh** | 200 | ai nói chuyện với ai |
+| `flowchart TD` lưu đồ quyết định (§7.5) | 6.x | Nên có cho logic nhiều nhánh nhất | 250 | thứ tự kiểm và mọi nhánh từ chối |
+| `erDiagram` (§7.6) | 10 | Tùy chọn | 150 | quan hệ dữ liệu khi không hiển nhiên |
+
+**Quy tắc chung cho mọi sơ đồ:**
+- **Luôn kèm 1–2 câu chữ tóm tắt ngay dưới sơ đồ.** Sơ đồ gãy cú pháp thì phần chữ vẫn tải được nghĩa; Executor đọc thô cũng vẫn hiểu.
+- Mỗi sơ đồ ≤ 15 node. Nhiều hơn thì tách hai sơ đồ hoặc chuyển phần dư vào bảng.
+- **Sơ đồ không bao giờ thay bảng.** Sơ đồ chở trực quan, bảng chở luật có mã. Hết chỗ thì bỏ sơ đồ, giữ bảng.
+- Có sơ đồ ⇒ **bắt buộc dòng catch-all 0.15**: "Sơ đồ chỉ minh họa; khi sơ đồ và bảng hoặc luật có mã chỏi nhau, bảng và luật có mã thắng." Thiếu dòng này là tự tạo mâu thuẫn nội tại (loại lỗ hổng #5).
+- **Dùng đúng sáu khuôn dưới đây, không sáng tạo cú pháp.** Không có tool render trong phòng thi để thử lại.
 
 ### 7.1 Mục 5 — Wireframe bằng `block-beta`
 
 ```mermaid
 block-beta
   columns 1
-  header["Header: tên SKU · giá · tồn khả dụng"]
+  header["Header: tên SKU, giá, tồn khả dụng"]
   block:main
     columns 2
-    qty["Số lượng - number input - mặc định 1"]
-    ttl["Đồng hồ đếm ngược - chỉ hiện khi có hold ACTIVE"]
+    qty["So luong - number input - mac dinh 1"]
+    ttl["Dong ho dem nguoc - chi hien khi co hold ACTIVE"]
   end
-  err["Vùng message lỗi - ẩn khi không có lỗi"]
-  footer["Nút Giữ hàng - disable khi ATP = 0"]
+  err["Vung message loi - an khi khong co loi"]
+  footer["Nut Giu hang - disable khi ATP = 0"]
 ```
 
-Ba trạng thái màn hình (mặc định / lỗi / thành công) mô tả bằng bảng ngay dưới, không vẽ ba sơ đồ.
+Ba trạng thái màn hình (mặc định / lỗi / thành công) mô tả bằng **bảng ngay dưới**, không vẽ ba sơ đồ:
+
+| Trạng thái | Hiện gì | Nút chính | Message |
+|---|---|---|---|
+| Mặc định | [..] | [enable] | — |
+| Lỗi | [..] | [disable] | mục 4 dòng [..] |
+| Thành công | [..] | [đổi text thành "[..]"] | [..] |
 
 `block-beta` là cú pháp mới, một số trình render cũ không hỗ trợ. An toàn hơn: `flowchart TD` với các node xếp dọc theo thứ tự khu vực từ trên xuống.
 
-### 7.2 Mục 6 — State machine bằng `stateDiagram-v2`
+### 7.2 Mục 6.3 — State machine bằng `stateDiagram-v2`
 
 ```mermaid
 stateDiagram-v2
   [*] --> PENDING_DEPOSIT
-  PENDING_DEPOSIT --> ACTIVE: "cọc thành công BR-02"
-  PENDING_DEPOSIT --> CANCELLED_STAFF: "cọc thất bại BR-03"
-  ACTIVE --> EXPIRED: "đạt expires_at BR-04"
-  ACTIVE --> CONVERTED: "chuyển đơn BR-07"
-  ACTIVE --> CANCELLED_CUSTOMER: "khách hủy BR-05"
+  PENDING_DEPOSIT --> ACTIVE: coc thanh cong BR-02
+  PENDING_DEPOSIT --> CANCELLED_STAFF: coc that bai BR-03
+  ACTIVE --> EXPIRED: dat expires_at BR-04
+  ACTIVE --> CONVERTED: chuyen don BR-07
+  ACTIVE --> CANCELLED_CUSTOMER: khach huy BR-05
   EXPIRED --> [*]
   CONVERTED --> [*]
 ```
 
-**Sơ đồ KHÔNG thay được bảng state × event.** Sơ đồ chỉ vẽ chuyển hợp lệ; ô "Từ chối 0.5" và "KHL" — phần Executor hay đoán sai nhất — chỉ nằm trong bảng. Vẽ sơ đồ *và* giữ bảng đủ 100% ô; hết chỗ thì **bỏ sơ đồ, giữ bảng**.
+Nhãn sau dấu `:` **viết trần, không bọc ngoặc kép** — ngoặc sẽ hiện ra trên hình (§7.7 lỗi 2). Muốn tên trạng thái hiển thị có dấu thì khai báo riêng: `state "Đang giữ" as ACTIVE`.
 
-### 7.3 Mục 6 — Sequence diagram flow end-to-end
+**Sơ đồ KHÔNG thay được bảng state × event.** Sơ đồ chỉ vẽ chuyển hợp lệ; ô "Từ chối 0.5" và "KHL" — phần Executor hay đoán sai nhất — chỉ nằm trong bảng. Vẽ sơ đồ *và* giữ bảng đủ 100% ô.
+
+### 7.3 Mục 6 — Sequence diagram flow end-to-end (BTC yêu cầu)
 
 ```mermaid
 sequenceDiagram
-  actor K as "Khách"
-  participant FE
-  participant BE
-  participant ERP as "Hệ thống kho"
-  K->>FE: "bấm Giữ hàng, qty = 2"
-  FE->>FE: "validate FE - mục 4"
-  FE->>BE: "POST tạo hold + idempotency key"
-  BE->>ERP: "kiểm ATP"
-  ERP-->>BE: "ATP = 3"
-  BE-->>FE: "201 hold ACTIVE, expires_at"
-  FE-->>K: "hiện đồng hồ đếm ngược, nút đổi thành Xem hold"
-  Note over BE,ERP: "ATP < qty thì trả 409, message mục 4 dòng 1"
+  actor K as Khach
+  participant FE as Web app
+  participant BE as Dich vu giu hang
+  participant ERP as He thong kho
+  K->>FE: bam Giu hang, qty = 2
+  FE->>FE: validate FE theo muc 4
+  FE->>BE: POST tao hold kem idempotency key
+  BE->>ERP: kiem ATP
+  ERP-->>BE: ATP = 3
+  BE-->>FE: 201 hold ACTIVE kem expires_at
+  FE-->>K: hien dong ho dem nguoc, nut doi thanh Xem hold
+  Note over BE,ERP: ATP < qty thi tra 409, message muc 4 dong 1
 ```
 
-Một sơ đồ cho luồng chính là đủ; nhánh lỗi để trong bảng Case, không vẽ thêm sơ đồ.
+Tên hiển thị sau `as` và nội dung message sau `:` đều **viết trần**, không ngoặc kép. Mũi tên phải là `->>` (gọi) và `-->>` (trả về) — dùng `-->` của flowchart là lỗi gãy phổ biến nhất (§7.7 lỗi 5).
 
-### 7.4 Mục 9 — Sơ đồ hệ thống bằng `flowchart LR`
+Một sơ đồ cho luồng chính là đủ; nhánh lỗi để trong bảng Case và trong lưu đồ §7.5.
+
+### 7.4 Mục 9 — Sơ đồ hệ thống bằng `flowchart LR` (BTC yêu cầu)
 
 ```mermaid
 flowchart LR
-  FE["Web/App"] --> BE["Dịch vụ giữ hàng"]
+  FE["Web hoac App"] --> BE["Dich vu giu hang"]
   BE --> DB[("DB hold")]
-  BE --> ERP["ERP tồn kho"]
-  BE --> PAY["Cổng thanh toán"]
-  BE --> MAIL["Dịch vụ mail"]
-  ERP -. "webhook điều chỉnh kho" .-> BE
+  BE --> ERP["ERP ton kho"]
+  BE --> PAY["Cong thanh toan"]
+  BE --> MAIL["Dich vu mail"]
+  ERP -. "webhook dieu chinh kho" .-> BE
 ```
 
 Chi tiết khi nào gọi / gửi gì / thất bại thì làm gì nằm ở **bảng timing**, không nhồi vào sơ đồ.
 
-### 7.5 Ngân sách & thứ tự cắt
+### 7.5 Mục 6.x — Lưu đồ quyết định bằng `flowchart TD` (mới, ngân sách 10k mới đủ chỗ)
 
-Bốn sơ đồ trên tốn khoảng **180–220 từ ≈ 450–550 token**. Chúng nằm trong ngân sách mục 5 (100), 6 (1.900), 9 (200) ở §5 — không xin thêm token.
+Dùng cho **logic nhiều nhánh nhất** của spec — thường là "tạo hold" hoặc "áp dụng mã giảm giá". Giá trị riêng của nó: nó bắt lộ **thứ tự kiểm** và **nhánh cụt**. Bảng Case liệt kê các case rời rạc, nên một nhánh không dẫn tới kết quả nào vẫn trông bình thường trong bảng; trên lưu đồ thì thấy ngay.
 
-Khi quá hạn mức token, cắt sơ đồ theo thứ tự **7.1 wireframe → 7.4 sơ đồ hệ thống → 7.3 sequence → 7.2 state machine**, mỗi lần cắt thay bằng 1–2 câu chữ. Bảng đi kèm **không bao giờ bị cắt** — bảng chở luật, sơ đồ chỉ chở trực quan.
+```mermaid
+flowchart TD
+  S(["Khach bam Giu hang"]) --> V1{"qty trong khoang cho phep?"}
+  V1 -->|Khong| E1["Tu choi - message muc 4 dong 1 - BR-31"]
+  V1 -->|Co| V2{"ATP >= qty?"}
+  V2 -->|Khong| E2["Tu choi - message muc 4 dong 2 - BR-32"]
+  V2 -->|Co| V3{"Khach da dat tran so hold ACTIVE?"}
+  V3 -->|Roi| E3["Tu choi - message muc 4 dong 5 - BR-33"]
+  V3 -->|Chua| W["Ghi giu ton - Reserved += qty"]
+  W --> V4{"Ghi giu thanh cong?"}
+  V4 -->|Khong| E4["OUT_OF_STOCK - khong giu mot phan - BR-22"]
+  V4 -->|Co| OK["Tao hold ACTIVE - expires_at = now + TTL - BR-01"]
+```
+
+Thứ tự kiểm trên lưu đồ **là một luật**, không phải minh họa: nó trả lời "nhiều lỗi cùng lúc thì báo lỗi nào" (mục 4, quy tắc 5 gạch "thứ tự ưu tiên khi nhiều case cùng đúng"). Vẽ lưu đồ mà thứ tự khác với bảng Case = mâu thuẫn nội tại, loại lỗ hổng #5.
+
+Ba việc lưu đồ này làm được mà bảng không làm:
+- **Nhánh cụt**: mọi mũi tên phải kết thúc ở một node kết quả. Node điều kiện chỉ có một nhánh ⇒ thiếu case.
+- **Thứ tự kiểm FE trước hay BE trước** — nối được với cột FE/BE của mục 4.
+- **Điểm ghi dữ liệu** (`W` ở trên) tách khỏi **điểm kiểm** — đây đúng là chỗ cổng F quy tắc 22 nhắm vào (kiểm xong vẫn có thể ghi thất bại).
+
+### 7.6 Mục 10 — Quan hệ dữ liệu bằng `erDiagram` (tùy chọn)
+
+Chỉ vẽ khi quan hệ **không hiển nhiên** (một hold nhiều dòng SKU, một khách nhiều hold, hold ↔ đơn hàng). Quan hệ một-một tầm thường thì bảng field đủ.
+
+```mermaid
+erDiagram
+  CUSTOMER ||--o{ HOLD : tao
+  HOLD ||--|{ HOLD_LINE : gom
+  HOLD_LINE }o--|| SKU : tro_toi
+  HOLD ||--o| ORDER : chuyen_thanh
+```
+
+Bản số (`||`, `o{`, `|{`) là dữ kiện nghiệp vụ thật: `HOLD ||--|{ HOLD_LINE` nghĩa là **một hold phải có ít nhất một dòng**. Vẽ sai bản số là viết sai luật, nên chỉ vẽ khi đã hỏi được hoặc brief nói rõ.
+
+### 7.7 Lint Mermaid — mười lỗi làm gãy render (Ctrl+F trước khi nộp)
+
+Không có tool render trong phòng thi, nên đây là cách duy nhất kiểm. Sơ đồ gãy không làm hỏng spec (Executor vẫn đọc ra chữ), nhưng mất điểm hình thức ở mục BTC chấm.
+
+| # | Lỗi | Sai | Đúng |
+|---|---|---|---|
+| 1 | Nhãn flowchart chứa `(` `)` `[` `]` `{` `}` `,` `:` `#` `;` không bọc ngoặc kép | `A[Tu choi (het ton)]` | `A["Tu choi - het ton"]` |
+| 2 | Bọc ngoặc kép trong `stateDiagram-v2` sau `:` | `A --> B: "coc thanh cong"` | `A --> B: coc thanh cong` |
+| 3 | Bọc ngoặc kép sau `as` trong `sequenceDiagram` | `participant BE as "Dich vu"` | `participant BE as Dich vu` |
+| 4 | Id node/state/participant có dấu tiếng Việt hoặc khoảng trắng | `Khách hàng --> BE` | `KH["Khach hang"] --> BE` |
+| 5 | Dùng `-->` trong `sequenceDiagram` | `FE --> BE: goi API` | `FE->>BE: goi API` |
+| 6 | Ký tự `\|` trần trong nhãn (trùng cú pháp nhãn cạnh) | `A["ATP\|qty"]` | `A["ATP tren qty"]` |
+| 7 | Thiếu `end` đóng `block:`/`subgraph` | — | mỗi `block:`/`subgraph` một `end` |
+| 8 | Nối nhiều lệnh trên một dòng bằng `;` | `A-->B; B-->C` | mỗi lệnh một dòng |
+| 9 | Xuống dòng trong nhãn bằng `\n` | `A["dong 1\ndong 2"]` | `A["dong 1<br/>dong 2"]` |
+| 10 | Khối cấu hình `%%{init: ...}%%` | — | bỏ hẳn, một số trình chặn |
+
+**Mẹo an toàn nhất:** viết nhãn sơ đồ **không dấu** (như mọi ví dụ ở trên) và để phần có dấu ở câu tóm tắt bên dưới. Nhãn không dấu không bao giờ gãy, tiết kiệm ~15% token của khối sơ đồ, và Executor vẫn đọc hiểu.
+
+### 7.8 Ngân sách & thứ tự cắt sơ đồ
+
+Cả sáu sơ đồ ≈ **1.100–1.300 token ≈ 12% của 9.000**, đã nằm trong ngân sách mục 5 (350), 6 (3.200), 9 (550), 10 (350) ở §5 — không xin thêm token.
+
+Khi quá hạn mức, cắt theo thứ tự **7.6 erDiagram → 7.1 wireframe → 7.5 lưu đồ → 7.4 sơ đồ hệ thống → 7.3 sequence → 7.2 state machine**, mỗi lần cắt thay bằng 1–2 câu chữ. Hai sơ đồ cuối danh sách cắt sau cùng vì chúng mô tả thứ BTC hỏi tới nhiều nhất. **Bảng đi kèm không bao giờ bị cắt.**

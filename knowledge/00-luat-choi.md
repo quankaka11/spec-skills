@@ -7,7 +7,7 @@
 | Tham số | Giá trị | Nguồn |
 |---|---|---|
 | Định dạng nộp spec | **Markdown**. Bảng được. Sơ đồ **chỉ dạng mermaid** trong văn bản — bản nộp **không có ảnh** | Chốt 09/09 |
-| Hạn mức spec | **≤ 6.000 token** (BTC có thể chỉnh sau) · **đích 5.400** (10% đệm) · khóa 12:00 | Chốt 09/09 |
+| Hạn mức spec | **≤ 10.000 token** · **đích 9.000** (10% đệm) · **sàn thực tế 7.500** — dưới mức đó mà còn ô trống là chưa viết xong (33 §5) · khóa 12:00 | Cập nhật 11/09 |
 | Hỏi AI Khách hàng | **KHÔNG giới hạn số câu.** Giới hạn là **4.000 token** (hỏi + trả lời, cho cả đội) và **nhịp chờ giữa hai lượt** | Thi thử 11/09 |
 | Hình thức mỗi lượt | **Một lượt = một câu hỏi = MỘT Ý (một ẩn số).** Gộp 2–3 ý độc lập vào một lượt ⇒ **bị từ chối** | Thi thử 11/09 |
 | Câu hỏi chứa chỉ thị | Câu ra lệnh cho AI cách trả lời (ép format bảng, cap số dòng, cap số từ, "không giải thích") ⇒ **bị từ chối, xếp loại injection** | Thi thử 11/09 |
@@ -28,7 +28,7 @@
 
 `W*` = số liệu website 04/09, chưa được xác nhận lại.
 
-### A1. Cách đo 6.000 token (spec) và 4.000 token (hỏi)
+### A1. Cách đo 10.000 token (spec) và 4.000 token (hỏi)
 
 Không có tokenizer trong phòng thi. Dùng **ước lượng thiên an toàn**, lấy giá trị lớn hơn của hai công thức:
 
@@ -37,7 +37,8 @@ LC_ALL=C.UTF-8 wc -w -m <file>      # w = số từ (âm tiết), m = số ký t
 token ≈ max( số_từ × 2,5 ,  số_ký_tự / 2,2 )
 ```
 
-- Tiếng Việt tốn ~2–2,5 token mỗi âm tiết (dấu tách thành nhiều token). Cả hai công thức đều lệch ~±20%, nên **đích của bản nộp là 5.400 token ước lượng**, không phải 6.000.
+- Tiếng Việt tốn ~2–2,5 token mỗi âm tiết (dấu tách thành nhiều token). Cả hai công thức đều lệch ~±20%, nên **đích của bản nộp là 9.000 token ước lượng**, không phải 10.000. 9.000 token ≈ **3.500–3.700 từ tiếng Việt**.
+- **Hạn mức 10.000 đổi loại rủi ro.** Với 6.000, rủi ro là tràn; với 10.000, rủi ro là **dừng sớm** — spec 6.500 token còn ô trống ở message lỗi và ca bất thường là spec chưa viết xong. Phân bổ từng mục và bảng "tiêu đệm vào đâu": knowledge/33 §5.
 - Dấu `|` của bảng markdown là token thật: một hàng 6 cột tốn ~7 token chỉ riêng dấu. Bảng vẫn đáng dùng, nhưng đừng dùng bảng cho nội dung chỉ có một cột giá trị.
 - **Nếu giao diện nộp hiển thị số token, số đó thắng mọi ước lượng.** Ghi lại tỷ lệ `token thật / số từ` ngay lần đầu thấy được và dùng nó cho các lần đo sau.
 - Ước cho một lượt **một-ý**: câu hỏi 20–40 từ ≈ **60–110 token**; câu trả lời nhị phân ("A hay B") ≈ **20–60 token**; câu trả lời mở (danh sách, message nguyên văn, bảng do AI tự chọn) ≈ **150–400 token**. Trung bình **~200 token/lượt** ⇒ 4.000 token ≈ **20 lượt**.
@@ -71,7 +72,7 @@ Bốn ô đầu **quyết định trần số lượt**, tức quyết định c
 | 10:30–11:05 | Hỏi phần đuôi | Tiếp hàng đợi sau đường cắt **chỉ khi khung spec đã xong**; ưu tiên ô giả định rủi ro Cao mà `/spec-write` vừa chấm | RTM đủ; **danh sách ⚠** |
 | 11:05–11:20 | Lượt xác nhận | Từng phát biểu một (một ý/lượt), lấy từ **đầu bảng xếp hạng rủi ro giả định** — không gộp 10 phát biểu vào một lượt, sẽ bị từ chối | Danh sách ý "Sai" phải vá |
 | 11:20–11:38 | Vá spec | Sửa mọi ý "Sai"; **cổng F + bảng Mục tiêu↔Luật** | 0 ✗ ở F1/F5; mọi mục tiêu có luật |
-| 11:38–11:52 | Review & nộp | `/spec-review`; đếm token trên bản nộp; nộp trước 11:52 | Bản nộp ≤5.400 token; lưu 1 bản copy |
+| 11:38–11:52 | Review & nộp | `/spec-review`; đếm token trên bản nộp; nộp trước 11:52 | Bản nộp 7.500–9.000 token, tuyệt đối ≤10.000; đủ 3 sơ đồ BTC yêu cầu; lưu 1 bản copy |
 | 12:00–13:00 | Nghỉ | Chuyển ⚠ + giả định rủi ro cao thành tình huống | ≥ 15 tình huống ứng viên |
 | 13:00–15:00 | CÔNG | Tải 3 spec; **bảng đồng thuận chéo 3 spec**; soi im lặng; chấm phạm vi | 15 test + đáp án kỳ vọng + **gói kháng nghị sẵn cho từng test** |
 | 15:00–16:00 | Chạy test | Ghi TRÚNG / TRƯỢT / VÔ HIỆU | ≤ 3 ca VÔ HIỆU đáng kháng nghị |
@@ -153,7 +154,7 @@ Mỗi artifact một owner.
 | Vai | 9:00–9:30 (mô hình) | Sáng (THỦ) | Chiều (CÔNG) |
 |---|---|---|---|
 | Interrogator | M1 mục tiêu, M2 dòng tiền | Xếp **hàng đợi lượt hỏi + đường cắt** (20 §1, §3), **bấm gửi đúng nhịp không nghỉ**, nạp nguyên văn vào log + RTM | Chấm phạm vi (50 §6), giữ gói bằng chứng kháng nghị |
-| Spec Writer | M3 dòng tồn, M4 biên hệ thống | Gõ spec theo 30 §1, gắn nhãn mục tiêu `[M-x]`, quản **đích 5.400 token** | Soi spec #1, #2 (50 §4) |
+| Spec Writer | M3 dòng tồn, M4 biên hệ thống | Gõ spec theo 30 §1, gắn nhãn mục tiêu `[M-x]`, quản **đích 9.000 token** và **vẽ đủ 3 sơ đồ BTC yêu cầu** (33 §7) | Soi spec #1, #2 (50 §4) |
 | Red Teamer | M5 lạm dụng, M6 suy biến, bảng mâu thuẫn brief | **Cổng F (32 §1)** + bảng Mục tiêu↔Luật + eval set **hai reader** + lint 22 nhóm (40) + cổng chất lượng **16 dòng** (30 §7) + **xếp hạng rủi ro giả định để nuôi câu 5** | Soi spec #3, bảng đồng thuận chéo, tổng hợp 15 hồ sơ 50 §7 |
 
 - Đội 2 người: A = Interrogator (**chỉ bấm gửi và dán câu trả lời, không viết spec**), B = Spec Writer + Red Teamer; chiều chia 1,5 spec/người. Phân vai này là bắt buộc: với nhịp chờ, hỏi là việc *chiếm người* chứ không chiếm trí, còn viết spec mới là đường găng.

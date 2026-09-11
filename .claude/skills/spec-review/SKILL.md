@@ -1,6 +1,6 @@
 ---
 name: spec-review
-description: Red team spec của đội trước khi nộp — kiểm đủ 10 mục BTC, lint từ mơ hồ và nội dung, kiểm cấu trúc và ô trống bảng, kiểm phủ RTM (cả dòng đã hỏi và dòng giả định), cổng khả thi F + bảng Mục tiêu↔Luật + mô hình lạm dụng + kiểm giá trị tự nghĩ ra, eval set qua HAI agent executor mù độc lập (đo đa nghĩa bằng bất đồng), đếm token bản nộp, cổng chất lượng 23 dòng, kết luận NỘP ĐƯỢC/CHƯA kèm danh sách SỬA và HỎI (mỗi mục một lượt nhị phân, cắt theo số nhịp còn kịp gửi). Dùng 11:38–11:48 ngày thi hoặc trong diễn tập khi người dùng nói "review spec", "soi spec mình", "red team", "kiểm tra trước khi nộp", "spec-review".
+description: Red team spec của đội trước khi nộp — kiểm đủ 10 mục BTC, lint từ mơ hồ và nội dung, kiểm cấu trúc và ô trống bảng, kiểm phủ RTM (cả dòng đã hỏi và dòng giả định), cổng khả thi F + bảng Mục tiêu↔Luật + mô hình lạm dụng + kiểm giá trị tự nghĩ ra, eval set qua HAI agent executor mù độc lập (đo đa nghĩa bằng bất đồng), đếm token bản nộp, cổng chất lượng 25 dòng, kết luận NỘP ĐƯỢC/CHƯA kèm danh sách SỬA và HỎI (mỗi mục một lượt nhị phân, cắt theo số nhịp còn kịp gửi). Dùng 11:38–11:48 ngày thi hoặc trong diễn tập khi người dùng nói "review spec", "soi spec mình", "red team", "kiểm tra trước khi nộp", "spec-review".
 argument-hint: "[đường-dẫn-spec] [n=20] [sửa]"
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(LC_ALL=C.UTF-8 wc *), Agent
 ---
@@ -21,7 +21,7 @@ Mục tiêu: tìm mọi chỗ Executor có thể trả lời khác specs thật,
 - `${CLAUDE_PROJECT_DIR}/knowledge/31-bang-quyet-dinh-trang-thai.md`: §2.2–§2.3 (đếm tổ hợp, soi gap/overlap), §3 (mọi ô state × event), §4 (mức phủ).
 - `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (**24 loại** lỗ hổng — để sinh eval set; #22 message, #23 guest, #24 trạng thái UI là loại mới 11/09), §2 (quy tắc viết tình huống), §5 probe P1–P58.
 - `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §2 tên 14 nhóm N1–N14 (để tick heading spec MÌNH ở khối B) + §1 (cổng 8 kiểm tra — mọi mục trong danh sách `HỎI` phải qua cổng này trước khi in) + §3b (bốn vùng BTC: mục 4 message giờ hỏi được).
-- `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md` §1 (ngân sách token, quy tắc mermaid), §1b (**luật giả định = mặc định ngành** — căn cứ của khối G-7), §7 (cổng chất lượng **23 dòng**).
+- `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md` §1 (ngân sách token, quy tắc mermaid), §1b (**luật giả định = mặc định ngành** — căn cứ của khối G-7), §7 (cổng chất lượng **25 dòng**).
 - `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §4 (31 phát biểu mặc định ngành — dùng để chấm khối G-7), §5 (RTM hai loại dòng).
 
 ## Bước
@@ -37,7 +37,13 @@ Rồi bắt buộc kiểm:
 3. **Mục 2 + 8** (S36): Grep `guest|Guest|chưa đăng nhập` — mục 2 thiếu cột phân biệt login/guest hoặc mục 8 thiếu dòng Guest = lỗi **Cao**. Mục 8 phải có System/Job và phủ thao tác chỉ-đọc nếu có catch-all "không ✓ = cấm". Mục 2 phải có điều kiện ẩn/disable.
 4. **Mục 7** (S37): 7.2 có đủ 4 ca BTC nêu đích danh (dữ liệu đổi giữa hiển thị và submit · gửi trùng · mở link hai lần · mail fail sau khi đã lưu)? thiếu ca nào = lỗi Cao, ghi tên ca. 7.4 có gom bảng riêng điều chưa chốt? `[GIẢ ĐỊNH]`/"TBD" rải rác ngoài bảng 7.4 = S28 Trung.
 5. Bảng state × event (trong logic 6.3): liệt kê mọi ô, ô trống/"—" không giải thích = lỗi Cao S13/S17. **Có sơ đồ Mermaid `stateDiagram-v2` mà KHÔNG có bảng = lỗi Cao** — sơ đồ chỉ vẽ chuyển hợp lệ, thiếu hẳn ô `Từ chối 0.5` / `KHL`, đúng chỗ Executor đoán sai.
-5b. Mermaid: mỗi khối ```mermaid có nhãn tiếng Việt bọc ngoặc kép? có 1–2 câu chữ tóm tắt ngay dưới (phòng render lỗi)? Thiếu câu chữ = lỗi Trung.
+5b. **Sơ đồ Mermaid — đếm, rồi lint** (knowledge/33 §7):
+   - **Đếm khối** ```` ```mermaid ````: **< 3 = lỗi Cao** — BTC yêu cầu tường minh ba sơ đồ (mục 5 wireframe · mục 6 sequence end-to-end · mục 9 sơ đồ hệ thống). Ghi rõ mục nào thiếu.
+   - Logic nhiều nhánh nhất của mục 6 không có lưu đồ `flowchart TD` = lỗi Trung (knowledge/33 §7.5).
+   - **Lint 10 dòng knowledge/33 §7.7** trên từng khối: nhãn flowchart chứa `(` `)` `,` `:` `#` không bọc ngoặc kép · ngoặc kép sau `:` trong `stateDiagram-v2` hoặc sau `as` trong `sequenceDiagram` (ngoặc sẽ hiện trên hình) · id node/state có dấu tiếng Việt hoặc khoảng trắng · `-->` dùng trong `sequenceDiagram` thay vì `->>` · `|` trần trong nhãn · thiếu `end` đóng `block:`/`subgraph` · `;` nối lệnh · `\n` thay `<br/>` · khối `%%{init}%%`. Mỗi hit = lỗi **Trung** (sơ đồ gãy không hỏng spec nhưng mất điểm hình thức).
+   - Thiếu 1–2 câu chữ tóm tắt ngay dưới sơ đồ = lỗi Trung.
+   - Có sơ đồ mà catch-all thiếu dòng 0.15 ("bảng và luật có mã thắng") = lỗi **Cao** — tự tạo mâu thuẫn nội tại, Executor có hai cách đọc hợp lệ.
+   - Lưu đồ `flowchart TD` có node điều kiện **chỉ một nhánh** (nhánh cụt) = lỗi Cao: một case còn thiếu trong bảng. Thứ tự kiểm trên lưu đồ lệch với bảng Case hoặc cột FE/BE mục 4 = lỗi Cao (mâu thuẫn nội tại #5).
 6. Decision table: đếm tổ hợp = tích các phân hoạch (knowledge/31 §2.2), thiếu → gap, hai hàng `-` chéo cột không hit policy → overlap #8.
 7. Grep `BR-\d+|EX-\d+`: mã trùng, tham chiếu chết S10.
 8. Catch-all mục 1.x: có ưu tiên xung đột (0.6), timezone (0.2), [a,b) (0.3), tình huống không khớp luật nào (0.5)?
@@ -87,21 +93,28 @@ Không có RTM → ghi "bỏ khối C: không có RTM" và đánh dấu mọi lu
 LC_ALL=C.UTF-8 wc -w -m <thư-mục>/spec.nop.md
 token ≈ max( số_từ × 2,5 , số_ký_tự / 2,2 )
 ```
-In cả hai con số và giá trị lấy. **Không** dùng `wc` thiếu `LC_ALL=C.UTF-8` — locale `C` đếm sai ký tự đa byte. **> 6.000 = lỗi Cao** (chặn nộp); **> 5.400 = cảnh báo "hết đệm"** kèm danh sách ứng viên cắt (BR nhãn `[M-0]`, hit nhóm lint 22, mục 10 → 9 → 5 → 3 → 2 theo knowledge/33 §6, sơ đồ mermaid trùng bảng). Nếu giao diện nộp của BTC hiển thị token thật → lấy số đó và ghi hệ số `token thật / số từ` vào báo cáo. Thiếu `spec.nop.md` → lỗi Cao "chưa sinh bản nộp", đếm tạm trên `spec.md` kèm ghi chú.
+In cả hai con số và giá trị lấy. **Không** dùng `wc` thiếu `LC_ALL=C.UTF-8` — locale `C` đếm sai ký tự đa byte.
 
-**F. CỔNG CHẤT LƯỢNG** — **23 dòng** knowledge/30 §7 (gồm 12 dòng cấu trúc 10 mục + dòng 18–23 từ knowledge/32 §5), đánh ✓/✗ với bằng chứng 1 dòng.
+Ba ngưỡng, **cả ngưỡng dưới cũng là phát hiện**:
+- **> 10.000 = lỗi Cao** (chặn nộp).
+- **> 9.000 = cảnh báo "hết đệm"** kèm danh sách ứng viên cắt (BR nhãn `[M-0]`, hit nhóm lint 22, mục 10 → 9 → 5 → 3 → 2 theo knowledge/33 §6, sơ đồ mermaid trùng bảng).
+- **< 7.500 = lỗi Trung "chưa tiêu hết ngân sách"**, nâng lên **Cao** nếu đồng thời có ô trống, có logic mục 6 dưới 5 case, hoặc có nhánh từ chối chưa có message. Kèm danh sách **tiêu vào đâu** theo bảng ưu tiên knowledge/33 §5: thêm case lỗi/biên → thêm message mục 4 → nâng 7.2 lên 8–10 ca → lưu đồ `flowchart TD` → bảng 3 trạng thái mục 5 → `erDiagram`. Với hạn mức 10.000, spec ngắn không phải spec gọn: chỗ trống là chỗ Executor đoán.
+
+Kèm **bảng token theo mục** (đo bằng cách cắt file theo heading): mục nào vượt ngân sách knowledge/33 §5 quá 30%, mục nào dưới 50% — cả hai đều là tín hiệu phân bổ sai. Nếu giao diện nộp của BTC hiển thị token thật → lấy số đó và ghi hệ số `token thật / số từ` vào báo cáo. Thiếu `spec.nop.md` → lỗi Cao "chưa sinh bản nộp", đếm tạm trên `spec.md` kèm ghi chú.
+
+**F. CỔNG CHẤT LƯỢNG** — **25 dòng** knowledge/30 §7 (gồm 22b sơ đồ/lưu đồ và 24 ngưỡng dưới token) (gồm 12 dòng cấu trúc 10 mục + dòng 18–23 từ knowledge/32 §5), đánh ✓/✗ với bằng chứng 1 dòng.
 
 ## Báo cáo `review.md` (cùng thư mục với spec)
-1. Kết luận đầu file: **NỘP ĐƯỢC** hoặc **CHƯA** — CHƯA khi còn ≥1 lỗi mức Cao, hoặc **thiếu một trong 10 mục BTC**, hoặc **> 6.000 token**, hoặc dòng RTM chưa có BR, hoặc cổng chất lượng có ✗, hoặc **còn ✗ ở F1/F5**, hoặc **có mục tiêu brief không có luật phục vụ**, hoặc **có tình huống eval mà hai reader ra kết quả khác nhau**, hoặc **có BR mang giá trị ngược mặc định ngành mà không có `A-xx` đỡ** (khối G-7).
+1. Kết luận đầu file: **NỘP ĐƯỢC** hoặc **CHƯA** — CHƯA khi còn ≥1 lỗi mức Cao, hoặc **thiếu một trong 10 mục BTC**, hoặc **> 10.000 token**, hoặc **thiếu một trong ba sơ đồ BTC yêu cầu** (mục 5, 6, 9), hoặc dòng RTM chưa có BR, hoặc cổng chất lượng có ✗, hoặc **còn ✗ ở F1/F5**, hoặc **có mục tiêu brief không có luật phục vụ**, hoặc **có tình huống eval mà hai reader ra kết quả khác nhau**, hoặc **có BR mang giá trị ngược mặc định ngành mà không có `A-xx` đỡ** (khối G-7).
 2. Bảng lỗ hổng theo định dạng knowledge/40 §4, sắp theo Mức giảm dần rồi theo thang §5 (đã chèn 2b–2e); cột "Viết lại đề xuất" là câu dán được vào spec. Câu viết lại KHÔNG ĐƯỢC bịa con số/giá trị: số có trong RTM/log → ghi số + `(A-xx)`; không có → để `[..]` và ghi "xác nhận với AI Khách hàng"; luật hiện có trong spec chưa đối chiếu được với log → giữ nguyên nội dung, chỉ sửa diễn đạt, và gắn "cần đối chiếu log".
    **Phân biệt ba loại phát hiện, ghi rõ ở cột riêng:**
    - `SỬA` = sửa được ngay bằng viết lại (mơ hồ, ô trống, F1, F5, S25–S27, thiếu mục / thiếu loại case / message không nguyên văn / thiếu cột Guest (S31–S37), **và giá trị ngược mặc định ngành ở khối G-7** — đổi về mặc định ngành là sửa, không phải đoán).
    - `HỎI` = đội đang không biết specs thật quy định gì và **còn nhịp để hỏi** (F2, F7, S22, S23, `G-xx` rủi ro cao). Xuất thành **lượt nhị phân rời** dán vào `/elicit xac-nhan` — mỗi mục một lượt, một ý, không chỉ thị, không phải câu hỏi mở.
    - `RỦI RO ĐÃ BIẾT` = đúng loại `HỎI` nhưng **hết câu hỏi** hoặc không lọt vào 10 phát biểu của C5. Không sửa, không hỏi; ghi lại kèm tình huống mà đối thủ sẽ dùng để bắn, để buổi chiều tự bắn trước và để rút bài học.
-   Cắt danh sách `HỎI` theo số câu còn lại: **10 phát biểu nếu còn 1 câu, 0 nếu còn 0 câu**; phần dư xuống `RỦI RO ĐÃ BIẾT`, xếp theo rủi ro giảm dần.
+   Cắt danh sách `HỎI` theo **số lượt còn kịp gửi trước đường cắt** (ước ở đầu skill); phần dư xuống `RỦI RO ĐÃ BIẾT`, xếp theo rủi ro giảm dần.
 3. Bảng eval set: tình huống | loại # | ĐỘ PHỦ | **TRẢ LỜI reader 1** | **TRẢ LỜI reader 2** | **lệch?** | đối chiếu RTM | mục cần vá.
 4. **Khối G**: bảng cổng F; bảng Mục tiêu↔Luật; 12 ca suy biến; 6 láng giềng; 6 kẻ lạm dụng; 6 chi phí ẩn.
-5. Cổng chất lượng 23 dòng ✓/✗. **Token bản nộp (cả hai công thức) + đệm còn lại dưới 6.000.**
+5. Cổng chất lượng 25 dòng ✓/✗. **Token bản nộp (cả hai công thức) + đệm còn lại dưới 10.000 + khoảng cách tới sàn 7.500 + bảng token theo mục.**
 6. "Sửa trong 10 phút" — 5 việc đầu theo thang knowledge/40 §5, và **danh sách lượt hỏi còn kịp gửi** — mỗi mục đã viết sẵn thành một câu nhị phân, xếp theo rủi ro, dán được vào `/elicit xac-nhan`.
 6b. **`RỦI RO ĐÃ BIẾT`** — bảng: giả định | mặc định ngành hay ngược | tình huống đối thủ sẽ dùng | mức. Đây là đầu vào cho `/attack` tự bắn spec mình lúc 12:00–13:00.
 
