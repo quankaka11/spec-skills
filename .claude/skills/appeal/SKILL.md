@@ -16,13 +16,13 @@ Hai loại ca của kit cũ **không còn kháng nghị được** — nếu ng�
 
 ## Input
 `$ARGUMENTS` = `[thư-mục-trận]` (mặc định `battle/`) + phần người dùng dán: từng kết quả VÔ HIỆU gồm ID test, tình huống, lý do đối chiếu của AI So khớp (nếu được xem).
-Đọc: `tests/*.md` (hồ sơ finding — **gói bằng chứng phạm vi đã thu sẵn lúc 14:30**), `log-khach-hang.md` (5 câu trả lời nguyên văn), `brief.md`, `dong-thuan-cheo.md`, `spec.md`, `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §7 (mẫu text + 3 mức bằng chứng), §2-9, `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A, §D.
+Đọc: `tests/*.md` (hồ sơ finding — **gói bằng chứng phạm vi đã thu sẵn lúc 14:30**), `log-khach-hang.md` (mọi câu trả lời nguyên văn), `brief.md`, `dong-thuan-cheo.md`, `spec.md`, `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §7 (mẫu text + 3 mức bằng chứng), §2-9, `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A, §D.
 
 ## Bước
 1. **Sàng điều kiện.** Mỗi ca người dùng dán: kết quả máy có đúng là **VÔ HIỆU** và test đó do **đội mình bắn** không? Không đủ hai điều kiện ⇒ loại, ghi một dòng lý do. Đây là bước đầu vì nó loại phần lớn ca của kit cũ.
 2. **Lấy gói bằng chứng có sẵn** từ hồ sơ finding của test đó (`/attack` bước 7 đã trích nguyên văn). Có sẵn ⇒ sang bước 4. Không có ⇒ bước 3.
 3. **Tìm bằng chứng bằng Grep**, không nhớ mò, theo thứ tự độ mạnh:
-   - **Mức 1** — Grep toàn bộ `log-khach-hang.md` (cả 5 câu) tìm câu trả lời nghiệp vụ về đúng tình huống đó → trích khối `## C<n>`, timestamp, câu hỏi và câu trả lời nguyên văn. Đối chiếu mục NGOÀI phạm vi trong câu trả lời C1: nghiệp vụ nằm trong danh sách NGOÀI ⇒ **bỏ ca**, máy chấm đúng.
+   - **Mức 1** — Grep toàn bộ `log-khach-hang.md` (mọi lượt đã chấp nhận; bỏ qua khối `[BỊ TỪ CHỐI]`) tìm câu trả lời nghiệp vụ về đúng tình huống đó → trích khối `## L<n>`, timestamp, câu hỏi và câu trả lời nguyên văn. Đối chiếu mục NGOÀI phạm vi trong câu trả lời về phạm vi (nếu lượt đó đã gửi): nghiệp vụ nằm trong danh sách NGOÀI ⇒ **bỏ ca**, máy chấm đúng.
    - **Mức 2** — Grep `brief.md` tìm câu nhắc nghiệp vụ đó → trích nguyên văn kèm vị trí (đoạn/câu). Không trích được câu trực tiếp ⇒ không dùng mức 2 (đừng dựa vào "brief hàm ý").
    - **Mức 3** — Grep 3 spec đối thủ đã tải + `dong-thuan-cheo.md`: ≥2 spec có luật cho nghiệp vụ đó → trích số mục của **cả hai**.
    - `"Không có quy định riêng."` trong log **không phải** bằng chứng phạm vi (50 §6-9) — nó chỉ nói specs thật không quy định. Dòng `G-xx` (giả định của đội) cũng không phải bằng chứng.

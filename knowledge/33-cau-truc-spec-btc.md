@@ -76,7 +76,7 @@ Năm gạch đầu dòng ở (2) là checklist bắt buộc cho MỌI bảng Cas
 
 ## 5. Ngân sách token cho 10 mục
 
-Hạn mức thật là **token, không phải từ**: ≤ 6.000 token, **đích bản nộp 5.400 token** (10% đệm để vá sau câu restate) — tham số chốt 09/09, cách đo ở knowledge/00 §A1. 5.400 token ≈ **2.100–2.200 từ tiếng Việt**, tức chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư. Phân bổ dưới đây đã cắt theo tỷ lệ đó; ưu tiên mục 6 vì đó là nơi Executor bị bắn nhiều nhất, mục 5 gần như không tốn gì.
+Hạn mức thật là **token, không phải từ**: ≤ 6.000 token, **đích bản nộp 5.400 token** (10% đệm để vá sau các lượt xác nhận) — tham số chốt 09/09, cách đo ở knowledge/00 §A1. 5.400 token ≈ **2.100–2.200 từ tiếng Việt**, tức chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư. Phân bổ dưới đây đã cắt theo tỷ lệ đó; ưu tiên mục 6 vì đó là nơi Executor bị bắn nhiều nhất, mục 5 gần như không tốn gì.
 
 | Mục | Token | ≈ Từ | Ghi chú |
 |---|---|---|---|

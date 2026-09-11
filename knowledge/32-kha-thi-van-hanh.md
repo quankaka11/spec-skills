@@ -111,21 +111,20 @@ Sáu khoản mà luật "đẹp" hay quên. Mỗi khoản: spec phải nói ai c
 
 Hit F1/F2/F7 thường **không** sửa được bằng viết lại: nó có nghĩa là đội đang không biết specs thật quy định gì. Mẫu chuyển:
 
-| Hit | Câu hỏi cho AI Khách hàng (đóng, ép kết quả) |
+| Hit | Lượt hỏi (một ý, không chỉ thị — 20 §1) |
 |---|---|
-| F1 mốc hoàn tất | "Hoàn cọc: hệ thống khởi tạo sau ? phút, và tiền về tay khách sau tối đa ? ngày làm việc?" |
-| F2 hạn mức trang trí | "Hạn mức chống gom hàng tính theo: tài khoản đăng nhập / SĐT đã xác thực / thiết bị / thẻ thanh toán? Chọn 1." |
-| F5 callback | "Cổng báo trùng cùng một giao dịch: ghi nhận 1 lần hay 2 lần? Sự kiện đến sai thứ tự thì lấy kết quả nào?" |
-| F5 ERP | "Tồn e-commerce và ERP lệch nhau: số nào thắng, và đồng bộ mỗi ? phút?" |
-| F7 cột 3 | "Tồn bị khóa tại thời điểm nào: khi khách bấm giữ, hay khi cọc thành công?" + "Khách tự hủy có mất phần cọc hoặc phí nào không?" |
-| F8 | "Khách chưa đăng nhập có được tạo hold không? Nếu được, có thêm rào nào (OTP, captcha, giới hạn thiết bị)?" |
+| F1 mốc hoàn tất | "…tiền hoàn cọc về tới tay khách sau tối đa bao nhiêu ngày làm việc?" (mốc khởi tạo là **lượt thứ hai**, không gộp) |
+| F2 hạn mức trang trí | "…hạn mức chống gom hàng được tính theo tài khoản đã đăng nhập hay theo số điện thoại đã xác thực?" |
+| F5 callback | "…khi cổng thanh toán báo thành công hai lần cho cùng một giao dịch thì hệ thống ghi nhận một lần hay hai lần?" (ca sai thứ tự là lượt riêng) |
+| F5 ERP | "…khi số tồn của hệ thống bán hàng lệch với số tồn của ERP thì hệ thống dùng số nào?" (chu kỳ đồng bộ là lượt riêng) |
+| F7 cột 3 | "…tồn kho bị khóa tại thời điểm khách bấm giữ hàng hay tại thời điểm cọc thành công?" **và** (lượt riêng) "…khi khách tự hủy thì tiền cọc được hoàn đủ hay bị trừ một phần?" |
+| F8 | "…khách chưa đăng nhập có tạo được lượt giữ hàng không?" (rào định danh là lượt riêng nếu còn nhịp) |
 
-**Năm nay chỉ có 5 câu hỏi và mỗi lượt đúng 1 câu (00 §A), nên sáu câu trên KHÔNG gửi được như một lượt.** Cách dùng bảng này:
+**Mỗi lượt chỉ được một ý và không được chứa chỉ thị (00 §A)** — nên bảng trên đã viết lại thành câu gửi thẳng được; ô nào có hai ẩn số thì ghi rõ phải tách. Cách dùng:
 
-- Hit **F1, F5** (mốc hoàn tất, callback, ERP, job): đã nằm trong C3 và C4 soạn sẵn (20 §3) — không cần câu riêng.
-- Hit **F2** (hạn mức trang trí): đã nằm trong C3 dòng "đơn vị neo hạn mức".
-- Hit **F7, F8** phát hiện lúc 11:00: viết lại thành **phát biểu Đúng/Sai** và đưa vào **C5**, ví dụ "Tồn bị khóa ngay khi khách bấm giữ, trước khi thu cọc" — một phát biểu chiếm một dòng trong 10 dòng của C5, thay vì chiếm cả một câu hỏi.
-- Hit phát hiện **sau khi C5 đã gửi**: hết đường hỏi. Áp luật an toàn hai chiều §3.3, hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]` (30 §1b-3).
+- Hit **F1, F2, F5** (mốc hoàn tất, neo hạn mức, callback, ERP): đã nằm sẵn trong hàng đợi 28 lượt (20 §3.2 lượt 16, 2, 19, 23) — dùng nguyên văn ở 20 §3.3.
+- Hit **F7, F8** phát hiện lúc 11:00: chèn **một lượt nhị phân** lên đầu phần hàng đợi còn lại. Giá một lượt là một nhịp chờ, không còn là "một trong năm câu" — nên ngưỡng để quyết định hỏi thấp hơn nhiều so với luật cũ.
+- Hit phát hiện **sau khi hết giờ hỏi**: áp luật an toàn hai chiều §3.3, hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]` (30 §1b-3).
 
 ## 7. Ví dụ chấm cổng F — `battle/spec.nop.md` 08/09
 

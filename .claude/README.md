@@ -2,7 +2,7 @@
 
 Bộ công cụ dùng chung của đội cho HBLAB AI Hackathon #02 (12/09/2026). Nằm trong repo để `git pull` là dùng được.
 
-**Tham số hiện hành (chốt họp BTC 09/09):** nộp markdown ≤ **6.000 token** (đích 5.400), sơ đồ mermaid, không ảnh · hỏi AI Khách hàng **5 câu, mỗi lượt 1 câu, 5.000 token, không memory**, ảnh ≤3 lần · điểm **+2 công / +1 thủ / −1 vô hiệu** · spec đối thủ tải về được · test không sửa sau khi nộp · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**. Bảng đầy đủ và 7 ô còn hở: `knowledge/00` §A.
+**Tham số hiện hành (BTC 09/09, khối hỏi cập nhật sau thi thử 11/09):** nộp markdown ≤ **6.000 token** (đích 5.400), sơ đồ mermaid, không ảnh · hỏi AI Khách hàng **không giới hạn số câu, 4.000 token, mỗi lượt đúng MỘT Ý, không memory; câu chứa chỉ thị hoặc gộp nhiều ý bị TỪ CHỐI (không trừ token); nhịp chờ giữa hai lượt (thi thử 45 giây) mới là ràng buộc thật**; ảnh ≤3 lần và **có tính token** ⇒ không dùng · điểm **+2 công / +1 thủ / −1 vô hiệu** · spec đối thủ tải về được · test không sửa sau khi nộp · **kháng nghị chỉ cho ca CÔNG bị VÔ HIỆU**. Bảng đầy đủ và 9 ô còn hở: `knowledge/00` §A.
 
 **Sau khi pull: mở phiên Claude Code MỚI** trong thư mục repo — agent tùy chỉnh (`executor`, `customer`) chỉ được nạp lúc khởi động phiên.
 
@@ -30,9 +30,9 @@ Trục nội dung là phần thêm sau diễn tập 08/09: bản spec khi đó �
 |---|---|---|---|
 | 9:00–9:30 | `/frame` | `battle/brief.md` | `battle/mo-hinh-bai-toan.md` (M1 mục tiêu · M2 dòng tiền · M3 dòng tồn · M4 biên hệ thống · M5 lạm dụng · M6 12 ca suy biến); mâu thuẫn nội tại của brief; câu hỏi P0 |
 | 9:00–9:30 | `/elicit ke-hoach` | `mo-hinh-bai-toan.md` | `ke-hoach-hoi.md`: 4 câu đã gọt + ước token + **danh sách ô sẽ KHÔNG hỏi kèm giá trị mặc định ngành** |
-| 9:30–10:20 | `/elicit cau 1` … `cau 4`, mỗi câu kèm `/elicit nap` | `brief.md`, `ke-hoach-hoi.md` | Khối câu hỏi qua cổng 5 kiểm tra; `log-khach-hang.md` (sổ hạn mức, timestamp, nguyên văn); `rtm.md` (dòng `A-xx` + `G-xx`) |
+| 9:30–10:30 | `/elicit luot n` liên tục theo nhịp, mỗi lượt kèm `/elicit nap`; `/elicit tu-choi n` khi bị từ chối | `brief.md`, `ke-hoach-hoi.md` | Mỗi lượt một dòng câu hỏi qua cổng 8 kiểm tra; `log-khach-hang.md` (sổ hạn mức, timestamp, nguyên văn); `rtm.md` (dòng `A-xx` + `G-xx`) |
 | 10:20–11:05 | `/spec-write` | `mo-hinh-bai-toan.md`, `rtm.md`, log | `battle/spec.md` đích ≤5.400 token, mọi BR có `← A-xx` hoặc `← G-xx` + nhãn mục tiêu; **khối `→ C5`: 10 phát biểu Đúng/Sai** |
-| 11:05–11:20 | `/elicit restate` (= câu 5) + `/elicit nap` | `spec.md`, bảng xếp hạng rủi ro | Câu hỏi cuối cùng; mỗi ý "Sai" = một việc sửa BR |
+| 11:05–11:20 | `/elicit xac-nhan` (các lượt rời, ưu tiên nhị phân) + `/elicit nap` | `spec.md`, bảng xếp hạng rủi ro | Mỗi câu trả lời khác giả định = một việc sửa BR |
 | 11:20–11:38 | `/frame muc-tieu-luat` | `spec.md`, `mo-hinh-bai-toan.md` | Bảng Mục tiêu↔Luật: mục tiêu không có luật, luật phá mục tiêu, BR cắt được |
 | 11:38–11:52 | `/spec-review battle/spec.md 20 sửa` | `spec.md`, `rtm.md`, mô hình | `review.md`: NỘP ĐƯỢC/CHƯA, cổng F + lạm dụng + suy biến + **G-7 giá trị tự nghĩ ra**, eval qua **hai** `executor` mù, đếm token, `SỬA` / `HỎI` / `RỦI RO ĐÃ BIẾT` |
 | 13:00–13:15 | `/attack cheo A.md B.md C.md` | 3 spec đối thủ (markdown), `spec.nop.md` | `dong-thuan-cheo.md`: hai spec chỏi nhau · một spec im lặng (#21) · cả ba im lặng |
@@ -52,26 +52,29 @@ Chi tiết nội dung + hình thức bảng từng mục: `knowledge/33-cau-truc
 
 ## Năm quy tắc cứng của kit
 
-1. **Hiểu bài toán trước khi hỏi tham số.** `/frame` chạy trước `/elicit cau 1`; `/spec-write` từ chối chạy khi chưa có `mo-hinh-bai-toan.md`. Với 5 câu hỏi, mô hình bài toán không còn dùng để *sinh* câu hỏi mà để **chọn** ô nào xứng đáng chiếm chỗ trong 5 câu (`knowledge/05` §4).
+1. **Hiểu bài toán trước khi hỏi tham số.** `/frame` chạy trước `/elicit luot 1`; `/spec-write` từ chối chạy khi chưa có `mo-hinh-bai-toan.md`. Mô hình bài toán dùng để **xếp hạng** hàng đợi hỏi và chọn **dạng** câu hỏi cho từng ô (`knowledge/05` §4).
 2. **Không bịa dữ kiện nghiệp vụ — nhưng phải điền mọi ô.** Mọi luật trỏ về một dòng RTM: `← A-07` (có câu trả lời) hoặc `← G-12 [GIẢ ĐỊNH]` (mặc định ngành, có xếp hạng rủi ro). Giá trị giả định **lấy từ `knowledge/20` §4 hoặc `10` §6, không tự nghĩ ra** — lý lẽ ở `knowledge/30` §1b. Ba loại không được tự chốt: luật phá mục tiêu brief, hạn mức không cưỡng chế được, giả định đảo lại thì đổi hướng tiền.
 3. **Không hứa hộ bên ngoài.** Mốc "hoàn tất" của việc do cổng thanh toán / ngân hàng / ERP thực hiện phải tách khỏi mốc "hệ thống quyết định", và phải có nhánh thất bại (`knowledge/32` §3.1).
 4. **Executor luôn được gọi mù, và luôn gọi hai lần.** Prompt chỉ có đường dẫn spec + tình huống. Bằng chứng spec rõ là **hai reader trùng kết quả**, không phải reader tự khai "không mơ hồ".
-5. **Ép kết quả cụ thể.** Mọi câu hỏi AI Khách hàng và mọi test đều phải trả lời được bằng con số / trạng thái cuối / ai thắng / có hoàn tiền không.
-6. **Một lượt hỏi = một câu hỏi, và chỉ có 5 lượt.** Mỗi câu tự chứa (AI không có memory), xin về một bảng, có cap dòng/từ, và qua cổng 5 kiểm tra trước khi gửi. Câu cuối là restate và **chỉ soạn sau khi có bản nháp spec** — đó là cách duy nhất để nó nhắm vào giả định đã thật sự vào spec.
+5. **Ép kết quả cụ thể — bằng hình dạng câu hỏi, không bằng chỉ thị.** Mọi lượt hỏi và mọi test phải trả lời được bằng con số / trạng thái cuối / ai thắng / có hoàn tiền không. Với AI Khách hàng thì cách duy nhất còn lại là **hỏi nhị phân "A hay B"**: ra lệnh về format sẽ bị từ chối.
+6. **Một lượt hỏi = một ẩn số; số lượt do nhịp chờ quyết định.** Mỗi lượt tự chứa (AI không có memory), không một chữ mệnh lệnh, và qua **cổng 8 kiểm tra** trước khi gửi (`knowledge/20` §1). Hàng đợi phải có **đường cắt bằng số**; phần dưới đường cắt thành `G-xx` ngay lúc lập kế hoạch, không đợi hết giờ.
 7. **Nộp test theo kỳ vọng, không theo số slot.** `EV = 2·P(TRÚNG) − P(VÔ HIỆU)`; `EV ≤ 0` thì bỏ slot. Và mọi test phải có gói bằng chứng phạm vi thu sẵn — kháng nghị chỉ mở cho ca VÔ HIỆU.
 
 **Và một quy tắc về ranh giới sửa:** phát hiện chia hai loại. `SỬA` = viết lại được ngay (mơ hồ, ô trống, thiếu nhánh lỗi). `HỎI` = đội đang không biết specs thật quy định gì (luật phá mục tiêu, hạn mức neo sai, giả định rủi ro cao) — sửa hộ là đoán lần thứ hai trên cùng một chỗ mù. Skill không tự sửa mục `HỎI`; nó sinh câu hỏi.
 
-## Còn hở sau họp 09/09
+## Còn hở sau thi thử 11/09
 
-Bảy ô ở `knowledge/00` §A2. Hai ô đổi kế hoạch buổi sáng, phải hỏi BTC trước 9:30:
+Chín ô ở `knowledge/00` §A2. Bốn ô đầu **quyết định đường cắt của hàng đợi hỏi** — đọc brief §3 trước, brief không nói thì hỏi miệng:
 
-1. **Ảnh có tính vào 5.000 token không?** Nếu không → ảnh thành phương tiện restate rẻ nhất (gửi ảnh bảng 25 giả định, xin về "dòng nào sai"), đảo hẳn quy tắc `knowledge/20` §1-9.
-2. **AI Khách hàng còn mở sau 12:00 không?** Nếu còn → giữ 1 câu cho 13:30 để xin danh sách NGOÀI phạm vi mở rộng, dùng chống VÔ HIỆU khi bắn.
+1. **Nhịp chờ bao nhiêu giây?** (thi thử 45s) → trần lượt = `(phút pha hỏi ÷ nhịp) − 2`.
+2. **4.000 token của cả đội hay mỗi người?** Nếu của mỗi người → hai người hỏi song song hai nhánh chủ đề khác nhau.
+3. **Giao diện có hiển thị token còn lại không?**
+4. **AI Khách hàng còn mở sau giờ khóa spec không?** Nếu còn → để dành các lượt về NGOÀI phạm vi cho pha CÔNG.
+5. **Lý do VÔ HIỆU của đề có gồm "sai phạm vi" không?** Không có → lượt hỏi về NGOÀI phạm vi tụt hạng.
 
-Năm ô còn lại (xếp giải pool/toàn giải, độ dài test, VÔ HIỆU của đối thủ có cho thủ +1 không, số ca kháng nghị, được xem lý do đối chiếu trước không) chỉ đổi cách tính điểm kỳ vọng, không đổi quy trình.
+Bốn ô còn lại (xếp giải pool/toàn giải, độ dài test, VÔ HIỆU của đối thủ có cho thủ +1 không, số ca kháng nghị) chỉ đổi cách tính điểm kỳ vọng, không đổi quy trình.
 
-Nếu BTC **không cho dùng AI trong phòng thi**: kit vẫn dùng để diễn tập và để in artifact mang vào — sáu khối mô hình `knowledge/05` §1 + 12 ca suy biến §M6, cổng F `knowledge/32` §1 + bảng thực tế phụ thuộc ngoài §2 + ba mẫu viết lại §3, **5 câu hỏi soạn sẵn `knowledge/20` §3** + 31 phát biểu mặc định ngành §4 + bảng ánh xạ cuối §3, template `knowledge/30` §1–§1b–§2 + checklist 24 quy tắc §4, checklist tấn công `knowledge/50` §1, §4, §4b, §6, danh sách đen `knowledge/40` §2.
+Nếu BTC **không cho dùng AI trong phòng thi**: kit vẫn dùng để diễn tập và để in artifact mang vào — sáu khối mô hình `knowledge/05` §1 + 12 ca suy biến §M6, cổng F `knowledge/32` §1 + bảng thực tế phụ thuộc ngoài §2 + ba mẫu viết lại §3, **28 lượt hỏi soạn sẵn `knowledge/20` §3.3** + cổng 8 kiểm tra §1 + 31 phát biểu mặc định ngành §4 + bảng ánh xạ §3.5, template `knowledge/30` §1–§1b–§2 + checklist 24 quy tắc §4, checklist tấn công `knowledge/50` §1, §4, §4b, §6, danh sách đen `knowledge/40` §2.
 
 ## Tùy chỉnh
 

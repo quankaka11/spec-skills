@@ -17,7 +17,7 @@ Mục tiêu: mọi dòng RTM thành một luật có mã; đủ **10 mục BTC**
 - `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` — **CẤU TRÚC BẮT BUỘC 10 mục BTC**: §1 nội dung & hình thức từng mục, §2 "ba thứ" của mỗi logic ở mục 6, §3 các quy tắc cũ đã đổi, §4 ánh xạ template cũ → mới, §5 ngân sách token, §6 thứ tự cắt, **§7 cú pháp Mermaid cho 4 sơ đồ** (wireframe, state machine, sequence, sơ đồ hệ thống). **Đọc file này TRƯỚC knowledge/30.**
 - `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md`: §1 template 10 mục chi tiết, §2 khung catch-all đặt ở mục 1.x (gồm 0.11–0.15), §3 cú pháp EARS + mẫu BR-xx, §4 checklist 17 quy tắc + 7 quy tắc nội dung (18–24), §1b luật giả định = mặc định ngành, §5 tiết kiệm token, §6 thứ tự viết, §7 cổng chất lượng 23 dòng.
 - `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §2 (bảng Mục tiêu↔Luật), §M4 (6 láng giềng), §M6 (12 kịch bản suy biến), §4 (ô mô hình không hỏi được thì xử lý thế nào).
-- `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md`: §1 cổng F, §2 bảng thực tế phụ thuộc ngoài, §3 ba mẫu viết lại, §4 chi phí ẩn, §6 hit F nào đi vào câu C5.
+- `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md`: §1 cổng F, §2 bảng thực tế phụ thuộc ngoài, §3 ba mẫu viết lại, §4 chi phí ẩn, §6 hit F nào thành một lượt hỏi riêng.
 - `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §4 (**31 phát biểu mặc định ngành — nguồn giá trị cho mọi ô không hỏi được**), §5 (RTM hai loại dòng), §3 bảng ánh xạ cuối mục (phần nào không được hỏi).
 - `${CLAUDE_PROJECT_DIR}/knowledge/31-bang-quyet-dinh-trang-thai.md`: §1 hit policy, §2 chứng minh đủ/rời, §3 bảng state × event và mã hiệu ứng K/T/N/L.
 - `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md` §2 glossary, §6 catalogue ⚠ (nguồn mặc định ngành thứ hai).
@@ -26,16 +26,16 @@ Mục tiêu: mọi dòng RTM thành một luật có mã; đủ **10 mục BTC**
 ## Quy tắc cứng số 1 — mọi luật có một dòng RTM
 Mỗi BR/EX kết thúc bằng nguồn: `← A-07` (có câu trả lời của AI Khách hàng) hoặc `← G-12 [GIẢ ĐỊNH]` (mặc định ngành, có xếp hạng rủi ro). **Không có dòng RTM = không được viết**; thiếu dòng thì mở dòng `G-xx` mới trong `rtm.md` trước khi viết luật. Dòng RTM ⛔ (ngoài phạm vi) chỉ vào §1 NGOÀI, không thành BR.
 
-Với 5 câu hỏi, **60–80% BR sẽ là `G-xx`. Đó là bình thường, không phải lỗi quy trình** — điều phải tránh là giả định *ngược mặc định ngành* ở chỗ có tiền hoặc tồn.
+Kể cả khi kịp 15–20 lượt hỏi, **55–75% BR vẫn sẽ là `G-xx`. Đó là bình thường, không phải lỗi quy trình** — điều phải tránh là giả định *ngược mặc định ngành* ở chỗ có tiền hoặc tồn.
 
 ## Quy tắc cứng số 2 — giả định = mặc định ngành, không sáng tạo
 Chi tiết và lý lẽ: knowledge/30 §1b. Ba điểm áp dụng khi gõ:
 - Giá trị cho ô không hỏi được **lấy từ 20 §4 hoặc 10 §6**, không tự nghĩ ra. Viết mặc định ngành ra không xấu hơn im lặng ở bất kỳ ca nào, mà loại được đa nghĩa ở ca ghép; còn viết một giá trị tự nghĩ ra là ca duy nhất tệ hơn im lặng.
-- Ba loại **không được tự chốt**: luật làm hỏng mục tiêu brief (nhãn `⚡`, F7) · hạn mức không cưỡng chế được (F2) · giả định đảo lại thì đổi hướng tiền. Chúng đi vào câu C5, hoặc dùng luật an toàn hai chiều (32 §3.3).
+- Ba loại **không được tự chốt**: luật làm hỏng mục tiêu brief (nhãn `⚡`, F7) · hạn mức không cưỡng chế được (F2) · giả định đảo lại thì đổi hướng tiền. Chúng thành một lượt hỏi riêng (ưu tiên dạng nhị phân), hoặc dùng luật an toàn hai chiều (32 §3.3).
 - Hết câu hỏi mà vẫn phải chọn → chọn **phương án phục vụ mục tiêu brief**, ghi `[GIẢ ĐỊNH-MT]`. Brief là căn cứ chung; phương án phá mục tiêu brief gần chắc không phải specs thật.
 
 ## Quy tắc cứng số 3 — mỗi luật gắn một mục tiêu
-Nhãn nội bộ: `[M-1]` phục vụ mục tiêu 1 · `[⚡M-2]` làm hỏng mục tiêu 2 · `[M-0]` không thuộc mục tiêu nào. `⚡` là **lỗi Cao**: không tự chốt, chuyển thành phát biểu cho câu C5 và ghi vào hàng đợi restate. `[M-0]` là ứng viên cắt đầu tiên khi thiếu token. Nhãn chỉ ở bản nội bộ.
+Nhãn nội bộ: `[M-1]` phục vụ mục tiêu 1 · `[⚡M-2]` làm hỏng mục tiêu 2 · `[M-0]` không thuộc mục tiêu nào. `⚡` là **lỗi Cao**: không tự chốt, chuyển thành một lượt nhị phân và chèn lên đầu hàng đợi hỏi còn lại. `[M-0]` là ứng viên cắt đầu tiên khi thiếu token. Nhãn chỉ ở bản nội bộ.
 
 ## Quy tắc cứng số 4 — không hứa hộ bên ngoài
 Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo thực hiện phải tách **mốc hệ thống quyết định** khỏi **mốc bên ngoài hoàn tất**, và phải có nhánh thất bại (mẫu dán được: knowledge/32 §3.1). Viết `hoàn tất ≤ N giờ` cho việc bên ngoài làm = lỗi Cao, chặn nộp.
@@ -53,7 +53,7 @@ Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo 
    - Logic `6.1`/`6.2` mang công thức tồn kho (ATP, cột nào đổi khi tạo/hết hạn/hủy/chuyển đơn, giá khóa hay tính lại, giới hạn số lượng) — dữ kiện tối thiểu ở knowledge/30 §1 mục 6.
    - Logic "chuyển trạng thái hold" (`6.3`) = bảng state × event điền 100% ô (`→ ĐÍCH K/T/N/L (BR-xx)` / `KHL` / `Từ chối 0.5`), tập trạng thái lấy từ câu trả lời C2, mã hiệu ứng khai báo một lần (knowledge/31 §3). Ô nào C2 không phủ → mặc định ngành, ghi `G-xx`. Logic ≥2 điều kiện → decision table hit policy U, đếm tổ hợp = tích (knowledge/31 §1–§2).
    - Logic `6.3` kèm **Mermaid `stateDiagram-v2`** (knowledge/33 §7.2) — sơ đồ KHÔNG thay bảng state × event, vì ô `Từ chối 0.5` / `KHL` chỉ có trong bảng. Cuối mục 6: **sequenceDiagram end-to-end** (§7.3) cho luồng chính. Logic `6.9` mang bảng mốc thông báo.
-4. **Mục 4 Validation & message** (625 token): bảng `No · FE/BE · Item · Nội dung check · Message`. **Message ghi nguyên văn trong ngoặc kép** — lấy từ RTM (câu trả lời N17-*); không có trong RTM → viết message cụ thể và mở dòng `G-xx` rủi ro **Cao** (20 §3b: đây là hở lớn nhất của kế hoạch 5 câu), KHÔNG ghi "hiển thị thông báo lỗi phù hợp". Có cả rule nghiệp vụ, không chỉ rule format.
+4. **Mục 4 Validation & message** (625 token): bảng `No · FE/BE · Item · Nội dung check · Message`. **Message ghi nguyên văn trong ngoặc kép** — lấy từ RTM (câu trả lời N17-*); không có trong RTM → **chèn ngay một lượt hỏi mở cho message đó** (20 §3b: message nguyên văn là vùng duy nhất không có mặc định ngành, và giờ hỏi được); hết giờ hỏi thì viết message cụ thể và mở dòng `G-xx` rủi ro **Cao**, KHÔNG ghi "hiển thị thông báo lỗi phù hợp". Có cả rule nghiệp vụ, không chỉ rule format.
 5. **Mục 8 Xác thực & phân quyền** (300 token): bảng actor bắt buộc có **Guest** và **System/Job**; ô không ✓ = ✗ theo 0.4. Vì 0.4 biến mọi im lặng thành CẤM, bảng phải phủ cả thao tác chỉ-đọc (xem hold của mình / mọi hold, xem audit log) và mọi hành động log nêu "được làm". Bảng 2: mỗi actor xác thực bằng gì.
 6. **Mục 2 Item màn hình** (575 token): bảng `No · 項目名 · コントロール · I/O · 必須 · 備考`, chia theo khu vực. Bắt buộc có **khác biệt login vs guest**, điều kiện **hiển thị/ẩn/disable**, giá trị mặc định, giới hạn, format, text nút nguyên văn. Ô không có dữ kiện RTM → `[GIẢ ĐỊNH — ..]`, không để trống.
 7. **Mục 3 Event** (300 token): bảng `No · Event · Trigger · Xử lý · Ghi chú` — tối thiểu: mở màn hình lấy gì từ đâu, mỗi nút gọi xử lý gì, double-click (chặn theo 0.10), đổi số lượng/dropdown cập nhật gì.
@@ -64,7 +64,7 @@ Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo 
     - ✗ **F1** (hứa hộ bên ngoài) → viết lại theo mẫu 32 §3.1. Sửa ngay, không cần hỏi.
     - ✗ **F5** (phụ thuộc ngoài) → thêm luật thiếu theo mẫu 32 §3.2. Bốn luật catch-all phủ 8/12 ca M6 với ~230 token — làm trước mọi việc khác vì tỷ lệ chắn/token tốt nhất.
     - ✗ **F2** (hạn mức trang trí) → có câu trả lời C3 thì sửa theo C3; không có thì dùng luật bao quát 32 §3.3, **không chọn hộ**.
-    - ✗ **F7** (làm hỏng mục tiêu, nhãn `⚡`) → **không sửa nội dung nghiệp vụ**. Viết thành phát biểu cho câu C5 và giữ luật hiện tại; nếu C5 đã gửi rồi thì áp quy tắc cứng số 2 điểm 3 (`[GIẢ ĐỊNH-MT]`).
+    - ✗ **F7** (làm hỏng mục tiêu, nhãn `⚡`) → **không sửa nội dung nghiệp vụ**. Viết thành một lượt nhị phân và giữ luật hiện tại; hết giờ hỏi thì áp quy tắc cứng số 2 điểm 3 (`[GIẢ ĐỊNH-MT]`).
     - ✗ F3/F4/F6/F8 → sửa nếu còn ngân sách token; không thì vào bảng tóm tắt.
     Rồi rà ba danh sách bước 0: mục tiêu nào chưa có BR, láng giềng nào chưa có luật lỗi, ca M6 nào còn ✗.
 10. Ghi `spec.md`, rồi **sinh ngay bản nộp** `spec.nop.md` (bước 13) và **đếm token trên BẢN NỘP**, không trên `spec.md` (bản nội bộ dài hơn ~500 token vì mang `← A-xx`, nhãn `[M-x]`, `(verify …)`):
@@ -80,7 +80,7 @@ Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo 
     - **Nhãn `⚡`**: mọi BR làm hỏng mục tiêu, kèm phát biểu đề xuất cho C5
     - **Cổng F**: đếm ✗ theo F1..F8, liệt kê ✗ ở F1/F2/F5/F7 (chặn nộp)
     - **Độ phủ suy biến**: 12 ca M6 → ✓ / ⛔ / ✗; 6 láng giềng M4 → có luật lỗi hay không
-    - **XẾP HẠNG RỦI RO GIẢ ĐỊNH** — khối quan trọng nhất của bước này, vì nó là **nội dung câu hỏi cuối cùng còn lại**. Mọi dòng `G-xx` sắp theo rủi ro giảm dần, tính bằng ba tiêu chí: (1) đảo lại thì đổi kết quả quan sát được (tiền / trạng thái cuối / ai thắng) hay chỉ đổi diễn đạt; (2) Executor mù có đoán trùng giả định này không — **trùng mặc định ngành thì rủi ro thấp** (cả ta và Executor đoán như nhau), **ngược mặc định ngành thì rủi ro cao**; (3) có nằm trong core flow tiền/tồn không. Cột cuối: **phát biểu Đúng/Sai đã viết sẵn** để dán vào `/elicit restate`. In 10 dòng đầu riêng thành một khối `→ C5`.
+    - **XẾP HẠNG RỦI RO GIẢ ĐỊNH** — khối quan trọng nhất của bước này, vì nó là **nguồn của mọi lượt hỏi còn lại** (20 §3.4). Mọi dòng `G-xx` sắp theo rủi ro giảm dần, tính bằng ba tiêu chí: (1) đảo lại thì đổi kết quả quan sát được (tiền / trạng thái cuối / ai thắng) hay chỉ đổi diễn đạt; (2) Executor mù có đoán trùng giả định này không — **trùng mặc định ngành thì rủi ro thấp** (cả ta và Executor đoán như nhau), **ngược mặc định ngành thì rủi ro cao**; (3) có nằm trong core flow tiền/tồn không. Cột cuối: **câu hỏi nhị phân đã viết sẵn** (không phải phát biểu Đúng/Sai — nhị phân cùng giá mà không dẫn dắt) để dán vào `/elicit xac-nhan`. In 10 dòng đầu riêng thành một khối `→ HỎI TIẾP`.
     Ghi đồng thời cột "Rủi ro" vào `rtm.md`.
 
 ## Chế độ `nén`
@@ -108,7 +108,7 @@ Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo 
 - **Tự nghĩ ra giá trị cho ô không hỏi được** thay vì lấy mặc định ngành ở 20 §4 / 10 §6.
 - Hứa mốc **hoàn tất** cho việc do cổng / ngân hàng / ERP thực hiện.
 - Neo hạn mức vào dữ liệu khách tự khai khi chưa hỏi được đơn vị định danh — dùng luật bao quát 32 §3.3.
-- **Tự sửa nội dung nghiệp vụ của một BR nhãn `⚡` để nó "hợp lý hơn"** khi câu C5 chưa gửi.
+- **Tự sửa nội dung nghiệp vụ của một BR nhãn `⚡` để nó "hợp lý hơn"** khi vẫn còn nhịp để hỏi.
 - Vẽ sơ đồ mermaid lặp lại nội dung bảng state × event 6.3; có mermaid mà thiếu dòng catch-all 0.15.
 - Dùng từ trong danh sách đen knowledge/40 §2; tham chiếu tài liệu ngoài; để ô bảng trống.
 - Để câu nói về chính spec, hoặc **nhãn** `[GIẢ ĐỊNH]`, trong bản nộp — nhưng **bảng 7.4 thì giữ**: BTC yêu cầu nêu điều chưa chốt kèm giả định hiện tại, viết bằng chữ thường ("giả định hiện tại: …"), không bằng nhãn nội bộ.

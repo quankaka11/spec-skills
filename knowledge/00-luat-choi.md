@@ -1,4 +1,4 @@
-*Đọc đầu tiên: 9:00 ngày 12/09. Tham số đã chốt tại họp BTC 09/09; ô nào còn hở ghi rõ ở §A2.*
+*Đọc đầu tiên: 9:00 ngày 12/09. Tham số chốt tại họp BTC 09/09, **cập nhật sau buổi thi thử 11/09** (khối hỏi AI Khách hàng đổi hẳn); ô nào còn hở ghi rõ ở §A2.*
 
 # 00 — Luật chơi & tham số
 
@@ -8,9 +8,13 @@
 |---|---|---|
 | Định dạng nộp spec | **Markdown**. Bảng được. Sơ đồ **chỉ dạng mermaid** trong văn bản — bản nộp **không có ảnh** | Chốt 09/09 |
 | Hạn mức spec | **≤ 6.000 token** (BTC có thể chỉnh sau) · **đích 5.400** (10% đệm) · khóa 12:00 | Chốt 09/09 |
-| Hỏi AI Khách hàng | **Tối đa 5 câu hỏi**, **mỗi lượt đúng 1 câu**, tổng **5.000 token** cho cả hỏi + trả lời | Chốt 09/09 |
-| Memory của AI Khách hàng | **KHÔNG có.** Mỗi câu là một phiên độc lập — không nhớ câu trước, không nhớ câu trả lời trước | Chốt 09/09 |
-| Ảnh gửi AI Khách hàng | Đọc được ảnh, **tối đa 3 lần** | Chốt 09/09 |
+| Hỏi AI Khách hàng | **KHÔNG giới hạn số câu.** Giới hạn là **4.000 token** (hỏi + trả lời, cho cả đội) và **nhịp chờ giữa hai lượt** | Thi thử 11/09 |
+| Hình thức mỗi lượt | **Một lượt = một câu hỏi = MỘT Ý (một ẩn số).** Gộp 2–3 ý độc lập vào một lượt ⇒ **bị từ chối** | Thi thử 11/09 |
+| Câu hỏi chứa chỉ thị | Câu ra lệnh cho AI cách trả lời (ép format bảng, cap số dòng, cap số từ, "không giải thích") ⇒ **bị từ chối, xếp loại injection** | Thi thử 11/09 |
+| Câu bị từ chối | **Không trừ token, không reset nhịp chờ** ⇒ sửa và gửi lại ngay, gần như miễn phí | Thi thử 11/09 |
+| Nhịp chờ giữa hai lượt | Thi thử: **45 giây/lượt**. Ngày thi: đọc brief §3 — đây thường là ràng buộc thật, không phải token | Thi thử 11/09 |
+| Memory của AI Khách hàng | **KHÔNG có.** Mỗi lượt là một phiên độc lập — không nhớ câu trước, không nhớ câu trả lời trước | Chốt 09/09 |
+| Ảnh gửi AI Khách hàng | Đọc được ảnh, **tối đa 3 lần**; thi thử 11/09: **ảnh CÓ tính token** ⇒ không dùng | Thi thử 11/09 |
 | Xem lại hội thoại AI Khách hàng | **Được** | Chốt 09/09 |
 | Điểm | **CÔNG trúng +2** · **THỦ đỡ được (TRƯỢT) +1** · **CÔNG bị VÔ HIỆU −1** | Chốt 09/09 |
 | Test / spec đối thủ | 5 test; 3 spec đối thủ → 15 test bắn | W* |
@@ -24,7 +28,7 @@
 
 `W*` = số liệu website 04/09, chưa được xác nhận lại.
 
-### A1. Cách đo 6.000 token và 5.000 token
+### A1. Cách đo 6.000 token (spec) và 4.000 token (hỏi)
 
 Không có tokenizer trong phòng thi. Dùng **ước lượng thiên an toàn**, lấy giá trị lớn hơn của hai công thức:
 
@@ -36,30 +40,36 @@ token ≈ max( số_từ × 2,5 ,  số_ký_tự / 2,2 )
 - Tiếng Việt tốn ~2–2,5 token mỗi âm tiết (dấu tách thành nhiều token). Cả hai công thức đều lệch ~±20%, nên **đích của bản nộp là 5.400 token ước lượng**, không phải 6.000.
 - Dấu `|` của bảng markdown là token thật: một hàng 6 cột tốn ~7 token chỉ riêng dấu. Bảng vẫn đáng dùng, nhưng đừng dùng bảng cho nội dung chỉ có một cột giá trị.
 - **Nếu giao diện nộp hiển thị số token, số đó thắng mọi ước lượng.** Ghi lại tỷ lệ `token thật / số từ` ngay lần đầu thấy được và dùng nó cho các lần đo sau.
-- Ước cho lượt hỏi: một câu hỏi ~60 từ ≈ 150 token; một bảng trả lời 12 hàng ≈ 400–600 token. Trung bình **1.000 token/câu** trên 5 câu là ngân sách để lập kế hoạch (20 §3).
-- Ảnh: một ảnh chụp màn hình cỡ trung ≈ **1.000–1.600 token** nếu BTC tính ảnh vào hạn mức (chưa rõ, §A2). Vì thế mặc định **không dùng ảnh** — xem 20 §1 quy tắc 9.
+- Ước cho một lượt **một-ý**: câu hỏi 20–40 từ ≈ **60–110 token**; câu trả lời nhị phân ("A hay B") ≈ **20–60 token**; câu trả lời mở (danh sách, message nguyên văn, bảng do AI tự chọn) ≈ **150–400 token**. Trung bình **~200 token/lượt** ⇒ 4.000 token ≈ **20 lượt**.
+- **Nhưng token hiếm khi là thứ chặn.** Với nhịp 45 giây/lượt, 20 lượt = 15 phút bấm gửi liên tục. Pha hỏi dài bao nhiêu phút thì chia cho nhịp ra **trần lượt thật**; trần đó gần như luôn nhỏ hơn trần token. Kế hoạch hỏi vì thế phải **xếp hạng và có đường cắt** (20 §3), không phải liệt kê cho đủ.
+- Câu **bị từ chối không trừ token**: rủi ro của một câu viết sai là *một nhịp chờ*, không phải mất dữ kiện. Đổi lại, cổng kiểm tra trước khi gửi (20 §1-10) vẫn bắt buộc — mỗi lần bị từ chối là mất 45 giây trong pha ngắn nhất của ngày.
+- Ảnh: một ảnh chụp màn hình cỡ trung ≈ **1.000–1.600 token**; thi thử 11/09 xác nhận **ảnh có tính token** ⇒ 3 lượt ảnh đó bỏ không dùng, không tiếc (20 §1-9).
 
-### A2. Còn hở — hỏi BTC ngay đầu ngày thi (mỗi câu 1 dòng, hỏi miệng, không tốn token)
+### A2. Còn hở — đọc brief §3 và hỏi BTC ngay đầu ngày (hỏi miệng, không tốn token)
 
-1. **Ảnh có tính vào 5.000 token không?** Nếu KHÔNG → ảnh thành phương tiện restate tốt nhất (gửi bảng 25 giả định bằng ảnh, xin về "dòng nào sai"), đảo hẳn quy tắc 20 §1-9.
-2. **AI Khách hàng còn mở sau 12:00 không?** Nếu còn → giữ 1 câu cho 13:30 để xin danh sách NGOÀI phạm vi mở rộng, dùng chống VÔ HIỆU khi bắn.
-3. Giao diện có hiển thị token đã dùng / còn lại?
-4. Xếp giải theo pool 4 đội hay toàn giải?
-5. Giới hạn độ dài mỗi test? Test nhiều bước có được không?
-6. Test của đối thủ bị chấm VÔ HIỆU thì THỦ có được +1 không, hay 0?
-7. Số ca kháng nghị tối đa vẫn là 3?
+Bốn ô đầu **quyết định trần số lượt**, tức quyết định cả kế hoạch hỏi. Đọc brief trước; brief không nói thì hỏi miệng trước giờ mở AI.
 
-Ô 1 và 2 đổi kế hoạch buổi sáng; hỏi trước 9:30. Các ô còn lại chỉ đổi cách tính điểm kỳ vọng, hỏi lúc nào cũng được.
+1. **Nhịp chờ giữa hai lượt là bao nhiêu giây?** (thi thử: 45s) → chia thời lượng pha hỏi cho nhịp = **trần lượt thật**; đường cắt của hàng đợi 20 §3 đặt tại đó.
+2. **4.000 token là của cả đội hay của mỗi thành viên?** (thi thử: cả đội) → nếu của mỗi người thì hai người hỏi song song hai nhánh khác nhau, chia hàng đợi theo chủ đề để không trùng.
+3. **Giao diện có hiển thị token đã dùng / còn lại không?** Nếu có, số đó thắng mọi ước lượng (§A1).
+4. **AI Khách hàng còn mở sau giờ khóa spec không?** Nếu còn → để dành các lượt về NGOÀI phạm vi cho pha CÔNG, dùng chống VÔ HIỆU khi bắn.
+5. **Lý do VÔ HIỆU của đề này là gì** (brief thường liệt kê tường minh)? Nếu danh sách không có "ngoài phạm vi" thì lượt hỏi về NGOÀI phạm vi **tụt hạng ưu tiên** — đừng chép máy móc thứ tự của kit.
+6. Xếp giải theo pool 4 đội hay toàn giải?
+7. Giới hạn độ dài mỗi test? Test nhiều bước có được không?
+8. Test của đối thủ bị chấm VÔ HIỆU thì THỦ có được +1 không, hay 0?
+9. Số ca kháng nghị tối đa vẫn là 3?
+
+**Đã chốt tại thi thử 11/09, không cần hỏi lại:** ảnh có tính token (⇒ không dùng); câu bị từ chối không trừ token và không reset nhịp chờ; câu chứa chỉ thị và câu gộp nhiều ý đều bị từ chối.
 
 ## B. Agenda 12/09
 
 | Giờ | Pha | Việc | Output phải có |
 |---|---|---|---|
-| 9:00–9:30 | Nhận brief | Đọc brief; **dựng mô hình bài toán (`/frame`, knowledge/05)**; vào vai (§I) | `mo-hinh-bai-toan.md` đủ M1–M6; mâu thuẫn nội tại của brief; **5 câu hỏi đã chọn** + lý do loại các câu khác |
-| 9:30–9:55 | Hỏi C1, C2 | Gửi câu 1 (phạm vi & điều cấm), câu 2 (bảng chuyển trạng thái); nạp ngay | 2 khối log nguyên văn + RTM |
-| 9:55–10:20 | Hỏi C3, C4 | Gửi câu 3 (bảng tham số), câu 4 (8 kịch bản suy biến); nạp ngay | RTM đủ 4 câu; **danh sách ⚠** |
-| 10:20–11:05 | Viết spec | `/spec-write` — mọi ô không hỏi được điền bằng **mặc định ngành**, gắn `[GIẢ ĐỊNH]` + xếp hạng rủi ro | `spec.md` bản 1; bảng xếp hạng giả định |
-| 11:05–11:20 | Hỏi C5 (restate) | 8–10 phát biểu Đúng/Sai lấy từ **đầu bảng xếp hạng rủi ro**, không phải từ kế hoạch soạn trước | Câu trả lời cuối cùng; danh sách "Sai" phải vá |
+| 9:00–9:30 | Nhận brief | Đọc brief (**§3 nhịp chờ + token, §4 lý do VÔ HIỆU**); **dựng mô hình bài toán (`/frame`, knowledge/05)**; vào vai (§I) | `mo-hinh-bai-toan.md` đủ M1–M6; mâu thuẫn nội tại của brief; **hàng đợi lượt hỏi đã xếp hạng + đường cắt tính theo nhịp** |
+| 9:30–10:30 | Hỏi liên tục | Gửi lượt một-ý theo đúng thứ tự hàng đợi, đúng nhịp, không nghỉ; nạp từng câu trả lời ngay khi về | Log nguyên văn từng lượt + RTM cập nhật sau mỗi lượt |
+| **9:45–11:05** | **Viết spec song song** | Người thứ hai **bắt đầu viết từ 9:45**, không chờ hỏi xong: khung 10 mục + mọi luật suy được từ brief; ô chưa có câu trả lời để `[..]` rồi điền dần | `spec.md` bản 1; bảng xếp hạng giả định |
+| 10:30–11:05 | Hỏi phần đuôi | Tiếp hàng đợi sau đường cắt **chỉ khi khung spec đã xong**; ưu tiên ô giả định rủi ro Cao mà `/spec-write` vừa chấm | RTM đủ; **danh sách ⚠** |
+| 11:05–11:20 | Lượt xác nhận | Từng phát biểu một (một ý/lượt), lấy từ **đầu bảng xếp hạng rủi ro giả định** — không gộp 10 phát biểu vào một lượt, sẽ bị từ chối | Danh sách ý "Sai" phải vá |
 | 11:20–11:38 | Vá spec | Sửa mọi ý "Sai"; **cổng F + bảng Mục tiêu↔Luật** | 0 ✗ ở F1/F5; mọi mục tiêu có luật |
 | 11:38–11:52 | Review & nộp | `/spec-review`; đếm token trên bản nộp; nộp trước 11:52 | Bản nộp ≤5.400 token; lưu 1 bản copy |
 | 12:00–13:00 | Nghỉ | Chuyển ⚠ + giả định rủi ro cao thành tình huống | ≥ 15 tình huống ứng viên |
@@ -67,13 +77,17 @@ token ≈ max( số_từ × 2,5 ,  số_ký_tự / 2,2 )
 | 15:00–16:00 | Chạy test | Ghi TRÚNG / TRƯỢT / VÔ HIỆU | ≤ 3 ca VÔ HIỆU đáng kháng nghị |
 | 16:00–17:00 | Kháng nghị | Chỉ ca CÔNG bị VÔ HIỆU; nộp text | Kết quả từng ca; 17:00 trao giải |
 
-Khác bản cũ ở hai chỗ: (a) hỏi xong 4 câu trước 10:20 nên **có 45 phút viết spec trước khi restate** — lượt restate vì thế nhắm đúng giả định đã thật sự vào spec, thay vì nhắm vào kế hoạch soạn từ hôm trước; (b) buổi chiều có bước đồng thuận chéo 3 spec, chỉ làm được vì spec đối thủ tải về được.
+Ba khác biệt so với bản 09/09, đều do luật hỏi đổi (thi thử 11/09):
+
+(a) **Hỏi và viết chạy song song, không nối tiếp.** Số lượt bị nhịp chờ chặn chứ không bị token chặn, nên cả đội ngồi chờ câu trả lời là cách lãng phí lớn nhất trong ngày: một người bấm gửi đúng nhịp và dán câu trả lời, người còn lại viết spec từ 9:45.
+(b) **Không còn "câu số 5" thiêng liêng.** Lượt xác nhận giờ chỉ là những lượt rẻ nhất trong hàng đợi (~40–80 token) và vẫn tốn đúng một nhịp như mọi lượt khác — nên một giả định rủi ro Cao đáng hỏi thì hỏi thẳng dạng nhị phân ngay từ đầu, không để dành.
+(c) Buổi chiều có bước đồng thuận chéo 3 spec, chỉ làm được vì spec đối thủ tải về được.
 
 ## C. Ba tác nhân AI
 
 | Tác nhân | Biết | KHÔNG biết / không làm | Hệ quả |
 |---|---|---|---|
-| AI Khách hàng | Specs thật; pha chấm: quyết phạm vi, đưa đáp án chuẩn | **Không có memory**; chỉ trả lời đúng 1 câu được hỏi mỗi lượt; tổng 5 câu / 5.000 token; không tự kể | 5 câu là toàn bộ tri thức chắc chắn của cả ngày. Mỗi câu phải **tự chứa** và trả về **một bảng**, không phải một dòng |
+| AI Khách hàng | Specs thật; pha chấm: quyết phạm vi, đưa đáp án chuẩn | **Không có memory**; **từ chối** câu chứa chỉ thị và câu gộp nhiều ý; 4.000 token + nhịp chờ; không tự kể | Tri thức chắc chắn của cả ngày = số lượt kịp gửi. Mỗi lượt phải **tự chứa**, **đúng một ý**, và **không ra lệnh cách trả lời** — muốn câu trả lời ngắn thì hỏi dạng nhị phân "A hay B", đó là công cụ duy nhất còn lại |
 | AI Executor | CHỈ spec bị bắn | Brief, specs thật, hội thoại, lẽ thường | Spec tự chứa 100%; cấm "như thông lệ". Im lặng → đoán theo mặc định ngành |
 | AI So khớp | Đáp án chuẩn + trả lời Executor | Không so từ khóa; so ý nghĩa | Đúng ý là đủ; mơ hồ vẫn bị bắt |
 
@@ -100,14 +114,14 @@ Ví dụ BTC (app nghỉ phép): TRÚNG — "Nghỉ qua ngày lễ tính phép s
 ## F. Năm nhận định cấu trúc (đã cập nhật theo tham số 09/09)
 
 1. **Executor mù bối cảnh ⇒ spec tự chứa 100%.** "Ai chả biết" là lỗ hổng.
-2. **AI Khách hàng chỉ trả lời khi được hỏi, và chỉ 5 lần.** Question bank soạn trước vẫn là tài sản số 1, nhưng đổi vai: nó không còn là *danh sách để hỏi*, nó là **danh sách mặc định ngành để tự điền** (20 §4) và là **kho phát biểu cho câu restate**. Chỉ 5 câu được gửi đi thật.
-3. **Không có memory ⇒ không có hội thoại, chỉ có 5 lần xin dữ liệu.** Không hỏi tiếp được, không sửa format ở lượt sau mà không mất một câu trong 5. Mỗi câu phải tự chứa và đúng ngay lần đầu (cổng 5 kiểm tra ở 20 §1-10).
+2. **Số câu không còn là hạn mức; nhịp chờ mới là.** Question bank soạn trước lại là *danh sách để hỏi* — nhưng dùng như một **hàng đợi đã xếp hạng có đường cắt**, mỗi mục một lượt một-ý (20 §3). Phần dưới đường cắt vẫn phải thành luật trong spec, bằng **mặc định ngành** (20 §4). Ràng buộc đổi từ "chọn được 5 ô nào" sang "**xếp đúng thứ tự và bấm đúng nhịp**".
+3. **Không ra lệnh được cho AI ⇒ hình dạng câu hỏi là công cụ điều khiển duy nhất.** Không ép được format, không cap được độ dài; muốn câu trả lời ngắn và dứt khoát thì phải hỏi **nhị phân** ("A hay B") hoặc hỏi **một con số**. Câu mở ("xử lý thế nào", "có những gì") vẫn dùng được nhưng đắt gấp 3–5 lần và có thể trả về văn xuôi không dùng ngay được. Không có memory ⇒ mỗi lượt vẫn phải tự chứa (cổng 8 kiểm tra ở 20 §1-10).
 4. **VÔ HIỆU = −1 và được kháng nghị.** Vẫn bắn core flow tiền/tồn, vẫn tránh biên xa (thuế, kế toán, bảo hiểm), nhưng ngưỡng loại bỏ tính theo kỳ vọng (§D1) chứ không theo "cảm giác rủi ro". Điều kiện đi kèm: **mọi test phải có gói bằng chứng phạm vi thu sẵn trước khi nộp**, vì test không sửa được và kháng nghị chỉ có 1 giờ.
-5. **Ranh giới tri thức: biết mà không viết = bề mặt tấn công.** Với 5 câu trả lời, phần lớn spec là giả định — nên đọc lại spec như người chưa nghe brief, và đánh dấu chỗ nào là giả định để buổi chiều tự bắn trước khi đối thủ bắn.
+5. **Ranh giới tri thức: biết mà không viết = bề mặt tấn công.** Kể cả khi kịp 15–20 lượt, phần lớn spec vẫn là giả định — nên đọc lại spec như người chưa nghe brief, và đánh dấu chỗ nào là giả định để buổi chiều tự bắn trước khi đối thủ bắn.
 
 ## G. Quy tắc vàng & RTM ngược
 
-**CÔNG:** Bắn chỗ specs thật phản trực giác mà spec đối thủ im lặng. Executor đoán mặc định ngành: = specs thật → TRƯỢT; ≠ → TRÚNG. Ba nguồn đạn, theo độ mạnh giảm dần: (1) 4–5 câu trả lời buổi sáng; (2) **đồng thuận chéo 3 spec tải về** — nghiệp vụ 2 đội có luật mà đội thứ 3 im lặng; (3) catalogue ⚠ của domain (10 §6).
+**CÔNG:** Bắn chỗ specs thật phản trực giác mà spec đối thủ im lặng. Executor đoán mặc định ngành: = specs thật → TRƯỢT; ≠ → TRÚNG. Ba nguồn đạn, theo độ mạnh giảm dần: (1) các câu trả lời buổi sáng; (2) **đồng thuận chéo 3 spec tải về** — nghiệp vụ 2 đội có luật mà đội thứ 3 im lặng; (3) catalogue ⚠ của domain (10 §6).
 
 **THỦ:** Mọi trả lời ⚠ truy vết tới một luật có mã trong spec; ô trống = chắc chắn bị bắn. Chỗ không hỏi được thì **viết mặc định ngành tường minh**, không bỏ trống và không sáng tạo giá trị mới (30 §1b).
 
@@ -117,10 +131,10 @@ Mẫu RTM ngược (7 cột, có cả dòng giả định `G-xx`) + quy tắc đ
 
 | # | Câu | Kết quả |
 |---|---|---|
-| 1 | Hạn mức token AI Khách hàng | ✅ 5.000 token, gồm hỏi + trả lời |
-| 2 | Giới hạn lượt hỏi | ✅ 5 câu, mỗi lượt 1 câu, không memory |
+| 1 | Hạn mức token AI Khách hàng | ✅ **4.000 token** (thi thử 11/09), gồm hỏi + trả lời · ❓ của cả đội hay mỗi người (§A2-2) |
+| 2 | Giới hạn lượt hỏi | ✅ **Không giới hạn số câu**; mỗi lượt đúng **một ý**, không memory; **câu chứa chỉ thị hoặc gộp nhiều ý bị từ chối** (không trừ token) · ❓ nhịp chờ bao nhiêu giây ở ngày thi (§A2-1) |
 | 3 | Định dạng nộp spec, bảng/sơ đồ, cách đếm | ✅ Markdown, bảng được, sơ đồ mermaid, hạn mức tính bằng token |
-| 4 | Hạn mức hình ảnh | ✅ 3 lần với AI Khách hàng; bản nộp không có ảnh · ❓ ảnh có tính token không (§A2-1) |
+| 4 | Hạn mức hình ảnh | ✅ 3 lần với AI Khách hàng; bản nộp không có ảnh · ✅ **ảnh CÓ tính token** (thi thử 11/09) ⇒ không dùng |
 | 5 | Công thức điểm | ✅ +2 / +1 / −1 · ❓ VÔ HIỆU của đối thủ có cho THỦ +1 không (§A2-6) |
 | 6 | Xếp giải pool hay toàn giải | ❓ chưa có |
 | 7 | Model 3 tác nhân, prompt Executor | ⛔ **BTC không trả lời — bảo mật** |
@@ -138,11 +152,11 @@ Mỗi artifact một owner.
 
 | Vai | 9:00–9:30 (mô hình) | Sáng (THỦ) | Chiều (CÔNG) |
 |---|---|---|---|
-| Interrogator | M1 mục tiêu, M2 dòng tiền | Chọn và gọt **5 câu** (20 §1, §3), gửi từng câu, nạp nguyên văn vào log + RTM, **giữ câu 5 cho restate** | Chấm phạm vi (50 §6), giữ gói bằng chứng kháng nghị |
+| Interrogator | M1 mục tiêu, M2 dòng tiền | Xếp **hàng đợi lượt hỏi + đường cắt** (20 §1, §3), **bấm gửi đúng nhịp không nghỉ**, nạp nguyên văn vào log + RTM | Chấm phạm vi (50 §6), giữ gói bằng chứng kháng nghị |
 | Spec Writer | M3 dòng tồn, M4 biên hệ thống | Gõ spec theo 30 §1, gắn nhãn mục tiêu `[M-x]`, quản **đích 5.400 token** | Soi spec #1, #2 (50 §4) |
 | Red Teamer | M5 lạm dụng, M6 suy biến, bảng mâu thuẫn brief | **Cổng F (32 §1)** + bảng Mục tiêu↔Luật + eval set **hai reader** + lint 22 nhóm (40) + cổng chất lượng **16 dòng** (30 §7) + **xếp hạng rủi ro giả định để nuôi câu 5** | Soi spec #3, bảng đồng thuận chéo, tổng hợp 15 hồ sơ 50 §7 |
 
-- Đội 2 người: A = Interrogator + Spec Writer, B = Red Teamer + log; chiều chia 1,5 spec/người.
+- Đội 2 người: A = Interrogator (**chỉ bấm gửi và dán câu trả lời, không viết spec**), B = Spec Writer + Red Teamer; chiều chia 1,5 spec/người. Phân vai này là bắt buộc: với nhịp chờ, hỏi là việc *chiếm người* chứ không chiếm trí, còn viết spec mới là đường găng.
 - **Khối 9:00–9:30 làm chung, không chia.** Mô hình bài toán là hiểu biết dùng chung; chia ra thì mỗi người viết luật theo một hình dung khác nhau.
-- **Việc mới của Red Teamer, quan trọng nhất trong ngày:** xếp hạng rủi ro giả định lúc 11:00 để chọn 8–10 phát biểu cho câu 5. Chọn sai ở bước này là mất câu hỏi cuối cùng vào một giả định vô hại.
-- Diễn tập bắt buộc 10–11/09: dựng mô hình 20′ → 4 câu hỏi → viết 45′ → restate → cổng F → đổi spec tự bắn → đo TRÚNG/TRƯỢT/VÔ HIỆU theo điểm +2/+1/−1.
+- **Việc mới của Red Teamer, quan trọng nhất trong ngày:** xếp hạng rủi ro giả định **liên tục từ 10:15**, không đợi tới 11:00 — mỗi giả định rủi ro Cao được chấm sớm là một lượt hỏi còn kịp gửi trước khi hết giờ. Xếp hạng muộn = ô đó vĩnh viễn là giả định.
+- Diễn tập bắt buộc 10–11/09: dựng mô hình 20′ → **hàng đợi lượt một-ý, gửi theo nhịp, viết song song** → lượt xác nhận → cổng F → đổi spec tự bắn → đo TRÚNG/TRƯỢT/VÔ HIỆU theo điểm +2/+1/−1.

@@ -7,7 +7,7 @@
 **Điều kiện vào:** `mo-hinh-bai-toan.md` (knowledge/05) phải tồn tại trước khi gõ chữ đầu tiên. Spec viết mà không có mô hình bài toán thì đạt mọi cổng hình thức và vẫn sai bài toán — bằng chứng đo được ở knowledge/05 §0 và 32 §7.
 
 **Ba luật ngân sách (tham số chốt 09/09 — 00 §A):**
-- **Hạn mức là 6.000 TOKEN, không phải 3.000 từ. Đích của bản nộp là 5.400 token ước lượng** (10% đệm để vá sau câu restate C5). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). 5.400 token ≈ **2.100–2.200 từ tiếng Việt** — chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư, nên ngân sách từng mục ở knowledge/33 §5 đã được cắt lại theo tỷ lệ đó.
+- **Hạn mức là 6.000 TOKEN, không phải 3.000 từ. Đích của bản nộp là 5.400 token ước lượng** (10% đệm để vá sau các lượt xác nhận). Cách đo: `LC_ALL=C.UTF-8 wc -w -m <file>` rồi `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)`; nếu giao diện nộp hiển thị token thì số đó thắng (00 §A1). 5.400 token ≈ **2.100–2.200 từ tiếng Việt** — chặt hơn hạn mức 3.000 từ cũ khoảng một phần tư, nên ngân sách từng mục ở knowledge/33 §5 đã được cắt lại theo tỷ lệ đó.
 - **Bản nộp là markdown, không có ảnh.** Bảng dùng tự do. Sơ đồ chỉ ở dạng mermaid trong văn bản — xem quy tắc mermaid ở cuối §1 và cú pháp ở knowledge/33 §7.
 - **Bản nộp không chứa câu nói về chính nó.** "36/36 ô đã điền", "Phân hoạch 2×2×2 = 8 tổ hợp; phủ 4+2+2 = 8" là chứng minh gửi cho người rà, không phải luật cho Executor. Chúng thuộc `spec.md` nội bộ và `review.md`; bỏ khỏi `spec.nop.md`.
 
@@ -20,12 +20,12 @@ Copy nguyên khối; điền hết ô mọi bảng [HD §4.8-7]. Ngân sách tok
 ### Mục 1. Tổng quan & phạm vi 概要 — 680 token (≈270 từ)
 4–5 bullet: tên hệ thống, tên màn hình/chức năng, trạng thái tài liệu, chức năng này làm gì.
 
-NGOÀI phạm vi nêu tường minh để Executor trả lời "không thuộc tài liệu này" (0.9). Lấy **nguyên văn** danh sách C1; danh sách này còn là rào chống VÔ HIỆU của chính đội khi bắn (50 §6).
+NGOÀI phạm vi nêu tường minh để Executor trả lời "không thuộc tài liệu này" (0.9). Lấy **nguyên văn** câu trả lời của lượt hỏi về phạm vi (20 §3.2 lượt 26); danh sách này còn là rào chống VÔ HIỆU của chính đội khi bắn (50 §6).
 
 - **TRONG phạm vi:** [tạo / xem / gia hạn / hủy / chuyển hold thành đơn; loại hàng áp dụng; kênh].
 - **NGOÀI phạm vi:** [thanh toán đơn cuối, vận chuyển, đổi trả, khuyến mãi, kế toán, thuế] — nêu tường minh để Executor trả lời "không thuộc tài liệu này" (0.9).
 
-**1.x Nguyên tắc giải nghĩa & luật mặc định** — dùng khung catch-all ở mục 2 file này. VIẾT ĐẦU TIÊN lúc 10:20–10:30, cột verify điền từ RTM/log; rà lại 11:20–11:30 sau khi C5 trả về, dòng bị C5 nói "Sai" → sửa theo giá trị đúng, dòng chưa verify → gắn `[GIẢ ĐỊNH]` ở bản nội bộ.
+**1.x Nguyên tắc giải nghĩa & luật mặc định** — dùng khung catch-all ở mục 2 file này. VIẾT ĐẦU TIÊN lúc 10:20–10:30, cột verify điền từ RTM/log; rà lại 11:20–11:30 sau khi các lượt xác nhận trả về, dòng nào bị trả lời khác giả định → sửa theo giá trị đúng, dòng chưa verify → gắn `[GIẢ ĐỊNH]` ở bản nội bộ.
 
 **1.y Glossary** (nếu ngắn; dài thì đưa lên đầu mục 6): chỉ thuật ngữ dễ hiểu sai; trạng thái viết `CODE_STYLE`; một khái niệm một tên.
 
@@ -166,19 +166,19 @@ Nếu có sơ đồ, **bắt buộc thêm dòng 0.15 vào catch-all mục 1.x**:
 
 ## 1b. Luật giả định = mặc định ngành, không sáng tạo
 
-Với 5 câu hỏi (00 §A), **~70% ngân hàng câu hỏi không được hỏi** (bảng cuối 20 §3). Phần spec không có nguồn từ AI Khách hàng vẫn phải có luật. Quy tắc chọn giá trị:
+Kể cả khi bỏ trần số câu, nhịp chờ vẫn khiến **~65% ngân hàng câu hỏi không được hỏi** (bảng 20 §3.5). Phần spec không có nguồn từ AI Khách hàng vẫn phải có luật. Quy tắc chọn giá trị:
 
 1. **Điền bằng mặc định phổ biến của ngành**, lấy từ 31 phát biểu ở 20 §4 và catalogue ⚠ ở 10 §6. Gắn `[GIẢ ĐỊNH]` ở bản nội bộ.
 2. **Không sáng tạo giá trị mới.** Lý do là số học, không phải khẩu hiệu: Executor mù khi gặp spec im lặng sẽ đoán theo mặc định ngành. Nếu specs thật = mặc định ngành thì viết mặc định ra → TRƯỢT (giữ điểm), im lặng → cũng TRƯỢT. Nếu specs thật ≠ mặc định ngành thì viết mặc định → TRÚNG, im lặng → cũng TRÚNG. **Viết mặc định ngành ra không làm xấu đi ca nào**, mà lại loại được đa nghĩa ở các ca ghép (hai luật cùng áp dụng, biên, thứ tự ưu tiên) — nơi im lặng khiến hai reader ra hai kết quả. Ngược lại, viết một giá trị *tự nghĩ ra* (khác cả mặc định ngành lẫn specs thật) là ca duy nhất tệ hơn im lặng: nó biến một TRƯỢT tiềm năng thành TRÚNG chắc chắn.
-3. **Ba trường hợp không được tự điền, phải đi vào câu C5 hoặc dùng luật an toàn hai chiều (32 §3.3):** (a) luật làm hỏng mục tiêu brief (nhãn `⚡`, cổng F7); (b) hạn mức không cưỡng chế được (cổng F2); (c) giả định mà đảo lại thì đổi hướng tiền. Ba loại này là chỗ specs thật gần chắc có luật riêng, và đoán sai thì mất điểm ở đúng core flow.
-4. **Xếp hạng mọi `[GIẢ ĐỊNH]`** theo ba tiêu chí ở `/spec-write` bước 14; 10 dòng đầu là nội dung câu C5.
+3. **Ba trường hợp không được tự điền, phải chèn thành một lượt hỏi (ưu tiên dạng nhị phân) hoặc dùng luật an toàn hai chiều (32 §3.3):** (a) luật làm hỏng mục tiêu brief (nhãn `⚡`, cổng F7); (b) hạn mức không cưỡng chế được (cổng F2); (c) giả định mà đảo lại thì đổi hướng tiền. Ba loại này là chỗ specs thật gần chắc có luật riêng, và đoán sai thì mất điểm ở đúng core flow.
+4. **Xếp hạng mọi `[GIẢ ĐỊNH]`** theo ba tiêu chí ở `/spec-write` bước 14, **và xếp liên tục trong lúc viết, không đợi tới cuối** — mỗi dòng rủi ro Cao chấm sớm là một lượt hỏi còn kịp gửi (20 §3.4).
 5. Bản nộp **bỏ nhãn** `[GIẢ ĐỊNH]` — nhãn đó cho đội đọc, còn với Executor thì một luật có nhãn "giả định" là một luật yếu, mời nó tự suy diễn.
 
 Hệ quả cho cổng chất lượng: "mọi luật truy vết về RTM" không còn nghĩa là "mọi luật có `← A-xx`". Nó có nghĩa **mọi luật có một dòng RTM**, loại `A-xx` (có câu trả lời) hoặc `G-xx` (giả định có xếp hạng) — 20 §5.
 
 ## 2. KHUNG CATCH-ALL (đặt tại mục 1.x của spec)
 
-⚠ Viết §0 bản 1 lúc 10:20, rà lại 11:20 sau khi C5 trả về. Catch-all lệch specs thật = tự tạo mâu thuẫn (specs thật: "hết hạn → tự hủy, hoàn cọc" nhưng 0.5 nói "từ chối, giữ nguyên") [HD §5.5].
+⚠ Viết §0 bản 1 lúc 10:20, rà lại 11:20 sau khi các lượt xác nhận trả về. Catch-all lệch specs thật = tự tạo mâu thuẫn (specs thật: "hết hạn → tự hủy, hoàn cọc" nhưng 0.5 nói "từ chối, giữ nguyên") [HD §5.5].
 
 | # | Dòng luật | Verify? (câu nào / giờ) | Câu hỏi verify |
 |---|---|---|---|
@@ -252,13 +252,13 @@ Hợp nhất [NASA App.C], [Volere]. Chạy trên từng BR lúc 11:40.
 
 ### Bảy quy tắc chất-lượng-nội-dung (18–24) — ISO/IEC/IEEE 29148 `feasible` + `affordable`
 
-Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều được viết có đứng được trong thực tế và có phục vụ mục tiêu không*. Chi tiết cách chấm: knowledge/32 §1 (cổng F). Chạy lúc 11:00, **trước** khi chọn phát biểu cho câu C5 — hit ở quy tắc 18, 19, 20 là ứng viên hàng đầu của C5.
+Quy tắc 1–17 kiểm *cách viết*. Bảy quy tắc dưới kiểm *điều được viết có đứng được trong thực tế và có phục vụ mục tiêu không*. Chi tiết cách chấm: knowledge/32 §1 (cổng F). Chạy lúc 11:00, **trước** khi chọn nội dung cho các lượt xác nhận — hit ở quy tắc 18, 19, 20 là ứng viên hàng đầu (20 §3.4).
 
 | # | Quy tắc | Trước → Sau |
 |---|---|---|
 | 18 | **Không hứa hộ bên ngoài.** Mốc "hoàn tất" của việc do cổng/ngân hàng/ERP thực hiện phải tách khỏi mốc "quyết định" của hệ thống | "hoàn cọc hoàn tất ≤ 24 giờ" → "khởi tạo hoàn ≤ 5 phút, `refund_status = ĐANG_HOÀN`; cổng xác nhận → `ĐÃ_HOÀN`; quá [N] ngày làm việc chưa xác nhận → `HOÀN_THẤT_BẠI` + [phương án 2]" |
 | 19 | **Hạn mức phải cưỡng chế được.** Neo vào dữ liệu khách tự đặt được = hạn mức trang trí | "hạn mức theo email khai lúc cọc" → "hạn mức theo [đơn vị định danh]; yêu cầu không có đơn vị định danh hợp lệ bị từ chối `IDENTITY_REQUIRED`" |
-| 20 | **Mỗi luật phục vụ một mục tiêu.** Luật ở cột 3 bảng Mục tiêu↔Luật (05 §2) = luật tự phá mục tiêu → hỏi lại, không tự chốt | "guest tạo hold + khóa tồn trước khi thu tiền + hủy hoàn 100% phí 0" trong khi mục tiêu là chống bot → hỏi N0-02, N0-03, N0-04 trước khi viết |
+| 20 | **Mỗi luật phục vụ một mục tiêu.** Luật ở cột 3 bảng Mục tiêu↔Luật (05 §2) = luật tự phá mục tiêu → chèn một lượt nhị phân, không tự chốt | "guest tạo hold + khóa tồn trước khi thu tiền + hủy hoàn 100% phí 0" trong khi mục tiêu là chống bot → 3 lượt: neo hạn mức, mốc khóa tồn, phí hủy |
 | 21 | **Mỗi phụ thuộc ngoài có một luật cho chế độ lỗi của nó.** Sáu láng giềng (05 §M4) → sáu luật | im lặng về cổng timeout → "NẾU cổng không xác nhận trong hạn trả cọc, THÌ → CANCELLED (HETHONG), K+, T0" |
 | 22 | **Không coi việc giữ tài nguyên là chắc chắn thành công.** Kiểm điều kiện xong vẫn có thể ghi thất bại [IBM; Shopify] | "`ATP ≥ q` khi nhận yêu cầu → tạo hold" → "+ NẾU ghi giữ thất bại do tồn đã đổi giữa lúc kiểm và lúc ghi, THÌ `OUT_OF_STOCK`, K0 T0, không giữ một phần, không tự thử lại" |
 | 23 | **Việc giao cho người phải quan sát được và có trần.** Mỗi `CSKH`/`Admin`/`thủ công` cần một dòng ở bảng thông báo 6.9 (ai được báo) + trường audit + trần số lượng hoặc điều kiện | "hệ thống hủy hold đã cọc khi kho lệch" → "+ báo CSKH phụ trách, ghi lý do vào audit, và nêu trần / thứ tự hủy tường minh" |
@@ -293,7 +293,7 @@ Số đo thực tế (diễn tập 08/09, đề "đặt cọc giữ hàng", 111 
 
 ## 6. THỨ TỰ VIẾT DƯỚI ÁP LỰC 10:20–11:52
 
-Lịch này khác bản cũ ở chỗ **viết trước, restate sau**: C1–C4 đã về trước 10:20, nên có 45 phút viết bản nháp, rồi câu C5 lúc 11:05 mới biết phải hỏi gì (00 §B).
+Lịch này khác bản cũ ở chỗ **viết song song với hỏi**: số lượt bị nhịp chờ chặn chứ không bị token chặn, nên người viết bắt đầu từ 9:45 và điền dần theo từng câu trả lời về; các lượt xác nhận gửi khi bảng xếp hạng giả định đã có (00 §B).
 
 Viết theo thứ tự **ăn điểm**, không theo thứ tự số mục.
 
@@ -302,16 +302,16 @@ Viết theo thứ tự **ăn điểm**, không theo thứ tự số mục.
 | 10:20–10:30 | Chốt RTM (đánh ⚠, mở dòng `G-xx` cho mọi ô không hỏi được, gán mã BR dự kiến) + **mục 1** (phạm vi TRONG/NGOÀI + catch-all 1.x từ khung mục 2 file này) | RTM hai loại dòng; mục 1 xong |
 | 10:30–10:55 | **Mục 6** — liệt kê danh sách logic, dòng ⚠ RTM vào logic tương ứng; mỗi logic: bảng step + bảng Case đủ 5 gạch (số · toán tử · múi giờ · default khi config trống · ưu tiên); decision table cho logic ≥ 2 điều kiện | ≥ 15 BR trong các bảng Case |
 | 10:55–11:00 | **Mục 6.3** state machine: bảng state × event 100% ô, từ bảng C2 (mẫu: knowledge/31 §3) | Bảng đầy |
-| 11:00–11:05 | **Xếp hạng rủi ro giả định** → chọn 10 phát biểu cho C5 và gửi C5 ngay | Câu C5 đã gửi |
-| 11:05–11:20 | Trong lúc chờ C5, theo thứ tự ăn điểm: **mục 4** (message nguyên văn) → **mục 8** (Guest, System/Job) → **mục 2** → **mục 3** → **mục 7** (7.2 bất thường liên logic, 7.4 chưa chốt); mục 9/10/5 gọn nếu còn đệm | Đủ 10 mục |
-| 11:20–11:30 | Nạp C5: mọi ý "Sai" sửa ngay (đổi cả BR liên quan); rà catch-all 1.x theo giá trị mới; thêm 0.11–0.14 nếu chưa có | Catch-all khớp câu trả lời; ý "Sai" đã vá |
+| 11:00–11:05 | **Xếp hạng rủi ro giả định** → chuyển 8–10 dòng đầu thành **lượt nhị phân rời** và bắt đầu gửi theo nhịp (`/elicit xac-nhan`) | Hàng đợi xác nhận đang chạy |
+| 11:05–11:20 | Trong lúc các lượt xác nhận chạy, theo thứ tự ăn điểm: **mục 4** (message nguyên văn) → **mục 8** (Guest, System/Job) → **mục 2** → **mục 3** → **mục 7** (7.2 bất thường liên logic, 7.4 chưa chốt); mục 9/10/5 gọn nếu còn đệm | Đủ 10 mục |
+| 11:20–11:30 | Nạp các lượt xác nhận: mọi câu trả lời khác giả định sửa ngay (đổi cả BR liên quan); rà catch-all 1.x theo giá trị mới; thêm 0.11–0.14 nếu chưa có | Catch-all khớp câu trả lời; ý "Sai" đã vá |
 | 11:30–11:38 | **Cổng F** (knowledge/32 §1) trên từng BR + bảng Mục tiêu↔Luật (`/frame muc-tieu-luat`) | 0 ✗ ở F1/F5; mọi mục tiêu có luật phục vụ |
 | 11:38–11:48 | Red team: eval set qua **hai** Executor mù độc lập; Ctrl+F danh sách đen knowledge/40 §2 (22 nhóm) + §3 S1–S39 | Lỗ hổng đã vá; 0 ca hai reader lệch nhau |
 | 11:48–11:52 | Đếm token trên bản nộp, đích ≤ 5.400; cắt theo knowledge/33 §6; bỏ câu nói về chính spec; nộp; lưu bản copy | Đã nộp, còn đệm |
 
 Cạn giờ → cắt theo knowledge/33 §6: **BR "không thuộc mục tiêu nào" (05 §2)** trước tiên, rồi **mục 10 → 9 → 5 → 3 → 2**. KHÔNG cắt **mục 1, 6, 7, 4, 8** và không cắt bốn luật catch-all 0.11–0.14.
 
-Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài toán + RTM + xếp hạng giả định cho C5 + mục 1 & 7 + cổng F + red team.
+Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài toán + RTM + **bấm gửi hàng đợi hỏi đúng nhịp** + xếp hạng giả định + mục 1 & 7 + cổng F + red team.
 
 ## 7. CỔNG CHẤT LƯỢNG TRƯỚC NỘP [HD §5.9]
 
@@ -335,7 +335,7 @@ Phân công: A mục 6 (logic chính) ; B mục 2, 3, 4, 8, 9 ; C mô hình bài
 | 14 | Không tham chiếu tài liệu ngoài; không đại từ trôi? |
 | 15 | Mã BR/EX không trùng; mọi "áp dụng BR-xx" trỏ tới mã tồn tại? |
 | 16 | Eval set: không tình huống nào mà **hai reader độc lập** ra hai kết quả khác nhau? (tự khai "không mơ hồ" không tính) |
-| 17 | Mọi BR đủ 6 thành phần (mục 3.2 file này) và fit criterion; mọi dòng catch-all 1.x đã đối chiếu C1–C5 hoặc gắn giả định có xếp hạng? |
+| 17 | Mọi BR đủ 6 thành phần (mục 3.2 file này) và fit criterion; mọi dòng catch-all 1.x đã đối chiếu log câu trả lời hoặc gắn giả định có xếp hạng? |
 | 18 | Mọi BR đã chấm **cổng F** (knowledge/32 §1); không còn ✗ ở F1 (khả thi), F2 (cưỡng chế được), F5 (phụ thuộc ngoài), F7 (phục vụ mục tiêu)? |
 | 19 | Bảng **Mục tiêu↔Luật** (knowledge/05 §2) đã lập; mọi mục tiêu của brief có ≥1 luật phục vụ; mọi ô "làm hỏng mục tiêu" đã hỏi AI Khách hàng hoặc đã xử lý? |
 | 20 | **12 kịch bản suy biến** (knowledge/05 §M6) đều ✓ có luật, hoặc ⛔ nằm trong danh sách NGOÀI phạm vi tường minh? |

@@ -1,42 +1,87 @@
-*Dùng cho vai THỦ khi hỏi AI Khách hàng (5 câu, 9:30–11:20 ngày thi); buổi chiều dùng lại §2 và §4 để soi spec mình và spec đối thủ.*
+*Dùng cho vai THỦ khi hỏi AI Khách hàng (hỏi liên tục theo hàng đợi, 9:30–11:20 ngày thi); buổi chiều dùng lại §2 và §4 để soi spec mình và spec đối thủ.*
+*Viết lại 11/09 sau thi thử: bỏ trần 5 câu, bỏ kiểu câu gộp-một-bảng — hai thứ đó giờ đều làm câu bị từ chối.*
 
-# 20. Năm câu hỏi cho AI Khách hàng & ngân hàng nguyên liệu
+# 20. Hỏi AI Khách hàng & ngân hàng nguyên liệu
 
-## 1. Mười quy tắc hỏi khi chỉ có 5 câu, 1 câu/lượt, không memory
+## 1. Mười quy tắc hỏi khi một lượt = một ý, cấm chỉ thị, không memory
 
-Tham số: **5 câu hỏi · mỗi lượt đúng 1 câu · 5.000 token cho cả hỏi + trả lời · AI Khách hàng KHÔNG có memory** (00 §A). Bộ quy tắc cũ ("gộp 5–8 câu một lượt") không còn dùng được: một lượt bây giờ là một câu hỏi.
+Tham số (00 §A): **không giới hạn số câu · 4.000 token cho cả hỏi + trả lời · mỗi lượt đúng MỘT Ý · câu chứa chỉ thị bị từ chối · nhịp chờ giữa hai lượt (thi thử: 45 giây) · KHÔNG memory**.
+
+Hai bộ quy tắc cũ đều đã chết, và chết theo hai hướng ngược nhau:
+- Bộ "gộp 5–8 câu một lượt" (kit 08/09) — **bị từ chối vì nhiều câu hỏi trong một lượt**.
+- Bộ "một câu hỏi nhưng ép về một bảng, cap dòng, cap từ, không giải thích" (kit 09/09) — **bị từ chối vì câu hỏi chứa chỉ thị**, xếp loại injection.
+
+Hệ quả gốc, phải nhớ trước mọi quy tắc: **không ra lệnh được cho AI Khách hàng nữa, nên hình dạng câu hỏi là công cụ điều khiển duy nhất còn lại.**
 
 | # | Quy tắc | Vì sao / Thay vì → Hỏi |
 |---|---|---|
-| 1 | **Một câu hỏi, nhưng một bảng trả lời.** Giới hạn là số *câu hỏi*, không phải số *dữ kiện*. Mỗi câu phải kết thúc bằng đúng một dấu `?` và xin về một bảng hoặc một danh sách đánh số | "TTL bao nhiêu phút?" (1 dữ kiện) → "Trả lời đúng một bảng `Tham số \| Giá trị \| Đơn vị \| Mốc`: các tham số sau có giá trị bao nhiêu: …?" (12 dữ kiện) |
-| 2 | **Ép format và cap độ dài ngay trong câu đó.** Không có memory ⇒ không sửa được format ở lượt sau mà không mất một câu trong 5. Luôn có: dạng trả lời · số dòng tối đa · số từ tối đa mỗi ô · "không giải thích" | thiếu cap → một câu trả lời văn xuôi 900 token ăn 18% ngân sách và vẫn thiếu ô |
-| 3 | **Mỗi câu tự chứa.** Cấm mọi tham chiếu tới lượt trước ("như đã nói", "câu trên", "bổ sung cho ý 3"). Nhắc lại tên tính năng và mọi thuật ngữ cần thiết trong chính câu đó | "Còn trường hợp thẻ đóng thì sao?" → AI không biết đang nói về hoàn cọc → mất một câu |
-| 4 | **Xếp nửa giá trị cao lên trước trong cùng một câu.** Câu hai nửa (NGOÀI phạm vi + điều PHẢI ngăn) có thể bị trả lời hụt nửa sau; đặt nửa quan trọng hơn ở trước để phần bị hụt là phần rẻ hơn | — |
-| 5 | **Không hỏi điều suy được.** 5 câu chỉ để lấy thứ mà (a) đảo lại thì đổi kết quả quan sát được — tiền / trạng thái cuối / ai thắng, và (b) Executor sẽ đoán khác nếu spec im lặng. Mọi tham số trùng mặc định ngành: tự điền theo §4, đừng hỏi | "Có audit log không?" (mặc định ngành: có, và không ai bắn vào đó) → bỏ |
-| 6 | **Không "vì sao", không chào hỏi, không xin phép, không nhắc lại brief.** Token cho câu trả lời đắt hơn token cho câu hỏi, nhưng câu hỏi dài vẫn ăn vào cùng 5.000 | "Chúng tôi đang viết spec cho…, xin hỏi vì sao TTL là 2 giờ?" → bỏ cả câu |
-| 7 | **Không dẫn dắt.** Đưa lựa chọn cân bằng, không cài đáp án kỳ vọng — câu dẫn dắt làm mất giá trị bằng chứng của câu trả lời khi kháng nghị | "Chắc guest không được giữ hàng nhỉ?" → "Khách chưa đăng nhập tạo lượt giữ được không; nếu được thì có rào gì?" |
-| 8 | **Câu cuối là câu restate, và chỉ soạn sau khi có bản nháp spec.** Nó phải nhắm vào giả định đã thật sự vào spec (bảng xếp hạng rủi ro của `/spec-write`), không nhắm vào kế hoạch soạn hôm trước. Phát biểu có con số + trạng thái, xin Đúng/Sai, ý "Sai" xin giá trị đúng ≤8 từ | 10 phát biểu ≈ 380 token hỏi + 150 token trả lời = **10 dữ kiện đã kiểm với ~530 token** — mật độ tốt nhất trong cả 5 câu |
-| 9 | **Mặc định KHÔNG dùng ảnh.** Được 3 lần, nhưng một ảnh chụp bảng ≈ 1.000–1.600 token, còn chính bảng đó viết bằng text ≈ 400–600 token. Ảnh chỉ thắng khi BTC xác nhận **ảnh không tính vào 5.000 token** (00 §A2-1) — lúc đó gửi ảnh bảng 25 giả định và xin về "dòng nào sai" là cách restate rẻ nhất trong ngày | Hỏi BTC trước 9:30. Nếu ảnh có tính token: 3 lần đó bỏ không dùng, không tiếc |
-| 10 | **Cổng 5 kiểm tra trước khi gửi từng câu.** Không có memory nghĩa là không có lần thử thứ hai: (1) đúng một dấu `?`; (2) không tham chiếu lượt trước; (3) có ép format + cap dòng/từ; (4) câu trả lời tệ nhất có thể vẫn dùng được (không phải một chữ "Có"); (5) mọi thuật ngữ trong câu đều là từ của brief, không phải từ riêng của đội | Câu bị hụt = mất 20% tri thức chắc chắn của cả ngày |
+| 1 | **Một lượt = một ẩn số.** Đúng một dấu `?`, không "và…", "còn…", "ngoài ra…", không dấu `;` nối hai ô chưa biết | Gộp 3 ý → bị từ chối, mất một nhịp chờ mà không thu được gì. "Ngoài phạm vi là gì, phải ngăn điều gì, guest làm được gì?" → tách thành 3 lượt |
+| 2 | **Không một chữ mệnh lệnh nào về cách trả lời.** Danh sách đen: "trả lời đúng một bảng", "theo định dạng", "tối đa N dòng", "mỗi dòng ≤N từ", "không giải thích", "chọn 1", "liệt kê", "ghi rõ", "hãy…", "vui lòng…", `〜してください`, `お願いします`. Danh sách này chỉ bắt cụm **áp lên câu trả lời** — "gia hạn tối đa mấy lần?" là nội dung nghiệp vụ, hoàn toàn hợp lệ | Đây là thứ duy nhất bị gán nhãn *injection* trong thi thử. Câu hỏi phải là **câu nghi vấn thuần**, không có vế sai khiến nào |
+| 3 | **Nhị phân là vua: "A hay B?"** Nêu đủ hai vế trong câu; câu trả lời tự ngắn (20–60 token) mà không cần một chỉ thị nào | "Thời hạn giữ tính từ đâu?" (mở, ~200 token, dễ lạc đề) → "…thời hạn giữ bắt đầu tính từ lúc tạo lượt giữ hay từ lúc cọc thành công?" (~40 token, chốt được luật ngay) |
+| 4 | **Câu mở chỉ dành cho ô không có mặc định ngành.** Ba loại xứng đáng: **message lỗi nguyên văn**, **danh sách NGOÀI phạm vi**, **thứ tự ưu tiên khi nhiều lỗi/luật cùng đúng**. Chấp nhận 150–400 token cho mỗi lượt loại này | Mọi ô còn lại đều có mặc định ngành (§4) — hỏi mở ở đó là trả 300 token để nghe lại điều mình đã biết |
+| 5 | **Mỗi lượt tự chứa.** Nhắc tên hệ thống + tên màn hình/tính năng đúng như brief gọi, trong chính lượt đó | Không memory: "Còn trường hợp thẻ đóng thì sao?" → AI không biết đang nói về hoàn cọc |
+| 6 | **Xếp hạng theo giá trị, gửi theo thứ tự, chấp nhận mất phần đuôi.** Giá trị = (đảo lại thì đổi tiền / trạng thái cuối / ai thắng) × (Executor mù sẽ đoán khác) | Trần thật không phải 4.000 token mà là **thời lượng pha hỏi ÷ nhịp chờ**. Kế hoạch không có đường cắt = kế hoạch chưa lập xong |
+| 7 | **Không hỏi điều suy được** từ brief hoặc từ mặc định ngành (§4). Mỗi lượt phí là một ô rủi ro Cao không kịp hỏi | "Có audit log không?" → bỏ, tự điền |
+| 8 | **Không dẫn dắt.** Câu nhị phân phải nêu **đủ cả hai vế** và không gợi ý vế nào đúng | "Chắc guest không giữ hàng được nhỉ?" → "…khách chưa đăng nhập có tạo được lượt giữ hàng không?" |
+| 9 | **Không dùng ảnh.** Thi thử xác nhận ảnh **có** tính token; một ảnh ≈ 1.000–1.600 token = 8–10 lượt nhị phân | 3 lượt ảnh bỏ không dùng, không tiếc |
+| 10 | **Cổng 8 kiểm tra trước khi gửi** (bảng ngay dưới) | Một câu bị từ chối không mất token nhưng mất một nhịp — trong pha 16–90 phút thì đó là dữ kiện thật bị mất |
 
-**Ngân sách:** ước `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)` (00 §A1). Sau mỗi câu, ghi token thật (nếu giao diện hiển thị) hoặc token ước vào log; cộng dồn. Vượt kế hoạch ở câu 2–3 thì cắt phần liệt kê của câu 4, **không cắt câu 5**.
+### Cổng 8 kiểm tra (chạy trên từng lượt, còn ✗ thì không gửi)
 
-**Quy tắc phụ:** mỗi câu trả lời khác mặc định ngành → ghi ⚠ ngay vào RTM (§5) và log (§6). Với 4 câu dữ liệu, số dòng ⚠ thu được thường chỉ 8–20 dòng — nhỏ hơn kit cũ giả định (111 dòng ở diễn tập 08/09). Phần còn lại của spec là giả định có xếp hạng, không phải lỗ hổng quy trình.
+| # | Kiểm tra | Cách chấm nhanh |
+|---|---|---|
+| 1 | Đúng **một** dấu `?` | đếm |
+| 2 | Đúng **một ý** | thử tách câu thành hai câu hỏi độc lập — tách được ⇒ ✗ |
+| 3 | **Tự chứa** | có tên hệ thống/tính năng + tên màn hình; không "như trên", "việc đó", "câu trước" |
+| 4 | **Không mệnh lệnh** | grep danh sách đen quy tắc 2. **Chỉ tính khi cụm đó áp lên *câu trả lời***: "gia hạn **tối đa** mấy lần?" là nội dung nghiệp vụ (hợp lệ); "**tối đa** 5 dòng" là chỉ thị (✗). Phân biệt bằng đơn vị đi kèm: dòng / từ / mục / ký tự / bảng ⇒ chỉ thị |
+| 5 | **Không viện dẫn tài liệu** | không "theo tài liệu", "trong spec", "tài liệu thiết kế", `資料`, `仕様書`, `設計書` |
+| 6 | **Không nhắc bộ máy chấm** | không "chấm", "đáp án", "điểm", "prompt", "model", `採点`, `正解` |
+| 7 | **Không dẫn dắt** | câu nhị phân nêu đủ hai vế, không có "chắc là", "đúng không nhỉ" |
+| 8 | **Câu trả lời tệ nhất vẫn dùng được** | AI trả lời đúng một từ ⇒ vẫn chốt được một luật? Không ⇒ đổi sang dạng nhị phân |
 
-## 2. Ngân hàng câu hỏi (158 câu, 20 nhóm N0–N19) — hai công dụng mới
+### Khi bị từ chối
 
-Chỉ 5 câu được gửi đi thật, nên ngân hàng này **không còn là danh sách để hỏi**. Nó có hai việc:
+Câu bị từ chối **không trừ token và không reset nhịp chờ** (00 §A). Quy trình: đọc nhãn từ chối → xác định nó là "chứa chỉ thị" hay "nhiều câu hỏi" → sửa đúng lỗi đó → gửi lại ngay. Ghi vào log như một dòng riêng (§6) với `Trạng thái: bị từ chối`, **không cộng token**, nhưng có cộng vào cột "nhịp đã tiêu" — vì đó mới là thứ đang cạn.
 
-1. **Nguyên liệu để gọt 5 câu ở §3.** Mỗi câu trong 5 câu gộp 8–15 ID của ngân hàng thành một bảng. Bảng ánh xạ ID → câu nào: cuối §3.
-2. **Danh sách phải-tự-điền.** Mọi ID không được câu nào trong 5 câu phủ tới là một ô spec vẫn phải có luật. Điền bằng **mặc định ngành** (§4 + 10 §6), gắn `[GIẢ ĐỊNH]`, xếp hạng rủi ro, và ứng viên rủi ro cao nhất đi vào câu 5. Không bỏ trống, không sáng tạo giá trị mới (30 §1b).
+### Muốn biết gì → hỏi dạng nào
 
-> **N15–N19 (49 câu, thêm 11/09)** phục vụ bốn vùng hoàn toàn mới của cấu trúc spec BTC 10 mục (knowledge/33 §1): mục 2 item màn hình, mục 3 event, mục 4 validation & message lỗi, mục 9 API, mục 7 ràng buộc/bất thường/chưa chốt. Với hạn mức 5 câu, **phần lớn N15–N19 phải tự điền** — xem bảng phủ cuối §3 và khối §3b.
+| Ô cần biết | Dạng | Ví dụ khung |
+|---|---|---|
+| Mốc thời gian, thứ tự, nguồn chân lý | **nhị phân** | "…tính từ X hay từ Y?" · "…số nào được dùng, số của A hay của B?" |
+| Biên off-by-one | **nhị phân** | "…đúng thời điểm bằng thời hạn thì còn hiệu lực hay đã hết?" |
+| Tham số có đơn vị | **một con số** | "…thời hạn giữ hàng là bao nhiêu phút?" (một tham số một lượt, không gộp bảng) |
+| Quyền / tồn tại của một hành vi | **có–không** | "…khách chưa đăng nhập có tạo được lượt giữ không?" |
+| Message hiển thị | **mở, chấp nhận đắt** | "…khi vượt tồn khả dụng thì màn hình hiện message gì?" |
+| Danh sách phạm vi | **mở, một lượt duy nhất** | "…những nghiệp vụ nào nằm ngoài phạm vi của ba màn hình này?" |
 
-Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng (chọn 1 hoặc liệt kê tên). Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
+**Ngân sách:** ước `token ≈ max(số từ × 2,5 ; số ký tự / 2,2)` (00 §A1). Một lượt nhị phân ≈ 100–170 token cả hỏi lẫn trả lời; một lượt mở ≈ 250–450. Hàng đợi 17 lượt hỗn hợp ≈ 2.500–3.200 token — **dưới 4.000, nên token gần như không bao giờ là thứ chặn**; nhịp chờ mới là.
+
+**Quy tắc phụ:** mỗi câu trả lời khác mặc định ngành → ghi ⚠ ngay vào RTM (§5) và log (§6). Số dòng ⚠ thu được với 15–20 lượt thường là 12–25 dòng. Phần còn lại của spec vẫn là giả định có xếp hạng, không phải lỗ hổng quy trình.
+
+## 2. Ngân hàng câu hỏi (158 câu, 20 nhóm N0–N19) — kho ý, không phải kho câu gửi đi
+
+Bỏ trần 5 câu rồi thì ngân hàng này **lại là danh sách để hỏi** — nhưng qua hai lần biến đổi bắt buộc:
+
+1. **Mỗi dòng ở đây là một Ý, không phải một câu gửi được.** Rất nhiều dòng viết theo lối cũ: có mệnh lệnh ("Liệt kê ≤5…", "Chọn 1", "Cho bảng") hoặc ghép 2–3 ẩn số vào một dòng ("TTL bao nhiêu; mốc bắt đầu là gì?"). Gửi nguyên như vậy ⇒ **bị từ chối**. Luật chuyển đổi ở ngay dưới.
+2. **Xếp hạng rồi mới gửi.** Số lượt bị nhịp chờ chặn (00 §A1), nên thứ tự quan trọng hơn danh sách. Hàng đợi soạn sẵn: §3.
+3. **Phần dưới đường cắt vẫn phải thành luật** trong spec, bằng **mặc định ngành** (§4 + 10 §6), gắn `[GIẢ ĐỊNH]` và xếp hạng rủi ro. Không bỏ trống, không sáng tạo giá trị mới (30 §1b).
+
+### Luật chuyển một dòng ngân hàng thành một lượt gửi được
+
+| Dòng ngân hàng viết kiểu | Chuyển thành | Ví dụ |
+|---|---|---|
+| Có mệnh lệnh (`Liệt kê`, `Chọn 1`, `Cho bảng`, cap dòng/từ) | Bỏ sạch vế mệnh lệnh, chuyển thành câu nghi vấn | N0-02 "…tính theo đơn vị nào: A / B / C / D? **Chọn 1.**" → "…hạn mức số lượt giữ hàng của một khách được tính theo tài khoản đã đăng nhập hay theo số điện thoại đã xác thực?" |
+| Ghép nhiều ẩn số (`ĐS×4`, `S+ĐS`, dấu `;`) | **Tách thành nhiều lượt**, xếp hạng riêng từng lượt | N2-07 "Gia hạn được không? Tối đa ? lần; mỗi lần +? phút" → 2–3 lượt |
+| Kiểu **B** (xin cả bảng) | Chọn **1–3 ô đắt nhất** của bảng, mỗi ô một lượt; phần còn lại tự điền | N9-04 bảng quyền 7 hành động → chỉ hỏi "CSKH có hủy thay khách được không?" |
+| Kiểu **ĐS** / **S** | Gửi gần như nguyên trạng, chỉ thêm tên tính năng cho tự chứa | N2-01 → "…thời hạn giữ hàng của <TÊN TÍNH NĂNG> là bao nhiêu phút?" |
+
+> **N15–N19 (49 câu, thêm 11/09)** phục vụ bốn vùng của cấu trúc spec BTC 10 mục (knowledge/33 §1): mục 2 item màn hình, mục 3 event, mục 4 validation & message lỗi, mục 9 API, mục 7 ràng buộc/chưa chốt. **N17 (message lỗi nguyên văn) giờ hỏi được và phải hỏi** — xem §3b.
+
+Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng. Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
 
 ### N0. Mục tiêu, ràng buộc, quyền sở hữu thất bại
 
-Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `knowledge/05-hieu-bai-toan.md` §1 (khối M1, M2, M3, M5) và §4. Mật độ ⚠ cao nhất trong toàn ngân hàng vì đây là chỗ specs thật hay có luật mà brief không kể. **Bắt buộc có mặt trong 5 câu**: N0-01 (vào C1), N0-02 (vào C3), N0-05 và N0-07 (vào C3/C4).
+Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `knowledge/05-hieu-bai-toan.md` §1 (khối M1, M2, M3, M5) và §4. Mật độ ⚠ cao nhất trong toàn ngân hàng vì đây là chỗ specs thật hay có luật mà brief không kể. **Bắt buộc nằm trên đường cắt của hàng đợi**: N0-01, N0-02, N0-03, N0-04 (§3.2 lượt 25, 2, 1, 6).
 
 - **N0-01** [P0·DS] Liệt kê ≤5 điều tính năng này PHẢI ngăn không cho xảy ra, mỗi dòng ≤8 từ.
 - **N0-02** [P0·DS] Hạn mức chống gom hàng tính theo đơn vị nào: tài khoản đã đăng nhập / SĐT đã xác thực OTP / thiết bị / phương tiện thanh toán? Chọn 1.
@@ -254,121 +299,146 @@ Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `kn
 - **N19-05** [P1·DS] Mục tiêu tốc độ (thời gian phản hồi) và giới hạn số request có quy định không? Số cụ thể?
 - **N19-06** [P2·DS] Yêu cầu bảo mật/thông tin cá nhân riêng cho tính năng này?
 
-## 3. Năm câu hỏi — bản soạn sẵn, copy-paste
+## 3. Hàng đợi lượt hỏi — cách dựng, và bản soạn sẵn 28 lượt
 
-Ngân sách: **5.000 token** cho cả 5 câu (hỏi + trả lời). Kế hoạch dưới ước ~3.500 token, chừa ~1.500 cho câu trả lời dài hơn dự kiến. Gửi C1–C4 xong trước **10:20**; C5 gửi lúc **11:05**, sau khi có bản nháp spec.
+### 3.1 Dựng hàng đợi trong 8 phút (chạy ngay sau `/frame`)
 
-| Câu | Nội dung | Ước token (hỏi + trả lời) | Phủ ID §2 | Nếu mất câu này |
-|---|---|---|---|---|
-| C1 | Phạm vi NGOÀI + điều PHẢI ngăn | 120 + 350 | N1-02, N0-01 (N1-03 suy từ brief) | Mọi test buổi chiều +1 điểm phạm vi (50 §6-5); §1 spec phải tự đặt |
-| C2 | Bảng chuyển trạng thái đầy đủ | 300 + 550 | N7-04/09/10, N5-04/07, N8-01/03, N4-09, N12-01 | §5 và nửa §6 thành giả định; đây là câu **không được bỏ** |
-| C3 | Bảng tham số | 400 + 550 | N2-01…08, N3-01/02, N5-01/05, N0-02/12, N4-06, N2-12 | Mọi con số thành mặc định ngành; biên TTL/qty thành đạn cho đối thủ |
-| C4 | Tám kịch bản suy biến & thất bại phụ thuộc ngoài | 430 + 280 | N0-07/09/10, N12-03, N4-04/12, N9-01 | Loại lỗ hổng #16–#19 trên spec mình không kiểm được |
-| C5 | Restate Đúng/Sai từ bảng xếp hạng rủi ro | 380 + 150 | tùy bản nháp | Mọi dòng `[GIẢ ĐỊNH]` vẫn là suy luận một chiều |
+1. **Tính trần lượt thật**: `(số phút của pha hỏi ÷ nhịp chờ) − 2 lượt dự phòng cho câu bị từ chối`. Thi thử: 16 phút ÷ 45 giây ≈ 21, trừ dự phòng và trừ thời gian viết spec ⇒ đường cắt thật là **13**. Ngày thi 9:30–11:20 với nhịp 45 giây ⇒ ~100 lượt về lý thuyết, nhưng token 4.000 chặn ở **~20 lượt** — lúc đó token mới là thứ chặn. **Tính cả hai, lấy số nhỏ hơn.**
+2. **Đổ ô `?` từ `/frame`** (nhóm 1 và nhóm 2) vào một danh sách phẳng. Mỗi ô một dòng, chưa viết câu.
+3. **Chấm giá trị từng ô**: `đảo lại thì đổi tiền / trạng thái cuối / ai thắng` (có = 2 điểm) × `Executor mù sẽ đoán khác mặc định ngành` (có = 2 điểm) + `brief chỉ mặt đích danh` (+1) + `là mâu thuẫn nội tại của brief` (+2). Mâu thuẫn nội tại luôn lên đầu: nó là dấu hiệu specs thật có luật thứ ba.
+4. **Chọn dạng** theo bảng "muốn biết gì → hỏi dạng nào" (§1). Nhắm **≥60% hàng đợi là nhị phân** — đó là cách duy nhất giữ token thấp mà không dùng chỉ thị.
+5. **Viết nguyên văn từng lượt**, chạy **cổng 8 kiểm tra** (§1) trên cả hàng đợi một lần, trước khi bấm gửi lượt đầu tiên.
+6. **Kẻ đường cắt** ở trần lượt của bước 1. Mọi lượt dưới đường cắt → thành dòng `G-xx` trong RTM **ngay lúc lập kế hoạch**, kèm giá trị mặc định ngành dự kiến (§4). Không đợi tới lúc hết giờ mới nghĩ.
+7. **Không chờ câu trả lời trước để soạn câu sau** — AI không có memory, các lượt độc lập hoàn toàn. Người bấm gửi chỉ bấm và dán; người viết spec viết song song từ phút đầu.
 
-**Thứ tự gửi không phụ thuộc nhau** (AI không có memory) — C1, C2, C3, C4 gửi liên tiếp không cần chờ câu trước. Chỉ C5 phụ thuộc bản nháp spec.
+**Quy tắc thứ tự cuối cùng:** cái gì *không suy được từ đâu khác* đi trước cái gì *có mặc định ngành an toàn*. Một ô có mặc định ngành tốt mà rớt xuống dưới đường cắt chỉ mất một chút xác suất; một ô như message nguyên văn rớt xuống thì spec chắc chắn hở.
 
-### C1 — Phạm vi & điều cấm (9:30)
+### 3.2 Hai mươi tám lượt soạn sẵn — đề "đặt giữ hàng" (gọt lại theo brief thật)
+
+Thay `<TÊN TÍNH NĂNG>` bằng đúng tên brief gọi, và thay tên màn hình cho khớp. Cột "Không hỏi ⇒" là giá trị tự điền nếu lượt đó rớt dưới đường cắt.
+
+| # | Ý | Dạng | Vì sao xếp ở đây | ~token | Phủ ID | Không hỏi ⇒ |
+|---|---|---|---|---|---|---|
+| 1 | Mốc khóa tồn | nhị phân | F7 — quyết định cả mô hình chống gom hàng; không suy được | 140 | N0-03 | khóa khi tạo `[NGÀNH]` |
+| 2 | Đơn vị neo hạn mức | nhị phân | F2 — neo sai thì mọi hạn mức là trang trí | 150 | N0-02 | tài khoản đăng nhập |
+| 3 | Thời hạn giữ (phút) | số | mọi luật thời gian treo vào đây | 110 | N2-01 | 120 phút |
+| 4 | Mốc bắt đầu thời hạn | nhị phân | off-by-one + tranh chấp tiền | 130 | N2-02 | lúc tạo |
+| 5 | Mức cọc | số | dòng tiền gốc | 110 | N5-01 | 10% |
+| 6 | Khách tự hủy: hoàn đủ hay bị trừ | nhị phân | F7 — hủy miễn phí là lỗ giữ chỗ vô hạn | 140 | N0-04 | hoàn 100% |
+| 7 | Hết hạn: cọc hoàn hay mất | nhị phân | ca kết thúc phổ biến nhất | 140 | N5-04 | hoàn 100% |
+| 8 | Message khi vượt tồn khả dụng | **mở** | mục 4 BTC — **không có mặc định ngành** | 300 | N17-03 | tự viết (30 §1b-2: ca tệ nhất) |
+| 9 | Message khi thao tác trên lượt giữ đã hết hạn | **mở** | mục 4 BTC — như trên | 300 | N17-04 | tự viết |
+| 10 | Nhiều lỗi cùng lúc thì hiện lỗi nào | mở ngắn | mục 4 BTC; đối thủ bắn rẻ nhất | 220 | N17-07 | lỗi đầu tiên theo thứ tự trên màn hình |
+| 11 | Khách chưa đăng nhập có tạo được không | có–không | #23 + mâu thuẫn brief điển hình | 120 | N9-01 | không được |
+| 12 | Đúng mốc bằng thời hạn: còn hay hết | nhị phân | biên off-by-one, đạn rẻ nhất | 130 | N2-06 | đã hết (nửa mở) |
+| 13 | Thiếu tồn: từ chối toàn bộ hay giữ phần còn | nhị phân | đổi trạng thái cuối | 140 | N3-04 | từ chối toàn bộ |
+| 14 | Hai khách giành đơn vị cuối: ai thắng | nhị phân | ai thắng = tiêu chí chấm | 150 | N4-04 | timestamp server sớm hơn |
+| 15 | Giá khóa lúc tạo hay tính lại lúc chốt | nhị phân | đổi mọi con số tiền | 140 | N6-01 | khóa lúc tạo |
+| 16 | Tiền hoàn về tay khách sau mấy ngày làm việc | số | F1 — tách mốc quyết định khỏi mốc hoàn tất | 120 | N5-05 | 5–7 ngày làm việc |
+| 17 | Hoàn về phương thức gốc thất bại thì hoàn bằng gì | mở ngắn | #16; không có mặc định an toàn | 200 | N0-07 | luật an toàn hai chiều 32 §3.3 |
+| 18 | Thanh toán thành công sau khi đã hết hạn | nhị phân | ca tiền–trạng thái chỏi nhau | 160 | N5-08 | tự hoàn, không tạo đơn |
+| 19 | Cổng báo thành công hai lần: ghi nhận mấy lần | nhị phân | F5 idempotency | 150 | N0-09 | khử trùng, ghi 1 lần |
+| 20 | Gia hạn được mấy lần | số | — | 110 | N2-07 | 1 lần |
+| 21 | Gia hạn cộng dồn hay tính lại | nhị phân | — | 130 | N2-08 | tính lại từ lúc gia hạn |
+| 22 | Tồn hiển thị đã trừ phần đang giữ chưa | có–không | mục 2 BTC + đạn hiển thị | 120 | N4-02 | đã trừ |
+| 23 | Tồn lệch với ERP: số nào được dùng | nhị phân | F5 phụ thuộc ngoài | 150 | N4-10 | hệ nội bộ |
+| 24 | Một khách mở tối đa mấy lượt cùng lúc | số | — | 110 | N3-02 | 3 |
+| 25 | Điều tính năng phải ngăn | **mở** | nuôi bảng Mục tiêu↔Luật (05 §2) | 320 | N0-01 | suy từ M1 của brief |
+| 26 | Nghiệp vụ ngoài phạm vi | **mở** | mục 1 BTC + rào chống VÔ HIỆU. **Hạ hạng nếu brief không liệt kê "sai phạm vi" trong lý do VÔ HIỆU** | 320 | N1-02 | suy từ brief, ghi `[SUY RA]` |
+| 27 | CSKH có hủy/gia hạn thay khách không | có–không | mục 8 BTC actor | 120 | N9-07 | có, có log |
+| 28 | Job dọn hết hạn chạy mỗi bao nhiêu phút | số | grace period ngầm | 110 | N2-12 | 1 phút |
+
+**Cộng dồn:** 13 lượt đầu ≈ **2.100 token**; 20 lượt ≈ **3.100**; cả 28 ≈ **4.200 — vượt 4.000**. Nghĩa là ở ngày thi, **token chặn quanh lượt 26–27**, còn nhịp chờ chặn sớm hơn nếu pha hỏi ngắn. Ba lượt mở (#8, #9, #25/#26) một mình đã ăn ~1.100 token: giữ chúng ở trên đường cắt là quyết định có ý thức, không phải sơ suất.
+
+### 3.3 Nguyên văn 28 lượt (mỗi dòng một lượt, copy từng dòng)
 
 ```
-Trả lời đúng hai danh sách đánh số, mỗi danh sách tối đa 8 dòng, mỗi dòng ≤8 từ, không giải thích: tính năng "<TÊN TÍNH NĂNG THEO BRIEF>" có những nghiệp vụ nào NGOÀI phạm vi, và có những điều nào tính năng PHẢI ngăn không cho xảy ra?
+1.  Trong <TÊN TÍNH NĂNG>, tồn kho bị khóa tại thời điểm khách bấm giữ hàng hay tại thời điểm cọc thành công?
+2.  Trong <TÊN TÍNH NĂNG>, hạn mức số lượt giữ của một khách được tính theo tài khoản đã đăng nhập hay theo số điện thoại đã xác thực?
+3.  Trong <TÊN TÍNH NĂNG>, thời hạn giữ hàng mặc định là bao nhiêu phút?
+4.  Trong <TÊN TÍNH NĂNG>, thời hạn giữ hàng bắt đầu tính từ lúc tạo lượt giữ hay từ lúc cọc thành công?
+5.  Trong <TÊN TÍNH NĂNG>, tiền cọc khách phải trả khi tạo lượt giữ là bao nhiêu?
+6.  Trong <TÊN TÍNH NĂNG>, khi khách tự hủy lượt giữ thì tiền cọc được hoàn đủ hay bị trừ một phần?
+7.  Trong <TÊN TÍNH NĂNG>, khi lượt giữ hết hạn mà khách chưa chốt đơn thì tiền cọc được hoàn hay khách mất cọc?
+8.  Trong <TÊN TÍNH NĂNG>, khi khách yêu cầu giữ nhiều hơn số tồn khả dụng thì màn hình hiển thị message gì?
+9.  Trong <TÊN TÍNH NĂNG>, khi khách thao tác trên một lượt giữ đã hết hạn thì màn hình hiển thị message gì?
+10. Trong <TÊN TÍNH NĂNG>, khi nhiều lỗi cùng xảy ra trên một lần bấm thì màn hình hiển thị lỗi nào trước?
+11. Trong <TÊN TÍNH NĂNG>, khách chưa đăng nhập có tạo được lượt giữ hàng không?
+12. Trong <TÊN TÍNH NĂNG>, tại đúng thời điểm bằng thời hạn giữ thì lượt giữ còn hiệu lực hay đã hết hiệu lực?
+13. Trong <TÊN TÍNH NĂNG>, khi tồn còn ít hơn số khách muốn giữ thì hệ thống từ chối toàn bộ hay giữ đúng phần còn lại?
+14. Trong <TÊN TÍNH NĂNG>, khi hai khách cùng giành đơn vị cuối cùng thì người gửi yêu cầu trước thắng hay người cọc thành công trước thắng?
+15. Trong <TÊN TÍNH NĂNG>, giá khách phải trả được khóa tại thời điểm tạo lượt giữ hay tính lại tại thời điểm chốt đơn?
+16. Trong <TÊN TÍNH NĂNG>, tiền hoàn cọc về tới tay khách sau tối đa bao nhiêu ngày làm việc?
+17. Trong <TÊN TÍNH NĂNG>, khi hoàn cọc về phương thức thanh toán gốc thất bại vì thẻ đã đóng thì tiền được hoàn bằng cách nào?
+18. Trong <TÊN TÍNH NĂNG>, khi thanh toán cọc báo thành công sau lúc lượt giữ đã hết hạn thì hệ thống hoàn tiền hay tạo đơn hàng?
+19. Trong <TÊN TÍNH NĂNG>, khi cổng thanh toán báo thành công hai lần cho cùng một giao dịch thì hệ thống ghi nhận một lần hay hai lần?
+20. Trong <TÊN TÍNH NĂNG>, một lượt giữ được gia hạn tối đa mấy lần?
+21. Trong <TÊN TÍNH NĂNG>, thời hạn sau khi gia hạn được cộng dồn vào hạn cũ hay tính lại từ thời điểm gia hạn?
+22. Trong <TÊN TÍNH NĂNG>, số tồn hiển thị cho khách khác đã trừ phần hàng đang được giữ chưa?
+23. Trong <TÊN TÍNH NĂNG>, khi số tồn của hệ thống bán hàng lệch với số tồn của ERP thì hệ thống dùng số nào?
+24. Trong <TÊN TÍNH NĂNG>, một khách được mở tối đa mấy lượt giữ cùng lúc?
+25. Trong <TÊN TÍNH NĂNG>, những điều nào tuyệt đối không được xảy ra?
+26. Những nghiệp vụ nào nằm ngoài phạm vi của <TÊN TÍNH NĂNG>?
+27. Trong <TÊN TÍNH NĂNG>, nhân viên chăm sóc khách hàng có hủy hoặc gia hạn lượt giữ thay khách được không?
+28. Trong <TÊN TÍNH NĂNG>, job dọn các lượt giữ hết hạn chạy mỗi bao nhiêu phút?
 ```
 
-Nửa "NGOÀI phạm vi" đặt trước vì hai lý do: nó không suy được từ đâu khác, và **chưa hỏi nó thì mọi test buổi chiều bị +1 điểm phạm vi** (50 §6-5). Nửa "PHẢI ngăn" nuôi bảng Mục tiêu↔Luật (05 §2) — nhóm có mật độ ⚠ cao nhất trong ngân hàng.
+Cả 28 dòng đã qua cổng 8 kiểm tra: một dấu `?`, một ý, tự chứa, không một chữ mệnh lệnh, không viện dẫn tài liệu, không nhắc bộ máy chấm, nhị phân nêu đủ hai vế (18/28 dòng), và câu trả lời một từ vẫn chốt được luật.
 
-Danh sách **TRONG phạm vi** (N1-03) cố tình không hỏi: nó suy được từ brief, và §1 spec viết được bằng "những gì brief mô tả + mọi nghiệp vụ có luật trong tài liệu này". Hệ quả phải biết khi bắn: bằng chứng phạm vi cho test sẽ là **câu brief (mức 2)** thay vì danh sách TRONG (mức 1) — 50 §2-9.
+### 3.4 Lượt xác nhận (thay cho "câu restate" của bản cũ)
 
-### C2 — Bảng chuyển trạng thái (9:40)
-
-```
-Trả lời đúng một bảng, mỗi ô ≤6 từ, không giải thích, cột: Trạng thái hiện tại | Sự kiện | Trạng thái mới | Tồn kho | Tiền cọc | Ai được thông báo — một lượt giữ hàng chuyển trạng thái thế nào khi xảy ra từng sự kiện: đạt hết hạn, khách hủy, nhân viên hoặc admin hủy, thanh toán cọc thành công, thanh toán cọc thất bại hoặc timeout, chuyển thành đơn hàng, yêu cầu gia hạn, tồn kho bị điều chỉnh xuống dưới số đang giữ, sản phẩm ngừng bán?
-```
-
-Câu đắt nhất và lãi nhất: một câu trả về tên tập trạng thái, mọi chuyển tiếp, hướng tồn, hướng tiền và người nhận thông báo — tức §5 spec cộng phần lớn §6. Không cắt câu này để nhường token cho câu khác.
-
-### C3 — Bảng tham số (9:55)
+Không còn một câu restate gộp 10 phát biểu — **gộp như vậy bị từ chối**. Thay bằng các **lượt xác nhận rời**, mỗi lượt một phát biểu, chạy sau khi `/spec-write` có bảng xếp hạng rủi ro giả định:
 
 ```
-Trả lời đúng một bảng "Tham số | Giá trị | Đơn vị | Mốc hoặc điều kiện", tối đa 14 dòng, không giải thích, tham số nào không có giới hạn thì ghi "không giới hạn": trong tính năng "<TÊN TÍNH NĂNG>", các tham số sau nhận giá trị nào — thời hạn giữ và mốc bắt đầu tính; đồng hồ chạy liên tục hay chỉ trong giờ làm việc, và múi giờ chuẩn; số lần được gia hạn, mỗi lần thêm bao lâu, cộng dồn hay tính lại từ lúc gia hạn; mức cọc; phần trăm cọc được hoàn theo từng lý do kết thúc và số ngày tiền về tay khách; số lượng tối đa một lượt giữ; số lượt giữ đang mở tối đa cho một khách; đơn vị neo hạn mức là tài khoản đăng nhập, số điện thoại đã xác thực, thiết bị hay phương tiện thanh toán; tồn đệm không được đem giữ; chu kỳ chạy của job dọn hết hạn?
+Trong <TÊN TÍNH NĂNG>, <phát biểu có con số hoặc trạng thái cụ thể> — điều này đúng hay không đúng?
 ```
 
-Ba ô quan trọng hơn phần còn lại: **mốc bắt đầu** thời hạn (biên off-by-one, probe P4), **đơn vị neo hạn mức** (cổng F2 / loại lỗ hổng #18 — spec neo vào email tự khai là hạn mức trang trí), **số ngày tiền về tay khách** (cổng F1 / loại #16 — tách mốc quyết định khỏi mốc hoàn tất).
+- Giá: ~60–90 token/lượt, nhưng **vẫn tốn đúng một nhịp chờ như mọi lượt khác**. Đó là lý do gốc khiến chiến thuật đổi: một giả định rủi ro Cao đáng hỏi thì **hỏi thẳng dạng nhị phân ngay từ đầu hàng đợi**, đừng để dành tới cuối. Lượt xác nhận chỉ dành cho giả định *sinh ra trong lúc viết spec* mà kế hoạch ban đầu không nhìn thấy.
+- Dạng nhị phân "A hay B" **luôn tốt hơn** dạng xác nhận "điều này đúng không?": cùng giá, nhưng không dẫn dắt, nên câu trả lời dùng được làm bằng chứng kháng nghị (50 §7).
+- Xếp lượt xác nhận theo rủi ro giảm dần và chấp nhận mất phần đuôi khi hết giờ.
 
-### C4 — Tám kịch bản suy biến (10:10)
+### 3.5 Ánh xạ nhóm §2 → hàng đợi, và phần vẫn phải tự điền
 
-```
-Trả lời theo số, mỗi dòng ≤12 từ, ghi rõ trạng thái cuối của lượt giữ, tồn kho và tiền, không giải thích: trong tính năng "<TÊN TÍNH NĂNG>", hệ thống xử lý ra sao khi (1) cổng thanh toán báo thành công hai lần cho cùng một giao dịch; (2) cổng gửi "thất bại" rồi "thành công" của cùng giao dịch nhưng đến sai thứ tự; (3) hoàn cọc về phương thức gốc thất bại vì thẻ đã đóng; (4) job dọn hết hạn ngừng chạy 4 giờ rồi khách chốt đơn một lượt giữ đã quá hạn; (5) hệ thống kiểm thấy còn hàng nhưng khi ghi giữ thì tồn đã bị giao dịch khác lấy; (6) kiểm kê hạ tồn xuống dưới số đang giữ của một lượt giữ đã cọc; (7) hai khách gửi yêu cầu giữ đơn vị cuối cùng cách nhau vài mili-giây; (8) khách chưa đăng nhập tạo lượt giữ?
-```
-
-Tám ca này là 8/12 kịch bản suy biến bắt buộc (05 §M6) và là toàn bộ vùng đạn của loại lỗ hổng #16–#19 (50 §1). Hết token thì cắt ca (7) và (8) — hai ca này có mặc định ngành đủ an toàn để tự điền (FCFS theo thời điểm server; guest bị chặn hoặc bị rào định danh).
-
-### C5 — Restate (11:05, sau bản nháp spec)
-
-```
-Trả lời Đúng/Sai theo số, ý nào Sai ghi giá trị đúng ≤8 từ, không giải thích: trong tính năng "<TÊN TÍNH NĂNG>", các phát biểu sau đúng hay sai — 1. <phát biểu có con số>; 2. …; … 10. <phát biểu có con số>?
-```
-
-Nguồn phát biểu, ưu tiên giảm dần:
-1. Mười dòng đầu **bảng xếp hạng rủi ro giả định** của `/spec-write` (giả định đảo lại thì đổi tiền / trạng thái cuối / ai thắng, và ngược mặc định ngành).
-2. Mọi BR bị `/spec-review` gắn nhãn `⚡` (làm hỏng mục tiêu brief) hoặc ✗ ở cổng F2/F7.
-3. Ô mô hình M1/M2/M5 còn `?` sau C1–C4.
-4. Nếu còn chỗ: phát biểu từ §4 chưa được C1–C4 trả lời, chọn theo mức "Nếu Sai ⇒ BR về" có tiền hoặc tồn dính vào.
-
-Mỗi phát biểu **phải có con số hoặc trạng thái cụ thể** — "TTL 120 phút tính từ lúc tạo, chạy cả ngày lễ" chứ không phải "TTL hợp lý". Xếp phát biểu rủi ro cao lên đầu vì câu trả lời có thể bị cắt giữa.
-
-### Ánh xạ ID §2 → câu, và phần phải tự điền
-
-| Nhóm §2 | C1–C5 phủ | Phải tự điền bằng mặc định ngành (§4, 10 §6) |
+| Nhóm §2 | Hàng đợi §3.2 phủ | Vẫn phải tự điền bằng mặc định ngành (§4, 10 §6) |
 |---|---|---|
-| N0 | 01, 02, 05, 07, 09, 10, 12 | 03, 04, 06 (một phần), 08, 11, 13, 14 |
-| N1 | 02 | 01, **03**, 04, 05, 06, 07, 08, 09, 10 |
-| N2 | 01, 02, 03, 05, 07, 08, 12 | 04, 06, 09, 10, 11, 13, 14 |
-| N3 | 01, 02 | 03, 04, 05, 06, 07 |
-| N4 | 04, 06, 09, 12 | 01, 02, 03, 05, 07, 08, 10, 11, 13 |
-| N5 | 01, 04, 05, 07 | 02, 03, 06, 08, 09, 10, 11 |
-| N6 | — | toàn nhóm (giá khóa hay tính lại: mặc định ngành = khóa tại lúc tạo) |
-| N7 | 01, 04, 09, 10 | 02, 03, 05, 06, 07, 08 |
-| N8 | 01, 03 | 02, 04, 05, 06 |
-| N9 | 01 | 02…11 |
+| N0 | 01, 02, 03, 04, 07, 09 | 05, 06, 08, 10, 11, 12, 13, 14 |
+| N1 | 02 | 01, 03, 04, 05, 06, 07, 08, 09, 10 |
+| N2 | 01, 02, 06, 07, 08, 12 | 03, 04, 05, 09, 10, 11, 13, 14 |
+| N3 | 02, 04 | 01, 03, 05, 06, 07 |
+| N4 | 02, 04, 10 | 01, 03, 05, 06, 07, 08, 09, 11, 12, 13 |
+| N5 | 01, 04, 05, 08 | 02, 03, 06, 07, 09, 10, 11 |
+| N6 | 01 | 02, 03, 04, 05 |
+| N7 | — | toàn nhóm (hết hạn → Available ngay; EXPIRED và CANCELLED tách riêng) |
+| N8 | — | toàn nhóm |
+| N9 | 01, 07 | 02…06, 08…11 |
 | N10–N14 | — | toàn nhóm |
-| N15 (item màn hình) | — | toàn nhóm; mục 2 viết bằng mặc định UI + brief, trừ 06 (guest) nếu đổi được một nửa câu — xem §3b |
-| N16 (event) | — | toàn nhóm; 03 (double-click) đã nằm trong C4 ca (1)/(2) qua luật 0.10 |
-| N17 (validation & message) | — | toàn nhóm. **Đây là hở lớn nhất của kế hoạch 5 câu** — xem §3b |
-| N18 (API) | — | toàn nhóm; 03/06 (thất bại phụ thuộc ngoài) đã được C4 phủ gián tiếp |
-| N19 (ràng buộc, bất thường) | — | 01, 02 nằm trong C4 ca (5) và ca (1)/(2); còn lại tự điền |
+| N15 (item màn hình) | 22 | phần còn lại: mặc định UI + brief |
+| N16 (event) | — | toàn nhóm; double-click phủ gián tiếp qua lượt 19 |
+| N17 (validation & message) | 03, 04, 07 | 01, 02, 05, 06, 08, 09 — **mỗi message còn thiếu là một lượt đáng gửi nếu còn giờ** |
+| N18 (API) | — | toàn nhóm; retry/thất bại phủ gián tiếp qua lượt 17, 19, 23 |
+| N19 (ràng buộc, bất thường) | — | 01 phủ qua lượt 15, 02 qua lượt 19; còn lại tự điền |
 
-Đây là bảng phải in ra và dán lên bàn: **~70% ngân hàng câu hỏi không được hỏi**. Mỗi ô ở cột phải là một luật vẫn phải viết, bằng mặc định ngành, có gắn `[GIẢ ĐỊNH]`, và là ứng viên cho C5 nếu rủi ro cao.
-## 3b. Hở mới sau tài liệu BTC 11/09 — quyết định trước 9:30
+Tỷ lệ vẫn là **~65% ngân hàng không được hỏi**, ngay cả khi bỏ trần số câu — vì trần đã chuyển sang thời gian. Mỗi ô ở cột phải là một luật vẫn phải viết, bằng mặc định ngành, gắn `[GIẢ ĐỊNH]`.
 
-Cấu trúc 10 mục thêm bốn vùng bắt buộc (mục 2, 3, 4, 9) mà kế hoạch C1–C5 ở §3 **không phủ**, vì C1–C5 được soạn khi template còn là 11 mục luật nghiệp vụ. Hai vùng trong đó là chỗ Executor đoán sai nhiều nhất (50 §1 loại #22 message, #23 guest):
+## 3b. Bốn vùng mới của cấu trúc BTC 10 mục — hở nào đã đóng, hở nào còn
 
-| Vùng | Tự điền được không | Rủi ro nếu tự điền |
+Cấu trúc 10 mục (knowledge/33 §1) thêm bốn vùng mà kế hoạch C1–C5 cũ không phủ. Bỏ trần 5 câu thì **hở lớn nhất đã đóng lại**:
+
+| Vùng | Trước (5 câu) | Bây giờ (hàng đợi) |
 |---|---|---|
-| Mục 2 item, mục 3 event | **Được** — suy từ brief + mặc định UI; sai thì cũng chỉ sai hiển thị | Thấp–TB |
-| Mục 9 API | **Được** — C4 đã hỏi ca thất bại phụ thuộc ngoài, phần còn lại là hình thức | Thấp |
-| **Mục 4 message lỗi nguyên văn** (N17-01/03/04/05) | Không suy được — chuỗi nguyên văn là dữ kiện, không phải mặc định ngành | **Cao**: đối thủ bắn "hiện message gì" là loại đạn rẻ nhất của họ |
-| **Guest vs login** (N15-06) | Một phần — mặc định ngành là chặn guest hoặc rào định danh | TB–Cao |
+| **Mục 4 — message lỗi nguyên văn** | Hở **Cao**; chuỗi nguyên văn không suy được từ mặc định ngành | **Hỏi được và phải hỏi**: mỗi message một lượt mở (~300 token). Lượt 8, 9, 10 của §3.2 nằm trên đường cắt. Còn giờ thì hỏi tiếp các message của N17-05/06/08 |
+| **Guest vs login** (N15-06) | Hở TB–Cao | Lượt 11; nếu brief có mâu thuẫn "mọi khách truy cập" vs "chống bot" thì đẩy lên top 5 |
+| Mục 2 item, mục 3 event | Tự điền được | Vẫn tự điền, trừ ô hiển thị tồn (lượt 22). Sai thì chỉ sai hiển thị |
+| Mục 9 API | Tự điền được | Vẫn tự điền; ca thất bại phụ thuộc ngoài đã nằm ở lượt 17, 19, 23 |
 
-**Ba phương án, chọn một trước 9:30** (không có phương án nào miễn phí — hạn mức là 5 câu):
-
-1. **Giữ C1–C5 như §3.** Mục 4 điền message do đội tự viết. Theo 30 §1b-2, giá trị tự nghĩ ra là ca *duy nhất* tệ hơn im lặng — nhưng với message thì im lặng cũng mất điểm vì BTC bắt mục 4 phải có message nguyên văn. Chấp nhận hở; dồn phòng thủ vào catch-all và bảng Case.
-2. **Đổi nửa sau của C1** ("điều PHẢI ngăn") **thành bảng message** (N17-01 + N17-03/04/05 + N17-02). Mất nguyên liệu bảng Mục tiêu↔Luật (05 §2), phải suy "điều PHẢI ngăn" từ brief.
-3. **Cắt ca (7) và (8) của C4** (hai ca có mặc định ngành an toàn: FCFS theo thời điểm server; guest bị chặn) **và nối một nửa câu message** vào C4. Rẻ nhất về mất mát, nhưng C4 thành câu hai chủ đề — rủi ro AI trả lời hụt nửa sau (luật 4 §1).
-
-**Đề xuất: phương án 3.** Nửa câu dán được:
-
-```
-… (6) kiểm kê hạ tồn xuống dưới số đang giữ của một lượt giữ đã cọc; và hệ thống hiển thị message lỗi nguyên văn nào trong ba trường hợp: vượt tồn khả dụng, lượt giữ đã hết hạn, thao tác trên lượt giữ đã hủy?
-```
-
-Nếu chọn phương án 1, ghi ngay bốn dòng `G-xx` vào RTM cho N17-01/03/04/05 và xếp hạng rủi ro cao để chúng vào danh sách phát biểu C5.
+**Quyết định duy nhất còn phải cân trước giờ mở AI:** ba lượt mở (#8, #9, #25 hoặc #26) ăn ~1.100 token và 3 nhịp. Giữ cả ba khi brief có message hiển thị trong phạm vi; bỏ #26 trước tiên nếu brief **không** liệt kê "ngoài phạm vi" trong các lý do VÔ HIỆU (00 §A2-5).
 
 ## 4. Ba mươi mốt phát biểu Đúng/Sai (mặc định phổ biến e-commerce)
 
 Bảng này có **hai công dụng, cả hai đều quan trọng hơn trước**:
 
 1. **Nguồn giá trị mặc định để tự điền.** Cột "Phát biểu" là mặc định ngành. Ô nào không hỏi được thì spec viết đúng theo phát biểu đó và gắn `[GIẢ ĐỊNH]` — vì đó cũng chính là điều Executor mù sẽ đoán khi spec im lặng, nên viết ra không làm tăng rủi ro mà loại được đa nghĩa (lý lẽ đầy đủ: 30 §1b).
-2. **Kho phát biểu cho câu C5.** Chọn phát biểu để restate theo cột 3: ưu tiên dòng có **tiền hoặc tồn** dính vào.
+2. **Kho nội dung cho các lượt xác nhận** (§3.4) và cho các lượt nhị phân sinh thêm khi còn giờ. Chọn theo cột 3: ưu tiên dòng có **tiền hoặc tồn** dính vào. Chuyển một phát biểu thành lượt nhị phân luôn tốt hơn hỏi xác nhận: "Giá khóa tại thời điểm tạo hold" → "…giá được khóa lúc tạo lượt giữ hay tính lại lúc chốt đơn?"
 
 Nếu AI trả lời **Sai** ⇒ đó là ⚠ phản trực giác: viết ngay thành BR có mã trong spec (vai THỦ) và ghi vào danh sách đạn (vai CÔNG).
 
@@ -408,7 +478,7 @@ Nếu AI trả lời **Sai** ⇒ đó là ⚠ phản trực giác: viết ngay t
 
 ## 5. Mẫu RTM ngược — có cả dòng giả định
 
-Truy vết *đáp án AI Khách hàng → luật có mã trong spec*, **và** *giả định → luật*. Với 5 câu hỏi, phần lớn spec không có nguồn từ AI Khách hàng; RTM vì thế có hai loại dòng và không loại nào được để trống cột "Mã BR".
+Truy vết *đáp án AI Khách hàng → luật có mã trong spec*, **và** *giả định → luật*. Kể cả khi kịp 15–20 lượt, phần lớn spec vẫn không có nguồn từ AI Khách hàng; RTM vì thế có hai loại dòng và không loại nào được để trống cột "Mã BR".
 
 | ID | Nguồn | Nội dung rút gọn (≤12 từ) | ⚠? | Rủi ro | Mã BR trong spec | Trạng thái | Timestamp |
 |---|---|---|---|---|---|---|---|
@@ -423,26 +493,37 @@ Quy tắc:
 1. Dòng `A-xx` = có câu trả lời nguyên văn trong log (bằng chứng kháng nghị dùng được). Dòng `G-xx` = giả định, **không** phải bằng chứng, không được trích khi kháng nghị.
 2. Ô "Mã BR" trống = lỗ hổng chắc bị bắn. Không nộp spec khi còn ô trống, kể cả ở dòng `G-xx`.
 3. ⚠⚠ = khác mặc định ngành VÀ có con số/trạng thái cụ thể → viết BR trước tiên, thêm 1 ví dụ số vào spec.
-4. Cột **Rủi ro** chỉ điền cho dòng `G-xx`, theo ba tiêu chí của `/spec-write` bước 14: đảo lại thì đổi kết quả quan sát được · Executor mù có đoán trùng không · có nằm trong core flow tiền/tồn không. Mười dòng `G-xx` rủi ro cao nhất là nguyên liệu của C5.
+4. Cột **Rủi ro** chỉ điền cho dòng `G-xx`, theo ba tiêu chí của `/spec-write` bước 14: đảo lại thì đổi kết quả quan sát được · Executor mù có đoán trùng không · có nằm trong core flow tiền/tồn không. Mười dòng `G-xx` rủi ro cao nhất là nguyên liệu của các lượt hỏi còn lại (§3.4) — chuyển sang dạng nhị phân trước khi gửi.
 5. Trạng thái: ✅ đã viết · ✍ đang viết · ❌ thiếu · ⛔ ngoài phạm vi (không viết, dùng cho §1 spec).
 6. Câu trả lời dạng liệt kê hoặc bảng nhiều hàng → **mỗi ý một dòng RTM**, không gộp (ý bị gộp sẽ không thành BR và bị catch-all 0.4/0.5 xử sai).
-7. Câu trả lời C5 nói "Sai" ⇒ dòng `G-xx` tương ứng **chuyển thành `A-xx`** với nội dung mới, đánh ⚠⚠, và mở một việc sửa spec.
-8. Sau 11:20, đếm: số dòng ⚠ có BR / tổng dòng ⚠ phải = 100%; số dòng `G-xx` rủi ro Cao chưa qua C5 phải được liệt kê trong `review.md` như rủi ro đã biết.
+7. Một lượt xác nhận trả về "không đúng" ⇒ dòng `G-xx` tương ứng **chuyển thành `A-xx`** với nội dung mới, đánh ⚠⚠, và mở một việc sửa spec.
+8. Sau 11:20, đếm: số dòng ⚠ có BR / tổng dòng ⚠ phải = 100%; số dòng `G-xx` rủi ro Cao **rớt dưới đường cắt** phải được liệt kê trong `review.md` như rủi ro đã biết.
 
 ## 6. Mẫu log hội thoại có timestamp (bằng chứng kháng nghị)
 
-Tên file: `log-khach-hang.md`. **Một khối cho mỗi câu trong 5 câu**; dán nguyên văn, không tóm tắt. Hội thoại được xem lại (00 §A), nhưng log tự giữ vẫn cần: nó là thứ `/attack` và `/appeal` grep được.
+Tên file: `log-khach-hang.md`. **Một khối cho mỗi lượt**, kể cả lượt bị từ chối; dán nguyên văn, không tóm tắt. Hội thoại được xem lại (00 §A), nhưng log tự giữ vẫn cần: nó là thứ `/attack` và `/appeal` grep được.
 
 ```
-## C3 — Bảng tham số
-Thời gian gửi: 2026-09-12 09:55:20
-Token trước câu này: 950 / 5.000
+## L04 — Mốc bắt đầu thời hạn
+Thời gian gửi: 2026-09-12 09:33:15
+Trạng thái: chấp nhận
+Token trước lượt này: 420 / 4.000
 Câu hỏi (nguyên văn):
 <dán>
 Câu trả lời (nguyên văn):
 <dán>
-Token sau câu này: 1.900 / 5.000  (thật / ước — ghi rõ)
-Trích rút → RTM: A-07 (TTL 120), A-08 (gia hạn 1 lần, +30 phút) ⚠, A-09 (cọc 10%)
+Token sau lượt này: 560 / 4.000  (thật / ước — ghi rõ)
+Trích rút → RTM: A-04 (thời hạn tính từ lúc cọc thành công) ⚠
+```
+
+Lượt bị từ chối ghi ngắn, **không cộng token**, nhưng vẫn chiếm một dòng để đếm nhịp đã tiêu:
+
+```
+## L09 — Message hết hạn  [BỊ TỪ CHỐI]
+Thời gian gửi: 2026-09-12 09:38:00
+Trạng thái: bị từ chối — câu hỏi chứa chỉ thị ("mỗi dòng ≤8 từ")
+Token: không trừ · Nhịp: tiêu 1
+Bản đã sửa gửi lại lúc: 09:38:40 → xem khối L09b
 ```
 
 Quy tắc dùng khi kháng nghị (00 §A: chỉ ca CÔNG bị VÔ HIỆU):

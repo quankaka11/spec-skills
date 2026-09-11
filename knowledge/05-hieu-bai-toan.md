@@ -139,24 +139,25 @@ Ba kết luận đọc ra từ bảng:
 | Kẻ | Được lợi | Lách bằng | Luật phải chặn | Đã có luật? |
 ## M6 Kịch bản suy biến (12 ca) — ✓ có luật / ✗ hở / ⛔ ngoài phạm vi
 ## Bảng Mục tiêu ↔ Luật (điền lúc 11:30)
-## Câu hỏi P0 sinh ra từ mô hình (nguyên liệu để gọt 5 câu — 20 §3)
+## Câu hỏi P0 sinh ra từ mô hình (nguyên liệu để xếp hàng đợi lượt hỏi — 20 §3)
 ```
 
-## 4. Mô hình này lái 5 câu hỏi thế nào
+## 4. Mô hình này lái hàng đợi lượt hỏi thế nào
 
-Chỉ có **5 câu hỏi cho cả ngày** (00 §A), nên mô hình không còn dùng để *sinh thêm* câu hỏi — nó dùng để **chọn** ô nào xứng đáng chiếm chỗ trong 5 câu và ô nào phải tự điền bằng mặc định ngành.
+Số câu hỏi không còn bị chặn, nhưng **nhịp chờ chặn** (00 §A): trần lượt = `(phút pha hỏi ÷ nhịp) − 2`, so với `4.000 token ÷ ~200`, lấy số nhỏ hơn. Mô hình vì thế dùng để **xếp hạng** ô nào lên trên đường cắt, và để chọn **dạng câu hỏi** cho từng ô.
 
-| Ô mô hình | Đi vào đâu | Nếu không hỏi được |
+| Ô mô hình | Thứ hạng & dạng | Nếu rớt dưới đường cắt |
 |---|---|---|
-| M1 mục tiêu `?` hoặc "PHẢI KHÔNG xảy ra" trống | **C1** (nửa sau) | Bảng Mục tiêu↔Luật không lập được ⇒ không phát hiện luật tự phá mục tiêu. Ô này gần như luôn phải hỏi |
-| M5 hạn mức neo vào dữ liệu tự khai | **C3** (dòng "đơn vị neo hạn mức") | Dùng luật an toàn hai chiều 32 §3.3, **không chọn hộ** |
-| M2 ô "thất bại →" trống | **C3** (% hoàn + ngày tiền về) và **C4** ca (3) | Tách hai mốc theo 32 §3.1, để `[..]` cho số chưa biết |
-| M3 nguồn chân lý tồn | **C4** ca (5), (6) | Mặc định ngành: hệ nội bộ là nguồn chân lý, ERP đồng bộ định kỳ (32 §2) |
-| M4 cột "nguồn chân lý"/"trễ" trống | **C4** ca (1), (2), (4) | Điền theo bảng thực tế 32 §2, đánh `[NGÀNH]` |
-| M6 ca ✗ | **C4** (8 trong 12 ca) | Bốn ca còn lại phủ bằng luật §0.11–0.14 (30 §2) |
-| Bảng §2 có ô cột 3 (luật phá mục tiêu) | **C5** — ưu tiên cao nhất | Chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` |
+| M1 "PHẢI KHÔNG xảy ra" trống | **rất cao**, câu mở (đắt ~320 token nhưng không suy được) | Bảng Mục tiêu↔Luật không lập được ⇒ không phát hiện luật tự phá mục tiêu |
+| M5 hạn mức neo vào dữ liệu tự khai | **rất cao**, nhị phân ("tài khoản đăng nhập hay SĐT đã xác thực?") | Dùng luật an toàn hai chiều 32 §3.3, **không chọn hộ** |
+| M2 ô "thất bại →" trống | cao; tách thành **2 lượt**: một con số (ngày tiền về tay khách) + một câu mở ngắn (hoàn thất bại thì hoàn bằng gì) | Tách hai mốc theo 32 §3.1, để `[..]` cho số chưa biết |
+| M3 nguồn chân lý tồn | cao, nhị phân ("số của hệ bán hàng hay của ERP?") | Mặc định ngành: hệ nội bộ là nguồn chân lý, ERP đồng bộ định kỳ (32 §2) |
+| M4 cột "nguồn chân lý"/"trễ" trống | trung bình, nhị phân | Điền theo bảng thực tế 32 §2, đánh `[NGÀNH]` |
+| M6 ca ✗ | trung bình–cao; **mỗi ca một lượt nhị phân**, xếp theo ca nào dính tiền | Phủ bằng luật §0.11–0.14 (30 §2) |
+| Message lỗi nguyên văn (mục 4 BTC) | **rất cao**, câu mở — vùng duy nhất **không có mặc định ngành** | Tự viết message: ca tệ nhất theo 30 §1b-2 |
+| Bảng §2 có ô cột 3 (luật phá mục tiêu) | **cao nhất trong số ô phát hiện muộn**, nhị phân, chèn lên đầu hàng đợi còn lại | Chọn phương án phục vụ mục tiêu brief, ghi `[GIẢ ĐỊNH-MT]` |
 
-Đảo lại: **ô mô hình còn `?` sau C1–C4 = một dòng `G-xx` trong RTM và một dòng `[GIẢ ĐỊNH]` trong spec** (20 §5), và phải nằm trong bảng xếp hạng rủi ro giả định của `/spec-write`. Mười dòng rủi ro cao nhất là nội dung câu C5.
+Đảo lại: **ô mô hình còn `?` khi hết giờ hỏi = một dòng `G-xx` trong RTM và một dòng `[GIẢ ĐỊNH]` trong spec** (20 §5), và phải nằm trong bảng xếp hạng rủi ro giả định của `/spec-write`. Mười dòng rủi ro cao nhất là nội dung các lượt xác nhận cuối (20 §3.4).
 
 ## 5. Ví dụ đã điền — brief "Đặt cọc giữ hàng" 08/09 (dùng làm mẫu diễn tập)
 
@@ -164,7 +165,7 @@ Chỉ có **5 câu hỏi cho cả ngày** (00 §A), nên mô hình không còn d
 
 **M2** — Thu cọc: khách → shop, qua cổng, bất đồng bộ. Hoàn cọc: `?` mốc, `?` phương thức thay thế khi hoàn thất bại, **phí cổng: `?`** → 3 câu P0.
 
-**M5** — Hạn mức đang neo vào `email guest tự khai` ⇒ **trang trí**. Câu P0: "Hạn mức chống gom hàng tính theo gì: tài khoản đã đăng nhập / SĐT đã xác thực OTP / thiết bị / thẻ thanh toán?" — và "Guest **chưa đăng nhập** có được tạo hold không?" phải hỏi lại dù brief nói "mọi khách hàng truy cập nền tảng", vì brief cũng nói chống bot: hai câu của brief xung đột nhau, và đó là dấu hiệu điển hình specs thật có luật thứ ba mà brief không kể.
+**M5** — Hạn mức đang neo vào `email guest tự khai` ⇒ **trang trí**. Câu P0 (dạng nhị phân, gửi được nguyên trạng): "…hạn mức chống gom hàng được tính theo tài khoản đã đăng nhập hay theo số điện thoại đã xác thực?" — và "Guest **chưa đăng nhập** có được tạo hold không?" phải hỏi lại dù brief nói "mọi khách hàng truy cập nền tảng", vì brief cũng nói chống bot: hai câu của brief xung đột nhau, và đó là dấu hiệu điển hình specs thật có luật thứ ba mà brief không kể.
 
 **§2 bảng** — ô cột 3 có chữ ngay từ đầu: `BR-01 khóa tồn trước khi thu tiền` + `hủy hoàn 100% phí 0` + `guest` phá mục tiêu 2. ⇒ P0: "Tồn bị khóa tại thời điểm nào: khi bấm giữ hay khi cọc thành công?" và "Khách tự hủy có bị mất phần cọc hay phí nào không?"
 

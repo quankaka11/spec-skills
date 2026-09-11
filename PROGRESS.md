@@ -1,6 +1,6 @@
 # PROGRESS — Chuẩn bị HBLAB AI Hackathon #02 (Spec Battle)
 
-**Ngày thi:** 12/09/2026 · **Họp BTC:** 09/09 đã diễn ra · **Tài liệu BTC "Spec Battle Anatomy":** 11/09 · **Cập nhật note:** 11/09/2026
+**Ngày thi:** 12/09/2026 · **Họp BTC:** 09/09 · **Tài liệu BTC "Spec Battle Anatomy":** 11/09 · **THI THỬ 11/09 — luật hỏi đổi hẳn** · **Cập nhật note:** 11/09/2026
 
 **Mục tiêu cuối:** tài liệu → PDF → LLM Wiki/PageIndex → bộ skills & agents dùng trong ngày thi.
 
@@ -15,8 +15,9 @@
 | 3 | Dựng LLM Wiki / PageIndex | ✅ Thay bằng `knowledge/` | Data nhỏ → chưng cất 10 file thay wiki/RAG |
 | 4 | Xây skills & agents | ✅ **Xong** 05/09 · bổ sung trục nội dung 09/09 · **cấu trúc BTC 10 mục 11/09** | 7 skill + 2 agent trong `.claude/`, 10 file `knowledge/` (thêm `33` cấu trúc spec BTC); đánh giá nội dung `battle/danh-gia-noi-dung.md` |
 | 5 | Dựng 15 artifact thi đấu | ◐ Phần lớn có trong `knowledge/` | Glossary (10 §2), question bank (20 §2–4), template (30 §1–2), attack checklist (50 §1/§4/§6), blacklist (40 §2), RTM/log mẫu (20 §5–6); còn thiếu: in ra giấy, câu hỏi BTC đã có ở 00 §H |
-| 6 | Diễn tập trọn 1 lượt | ❗ **Chưa chạy trên cấu trúc 10 mục** | `/drill` trọn vòng **theo hạn mức 09/09** (5 câu, 1 câu/lượt, không memory, spec 6k token). **Không được bỏ** — mọi số đo cũ đều từ chế độ 6 lượt batch, không còn dùng được |
+| 6 | Diễn tập trọn 1 lượt | ❗ **Chưa chạy trên cấu trúc 10 mục và luật hỏi 11/09** | `/drill` trọn vòng **theo hạn mức 11/09** (không giới hạn số câu, một ý mỗi lượt, cấm chỉ thị, nhịp chờ, 4.000 token, spec 6k token). **Không được bỏ** — mọi số đo cũ đều từ chế độ batch hoặc chế độ 5-câu-gộp-bảng, cả hai đều **bị từ chối** ở hệ thật |
 | 7 | Áp tham số chốt 09/09 + cấu trúc BTC 11/09 vào toàn kit | ✅ **Xong 11/09** | 10 file `knowledge/`, 7 skill, 2 agent, 2 README — xem mục "Đã làm" bên dưới |
+| 8 | Áp **luật hỏi mới sau thi thử 11/09** (bỏ trần 5 câu, một ý/lượt, cấm chỉ thị, nhịp chờ, 4.000 token) | ✅ **Xong 11/09 chiều** | `knowledge/00` §A/§A1/§A2/§B/§C/§F/§H/§I · `knowledge/20` viết lại §1/§2/§3/§3b/§5/§6 · `05` §4 · `30` §1b/§6 · `32` §6 · `50` §2/§4 · `/elicit` viết lại · `/frame`, `/drill`, `/spec-review`, `/appeal` · agent `customer` · 2 README |
 
 ---
 
@@ -24,7 +25,7 @@
 
 Bộ self-test T1–T9 và fixture `drill/selftest/` dựng theo **template 11 mục cũ**, nên mọi số đo (T5 93/100, T6 recall 30/33, T7 5/5 TRÚNG) không còn phản ánh kit hiện tại. Fixture chưa từng commit và đã bỏ.
 
-**Cảnh báo khi đọc bảng dưới:** mọi kết quả T1–T9 đo trong chế độ **6 lượt hỏi batch và hạn mức 3.000 từ**. Sau tham số 09/09 (5 câu, 1 câu/lượt, không memory, 6.000 token) các số này **không còn là bằng chứng kit hoạt động** — đặc biệt T4 (khối 8 câu một lượt: chế độ đó không còn tồn tại) và T5 (2.888 từ ≈ 7.200 token: vượt hạn mức mới). T1, T2, T3, T7, T8 vẫn có giá trị vì chúng đo hành vi agent, không đo quy trình hỏi.
+**Cảnh báo khi đọc bảng dưới:** mọi kết quả T1–T9 đo trong chế độ **6 lượt hỏi batch và hạn mức 3.000 từ**. Sau tham số 09/09 và luật hỏi 11/09 (không giới hạn số câu, một ý mỗi lượt, cấm chỉ thị, 4.000 token) các số này **không còn là bằng chứng kit hoạt động** — đặc biệt T4 (khối 8 câu một lượt: chế độ đó vừa không tồn tại vừa bị từ chối) và T5 (2.888 từ ≈ 7.200 token: vượt hạn mức mới). T1, T2, T3, T7, T8 vẫn có giá trị vì chúng đo hành vi agent, không đo quy trình hỏi.
 
 | Test | Kết quả | Ghi chú |
 |---|---|---|
@@ -77,19 +78,37 @@ Sơ đồ trong spec dùng **Mermaid** (knowledge/33 §7): `block-beta` wirefram
 | Hai bộ loại lỗ hổng `#16–#18` ở `knowledge/50` §1 | Bộ cấu trúc đổi thành **#22–#24**; bảng thành **24 loại** |
 | Hai bộ probe `P43–P45` | Bộ cấu trúc đổi thành **P53–P58** |
 | Ngân sách **3.000 từ** vs **6.000 token** | Token thắng (tham số chốt 09/09). `knowledge/33` §5 phân bổ lại 10 mục theo đích **5.400 token ≈ 2.170 từ** |
-| **7 lượt hỏi batch** vs **5 câu, 1 câu/lượt** | Luật 5 câu thắng. N15–N19 giữ lại làm nguyên liệu; khối "7 lượt" bỏ |
+| **7 lượt hỏi batch** vs **5 câu, 1 câu/lượt** | Cả hai đều bỏ sau thi thử 11/09 — luật hiện hành là **chuỗi lượt một-ý, không trần số câu, cấm chỉ thị**. N15–N19 giữ làm nguyên liệu |
 | Cổng chất lượng 18 dòng vs 16 dòng | Hợp nhất thành **23 dòng** (`knowledge/30` §7) |
 | `.gitignore` `drill/` | Đổi thành `/drill/` — `drill/` trần ẩn luôn `.claude/skills/drill/` |
 
-**Hở còn lại sau hợp nhất:** kế hoạch 5 câu C1–C5 được soạn khi template còn 11 mục, nên **không phủ mục 2/3/4/9**. Nặng nhất là **mục 4 message lỗi nguyên văn** — chuỗi nguyên văn không suy được từ mặc định ngành. Ba phương án và đề xuất: `knowledge/20` §3b, **phải chọn trước 9:30 ngày thi**.
+**Hở đó đã đóng sau 11/09:** bỏ trần 5 câu nghĩa là **mục 4 message lỗi nguyên văn hỏi được và phải hỏi** — mỗi message một lượt mở (~300 token), nằm trên đường cắt. Hở còn lại chỉ là **nhịp chờ**: mục 2/3/9 vẫn tự điền. Chi tiết: `knowledge/20` §3b.
 
 **Việc cần làm ngay (chưa xong):**
-1. **`/drill` trọn vòng** với true-spec có đủ 10 mục — kit **chưa từng chạy thử** trên cấu trúc mới. Việc quan trọng nhất còn lại trước ngày thi.
+1. **`/drill` trọn vòng** với true-spec có đủ 10 mục **và luật hỏi 11/09** — kit chưa từng chạy thử ở chế độ chuỗi lượt một-ý. Việc quan trọng nhất còn lại trước ngày thi. Hai chỉ số mới phải đọc: **chi phí bị từ chối** (>10% = cổng 8 kiểm tra chưa chặn đủ) và **đúng nhịp hay không** (<70% = đội ngồi chờ thay vì viết song song).
 2. Hỏi BTC: mục 5 (Design/Wireframe) nộp thế nào khi không có Figma — **Mermaid có được chấp nhận không**? Ảnh/sơ đồ có tính vào hạn mức token không? (ảnh: xem 00 §A2). Trước đây câu này hỏi theo hạn mức 3.000 từ không? (nhập vào §A cùng các ô CHỜ 09/09.)
 
 ---
 
 ## Đã làm
+
+**11/09 chiều — Thi thử: luật hỏi đổi lần thứ hai, và đổi mạnh hơn lần đầu**
+
+Quan sát từ buổi thi thử (đề giả ハナマルストア, 4.000 token, nhịp 45 giây):
+
+1. **Bỏ trần số câu.** Không còn "5 câu cho cả ngày". Giới hạn là **4.000 token** cho cả hỏi + trả lời, **và nhịp chờ giữa hai lượt** — nhịp mới là thứ chặn thật: 17 lượt × 45 giây = 12 phút 45, trong khi 17 lượt hỗn hợp chỉ tốn ~2.500–3.200 token.
+2. **Mỗi lượt đúng một ý.** Câu gộp 2–3 ẩn số **bị từ chối**.
+3. **Câu chứa chỉ thị bị từ chối, xếp loại injection.** Đây là cú đau nhất: quy tắc trung tâm của kit 09/09 — "một câu hỏi nhưng ép format, cap dòng, cap từ, không giải thích" — **chính là thứ bị chặn**. Không ra lệnh được cho AI nữa, nên công cụ điều khiển duy nhất còn lại là **hình dạng câu hỏi**: câu nhị phân "A hay B" cho câu trả lời ngắn 20–60 token mà không cần một chỉ thị nào.
+4. **Câu bị từ chối không trừ token và không reset nhịp chờ** ⇒ sửa và gửi lại gần như miễn phí; giá của một câu viết sai là **một nhịp**, không phải một dữ kiện.
+5. **Ảnh CÓ tính token** ⇒ 3 lượt ảnh bỏ hẳn.
+
+Hệ quả chiến thuật, đã áp vào kit:
+
+- Kế hoạch hỏi thành **hàng đợi xếp hạng có đường cắt bằng số** (`knowledge/20` §3), không còn là "chọn 5 ô nào". Đường cắt = `min((phút pha hỏi ÷ nhịp) − 2 ; 4.000 ÷ ~200)`.
+- **Hỏi và viết chạy song song**: một người chỉ bấm gửi đúng nhịp, người còn lại viết spec từ lượt thứ 3. Cả đội ngồi chờ là cách mất giờ lớn nhất.
+- **Không còn "câu restate" gộp 10 phát biểu** (gộp sẽ bị từ chối). Thay bằng lượt xác nhận rời — và vì một lượt xác nhận tốn đúng một nhịp như mọi lượt khác, **giả định rủi ro Cao thì hỏi thẳng dạng nhị phân ngay từ đầu hàng đợi**, không để dành.
+- **Mục 4 (message lỗi nguyên văn) hết hở**: giờ hỏi được, mỗi message một lượt.
+- Agent `customer` học cách **từ chối** đúng hai nhãn của hệ thật, để `/drill` không cho kết quả tốt giả.
 
 **10/09 — Áp tham số chốt 09/09; ba thay đổi chiến thuật**
 
@@ -133,19 +152,19 @@ Vấn đề đo được: `battle/spec.nop.md` (diễn tập 08/09) đạt **to�
 1. **Commit kit** (`.claude/`, `knowledge/`, `data/btc/`, hai README, `PROGRESS.md`) để đồng đội pull; mở phiên Claude Code mới sau khi pull (agent chỉ nạp lúc khởi động phiên).
 2. **`/drill` trọn vòng theo hạn mức mới** — bắt buộc, vì mọi số đo của kit đều từ chế độ 6 lượt batch. Tám chỉ số ở `ket-qua.md`; bốn chỉ số cần xem trước:
    - **lỗ hổng giả định**: bao nhiêu dòng `G-xx` *ngược mặc định ngành và lệch specs thật* (phải = 0 — đây là loại tệ hơn im lặng);
-   - **hiệu quả câu restate**: C5 cứu được mấy BR về sau bị bắn (nếu 0 thì phải xét lại việc dùng cả một câu cho restate);
+   - **hiệu quả pha xác nhận**: lượt xác nhận cứu được mấy BR về sau bị bắn, so với chi phí nhịp; **chi phí bị từ chối** và **tỷ lệ gửi đúng nhịp**;
    - **điểm quy đổi** theo +2/+1/−1, so với điểm nếu bỏ các test `EV ≤ 0`;
    - **độ chính xác ước token**: `max(từ×2,5; ký tự/2,2)` lệch bao nhiêu so với token thật, cho cả lượt hỏi và spec.
 3. **Đo lại `battle/spec.nop.md` bằng token** (2.991 từ ≈ 7.500 token) — bản 08/09 **vượt hạn mức 6.000 khoảng 25%** theo luật mới. Nén theo `knowledge/30` §5 rồi chạy `/spec-review` để xem cắt gì thì mất luật gì; đây là bài tập nén rẻ nhất vì đã có ground truth.
-4. **Hỏi BTC 2 ô đổi kế hoạch** (`knowledge/00` §A2): ảnh có tính vào 5.000 token không; AI Khách hàng còn mở sau 12:00 không. Hỏi trước 9:30 ngày thi, hoặc sớm hơn nếu có kênh liên hệ.
+4. **Đọc brief §3/§4 và hỏi BTC các ô đổi đường cắt** (`knowledge/00` §A2): nhịp chờ bao nhiêu giây; 4.000 token của cả đội hay mỗi người; giao diện có hiển thị token không; AI còn mở sau giờ khóa spec không; lý do VÔ HIỆU của đề có gồm "sai phạm vi" không.
 5. Luyện `/attack cheo` — cần 3 spec giả lập cho cùng một brief; sinh bằng `/drill` với ba mức độ hở khác nhau (bộ self-test 05/09 đã bỏ vì dựng theo template 11 mục).
-6. Nếu BTC không cho dùng AI trong phòng: in `knowledge/20` §3 (5 câu soạn sẵn) + §4, `30` §1–§1b–§2 + §4, `05` §1+§M6, `32` §1–§3, `33` §1–§2+§7, `40` §2, `50` §1/§4/§4b/§6.
+6. Nếu BTC không cho dùng AI trong phòng: in `knowledge/20` §1 (cổng 8 kiểm tra) + §3.2–3.3 (28 lượt soạn sẵn) + §4, `30` §1–§1b–§2 + §4, `05` §1+§M6, `32` §1–§3, `33` §1–§2+§7, `40` §2, `50` §1/§4/§4b/§6.
 
 ---
 
 ## Việc bị chặn / chờ
 
-- **Bảy ô còn hở** ở `knowledge/00` §A2. Hai ô đầu (ảnh có tính token; AI còn mở sau 12:00) đổi kế hoạch buổi sáng; năm ô còn lại chỉ đổi cách tính điểm kỳ vọng.
+- **Chín ô còn hở** ở `knowledge/00` §A2. Bốn ô đầu (nhịp chờ, token của đội hay của người, giao diện hiển thị token, AI còn mở sau giờ khóa spec) **quyết định đường cắt của hàng đợi hỏi**; ô thứ năm (lý do VÔ HIỆU của đề) đổi thứ hạng; bốn ô còn lại chỉ đổi cách tính điểm kỳ vọng.
 - Vẫn chưa có văn bản về việc **được dùng AI riêng / mang tài liệu vào phòng thi** (`knowledge/00` §H câu 8, 9). Đang giả định **được** — đây là hackathon AI. Nếu không: kit vẫn dùng để diễn tập và in artifact mang vào (danh sách ở mục "Việc tiếp theo" số 6).
 - **Model của 3 tác nhân là thông tin bảo mật, BTC sẽ không trả lời** (§H câu 7). Không còn là việc chờ — đã xử lý bằng cách luôn gọi reader 2 với model yếu hơn trong `/spec-review` khối D.
 

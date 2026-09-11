@@ -1,16 +1,18 @@
 # Spec Battle Toolkit
 
-Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Battle** (12/09/2026): hỏi AI Khách hàng trong hạn mức 5 câu, viết & review spec ≤6.000 token, tấn công đội khác, kháng nghị. Chi tiết kiến trúc skill/agent xem [`.claude/README.md`](.claude/README.md); tiến độ chuẩn bị xem [`PROGRESS.md`](PROGRESS.md).
+Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Battle** (12/09/2026): hỏi AI Khách hàng theo hàng đợi lượt một-ý trong hạn mức 4.000 token, viết & review spec ≤6.000 token, tấn công đội khác, kháng nghị. Chi tiết kiến trúc skill/agent xem [`.claude/README.md`](.claude/README.md); tiến độ chuẩn bị xem [`PROGRESS.md`](PROGRESS.md).
 
 **Sau khi pull: mở phiên Claude Code MỚI** trong thư mục repo — agent tùy chỉnh (`executor`, `customer`) chỉ được nạp lúc khởi động phiên.
 
-## Tham số đã chốt (họp BTC 09/09)
+## Tham số đã chốt (họp BTC 09/09, khối hỏi cập nhật sau thi thử 11/09)
 
 | Tham số | Giá trị |
 |---|---|
 | Nộp spec | **Markdown**, **≤ 6.000 token** (đích 5.400), sơ đồ chỉ dạng mermaid, **không ảnh**, khóa 12:00 |
-| Hỏi AI Khách hàng | **5 câu · mỗi lượt 1 câu · 5.000 token (hỏi + trả lời) · KHÔNG có memory** |
-| Ảnh gửi AI Khách hàng | 3 lần (mặc định không dùng — xem `knowledge/20` §1-9) |
+| Hỏi AI Khách hàng | **KHÔNG giới hạn số câu · 4.000 token (hỏi + trả lời) · mỗi lượt đúng MỘT Ý · KHÔNG có memory** |
+| Câu bị từ chối | Câu **chứa chỉ thị** (ép format, cap dòng/từ, "không giải thích") và câu **gộp nhiều ý** đều bị từ chối — không trừ token, không reset nhịp chờ |
+| Nhịp chờ giữa hai lượt | Thi thử **45 giây** — đây thường là ràng buộc thật, không phải token |
+| Ảnh gửi AI Khách hàng | 3 lần, **có tính token** ⇒ không dùng (`knowledge/20` §1-9) |
 | Điểm | **CÔNG trúng +2 · THỦ đỡ được +1 · CÔNG bị VÔ HIỆU −1** |
 | Spec đối thủ | Markdown, tải về được |
 | Kháng nghị | Text gửi AI, BTC review — **chỉ khi test CÔNG của mình bị VÔ HIỆU** |
@@ -18,19 +20,19 @@ Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Bat
 | Hội thoại AI Khách hàng | Được xem lại |
 | Câu hỏi về vận hành hệ thống thi | BTC không trả lời (bảo mật) |
 
-Bảng đầy đủ + cách đo token + 7 ô còn hở: [`knowledge/00-luat-choi.md`](knowledge/00-luat-choi.md) §A.
+Bảng đầy đủ + cách đo token + 9 ô còn hở: [`knowledge/00-luat-choi.md`](knowledge/00-luat-choi.md) §A.
 
 **Bốn thay đổi đổi cả chiến thuật, không chỉ đổi con số:**
-1. **5 câu hỏi, không memory** — question bank 158 câu không còn là danh sách để hỏi; nó là nguồn **mặc định ngành để tự điền** cho ~70% spec (`knowledge/30` §1b) và kho phát biểu cho câu restate.
+1. **Không giới hạn số câu, nhưng cấm chỉ thị và mỗi lượt một ý** — hỏi thành **chuỗi lượt ngắn xếp hạng có đường cắt** (`knowledge/20` §3). Không ép được format nữa, nên **câu nhị phân "A hay B"** là công cụ duy nhất giữ câu trả lời ngắn. Ràng buộc thật là **nhịp chờ**, không phải token: ~65% ngân hàng câu hỏi vẫn phải tự điền bằng mặc định ngành (`knowledge/30` §1b).
 2. **Công +2 / thủ +1** — trần điểm công 30, trần điểm thủ 15. Cùng một giờ bỏ vào buổi chiều sinh điểm gấp đôi; lời khuyên cũ "cạn giờ thì ưu tiên phòng thủ" đã bị sửa (`knowledge/00` §D1).
 3. **Kháng nghị chỉ cho ca VÔ HIỆU** — rủi ro vai THỦ không có đường lùi, rủi ro vai CÔNG cứu được một phần. Bằng chứng phạm vi phải thu xong lúc 14:30, không phải 16:00.
-4. **Cấu trúc spec = 10 mục BTC** (tài liệu "Spec Battle Anatomy" 11/09) — template 11 mục luật-nghiệp-vụ không còn là cấu trúc nộp. Bốn vùng hoàn toàn mới (item màn hình, event, validation & message lỗi nguyên văn, API) mà kế hoạch 5 câu gần như không phủ được: xem `knowledge/20` §3b để chọn phương án trước 9:30.
+4. **Cấu trúc spec = 10 mục BTC** (tài liệu "Spec Battle Anatomy" 11/09) — template 11 mục luật-nghiệp-vụ không còn là cấu trúc nộp. Bốn vùng mới (item màn hình, event, validation & message lỗi nguyên văn, API); **message lỗi nguyên văn giờ hỏi được và phải hỏi** — mỗi message một lượt, xem `knowledge/20` §3b.
 
 ## Cấu trúc thư mục
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `knowledge/00…50-*.md` | 10 file tri thức chưng cất (luật chơi & tham số, hiểu bài toán, domain, 5 câu hỏi + ngân hàng, viết spec, bảng quyết định, khả thi & vận hành, **cấu trúc spec BTC 10 mục**, từ mơ hồ, tấn công) — skill đọc trực tiếp |
+| `knowledge/00…50-*.md` | 10 file tri thức chưng cất (luật chơi & tham số, hiểu bài toán, domain, hàng đợi lượt hỏi + ngân hàng, viết spec, bảng quyết định, khả thi & vận hành, **cấu trúc spec BTC 10 mục**, từ mơ hồ, tấn công) — skill đọc trực tiếp |
 | `.claude/skills/<tên>/SKILL.md` | 7 skill: `frame`, `elicit`, `spec-write`, `spec-review`, `attack`, `appeal`, `drill` |
 | `.claude/agents/{executor,customer}.md` | 2 agent giả lập, mù bối cảnh thật |
 | `data/btc/` | Tài liệu BTC gửi, bản trích nguyên văn (đối chiếu khi tranh luận). 16 PDF nguồn đã chưng cất hết vào `knowledge/` và bỏ khỏi repo — xem PROGRESS 11/09 |
@@ -40,47 +42,52 @@ Bảng đầy đủ + cách đo token + 7 ô còn hở: [`knowledge/00-luat-choi
 
 ## Quy trình thi — buổi sáng (THỦ)
 
-### 9:00–9:30 — Hiểu bài toán, và chốt 5 câu sẽ hỏi
+### 9:00–9:30 — Hiểu bài toán, và xếp hàng đợi hỏi
 
 ```bash
 /frame                  # brief.md → battle/mo-hinh-bai-toan.md
                         # 6 khối mô hình + mâu thuẫn nội tại của brief
                         # → chia mọi ô chưa biết thành 3 nhóm:
-                        #   (1) vào C1–C4  (2) hàng đợi câu C5  (3) tự điền mặc định ngành
-/elicit ke-hoach        # gọt 4 câu hỏi theo brief + in danh sách ô sẽ KHÔNG hỏi
+                        #   (1) trên đường cắt  (2) dưới đường cắt  (3) tự điền mặc định ngành
+/elicit ke-hoach        # hàng đợi xếp hạng + ĐƯỜNG CẮT bằng số + nguyên văn từng lượt
+                        # + danh sách ô sẽ KHÔNG hỏi kèm giá trị mặc định
 ```
 
-Hỏi BTC miệng trước 9:30 (không tốn token): **ảnh có tính vào 5.000 token không** · **AI Khách hàng còn mở sau 12:00 không**. Hai câu này đổi kế hoạch (`knowledge/00` §A2).
+Đọc brief §3/§4, phần brief không nói thì hỏi BTC miệng (không tốn token): **nhịp chờ bao nhiêu giây** · **4.000 token của cả đội hay mỗi người** · **lý do VÔ HIỆU của đề có gồm "sai phạm vi" không**. Ba ô này đổi đường cắt và thứ hạng (`knowledge/00` §A2).
 
-### 9:30–10:20 — Bốn câu hỏi dữ liệu
+**Đường cắt** = `min( (phút pha hỏi ÷ nhịp) − 2 ; 4.000 ÷ ~200 token mỗi lượt )`.
+
+### 9:30–10:30 — Chạy hàng đợi, viết spec song song
 
 ```bash
-/elicit cau 1           # C1 phạm vi NGOÀI + điều PHẢI ngăn
+/elicit luot 1          # một dòng câu hỏi, một ý, không chỉ thị
 /elicit nap             # dán câu trả lời → RTM + log có timestamp
-/elicit cau 2           # C2 bảng chuyển trạng thái đầy đủ  ← câu lãi nhất, không bỏ
-/elicit cau 3           # C3 bảng tham số (gồm đơn vị neo hạn mức, ngày tiền về tay khách)
-/elicit cau 4           # C4 tám kịch bản suy biến & thất bại phụ thuộc ngoài
+/elicit luot 2          # … gửi liên tục theo nhịp, không chờ câu trước
+/elicit tu-choi 3       # khi nhận "⚠ Bị từ chối": sửa đúng lỗi, gửi lại ngay (không mất token)
 ```
 
-Mỗi câu đi qua **cổng 5 kiểm tra** trước khi in ra: đúng một dấu `?` · không tham chiếu lượt trước · có ép format và cap dòng/từ · câu trả lời tệ nhất vẫn dùng được · chỉ dùng từ của brief. AI không có memory nên **không có lần thử thứ hai**.
+Mỗi lượt đi qua **cổng 8 kiểm tra**: một dấu `?` · đúng một ý · tự chứa · **không một chữ mệnh lệnh** · không viện dẫn tài liệu · không nhắc bộ máy chấm · không dẫn dắt · câu trả lời một từ vẫn dùng được.
+
+**Phân vai bắt buộc:** một người chỉ bấm gửi đúng nhịp và dán câu trả lời; người còn lại **viết spec từ lượt thứ 3**. Ngồi chờ nhau là cách mất giờ lớn nhất trong ngày.
 
 ### 10:20–11:05 — Viết spec
 
 ```bash
 /spec-write             # battle/spec.md, đích ≤5.400 token
                         # mọi ô không hỏi được: điền MẶC ĐỊNH NGÀNH, mở dòng G-xx, xếp hạng rủi ro
-                        # in khối "→ C5": 10 phát biểu Đúng/Sai đã viết sẵn
+                        # in bảng xếp hạng rủi ro giả định → nguyên liệu cho lượt xác nhận
 ```
 
 Spec theo **cấu trúc 10 mục BTC** (tài liệu "Spec Battle Anatomy", 11/09): `1` Tổng quan & phạm vi · `2` Item màn hình · `3` Event · `4` Validation & message lỗi · `5` Wireframe · `6` Flow & quy tắc xử lý · `7` Ràng buộc/bất thường/chưa chốt · `8` Xác thực & phân quyền · `9` Luồng dữ liệu & API · `10` Data model, perf, security. Chi tiết: [`knowledge/33-cau-truc-spec-btc.md`](knowledge/33-cau-truc-spec-btc.md).
 
 Sơ đồ vẽ bằng **Mermaid** (không có Figma trong phòng thi): `block-beta` wireframe · `stateDiagram-v2` state machine · `sequenceDiagram` flow end-to-end · `flowchart LR` sơ đồ hệ thống. Cú pháp mẫu ở [`knowledge/33` §7](knowledge/33-cau-truc-spec-btc.md). **Sơ đồ không thay bảng** — sơ đồ chỉ vẽ chuyển hợp lệ, ô `Từ chối 0.5`/`KHL` chỉ có trong bảng; hết chỗ thì bỏ sơ đồ, giữ bảng.
 
-### 11:05–11:30 — Câu hỏi cuối, rồi vá
+### 11:05–11:30 — Lượt xác nhận, rồi vá
 
 ```bash
-/elicit restate         # = câu 5, lấy 10 phát biểu từ bảng xếp hạng rủi ro
-/elicit nap             # mọi ý "Sai" → một việc sửa BR cụ thể
+/elicit xac-nhan        # 8–10 lượt RỜI, mỗi lượt một phát biểu, ưu tiên dạng nhị phân
+                        # (gộp 10 phát biểu vào một lượt như bản cũ sẽ BỊ TỪ CHỐI)
+/elicit nap             # mọi câu trả lời khác giả định → một việc sửa BR cụ thể
 /frame muc-tieu-luat    # bảng Mục tiêu ↔ Luật: mục tiêu nào chưa có luật, luật nào phá mục tiêu
 ```
 
@@ -93,7 +100,7 @@ Sơ đồ vẽ bằng **Mermaid** (không có Figma trong phòng thi): `block-be
 /spec-review battle/spec.md 20 sửa    # áp các mục loại SỬA vào spec.md
 ```
 
-Ba loại phát hiện: `SỬA` (áp được ngay) · `HỎI` (chỉ khi còn câu hỏi, xuất thành phát biểu cho C5) · `RỦI RO ĐÃ BIẾT` (hết câu hỏi — không sửa, ghi lại để buổi chiều tự bắn trước).
+Ba loại phát hiện: `SỬA` (áp được ngay) · `HỎI` (cắt theo số lượt còn kịp trước đường cắt, mỗi mục một lượt nhị phân) · `RỦI RO ĐÃ BIẾT` (hết giờ hỏi — không sửa, ghi lại để buổi chiều tự bắn trước).
 
 ## Quy trình thi — buổi chiều (CÔNG)
 
@@ -121,12 +128,12 @@ Chỉ tranh **phạm vi**, không tranh đáp án chuẩn. Bằng chứng theo 3
 /drill <tên> [tính-năng] [tự-động|thủ-công]   # Chỉ chạy khi gõ lệnh trực tiếp
 ```
 
-Trọn vòng theo đúng hạn mức 09/09: sinh specs thật ẩn → `/frame` → 4 câu hỏi qua agent `customer` (mỗi lần một câu, không memory) → `/spec-write` → câu 5 restate → `/spec-review` → `/attack` chính spec vừa viết → chấm bằng `executor` + `customer` → `drill/<tên>/ket-qua.md` với 8 chỉ số, gồm **điểm quy đổi +2/+1/−1**, **lỗ hổng giả định** và **hiệu quả câu restate**.
+Trọn vòng theo đúng hạn mức 11/09: sinh specs thật ẩn → `/frame` → chạy hàng đợi lượt một-ý qua agent `customer` (agent **từ chối** câu chứa chỉ thị và câu gộp nhiều ý, đúng như hệ thật) → `/spec-write` song song → lượt xác nhận → `/spec-review` → `/attack` chính spec vừa viết → chấm bằng `executor` + `customer` → `drill/<tên>/ket-qua.md` với 10 chỉ số, gồm **điểm quy đổi +2/+1/−1**, **lỗ hổng giả định**, **chi phí bị từ chối** và **đúng nhịp hay không**.
 
 ## Ghi chú
 
 - **Hai trục kiểm chất lượng.** *Hình thức* (mơ hồ, ô trống, truy vết, token) ở `knowledge/40`, `31`. *Nội dung* (hiểu bài toán, khả thi, vận hành, phục vụ mục tiêu, chịu được lạm dụng) ở `knowledge/05`, `32`. Một spec có thể đạt 100% trục hình thức mà vẫn sai bài toán — bằng chứng đo được ở `knowledge/32` §7.
-- **Giả định là trạng thái bình thường năm nay.** Với 5 câu hỏi, 60–80% luật trong spec sẽ có nguồn `G-xx` (mặc định ngành) thay vì `A-xx` (câu trả lời). Quy tắc: **điền mặc định ngành, không sáng tạo giá trị mới** — viết mặc định ra không xấu hơn im lặng ở bất kỳ ca nào, còn tự nghĩ ra một giá trị lạ là ca duy nhất tệ hơn im lặng (`knowledge/30` §1b).
-- **Ranh giới sửa**: `SỬA` áp được ngay; `HỎI` chỉ còn một câu để hỏi nên phải xếp hạng; hết câu thì thành `RỦI RO ĐÃ BIẾT`, không sửa hộ bằng cách đoán lần thứ hai.
+- **Giả định là trạng thái bình thường năm nay.** Với 15–20 lượt kịp gửi, 55–75% luật trong spec vẫn có nguồn `G-xx` (mặc định ngành) thay vì `A-xx` (câu trả lời). Quy tắc: **điền mặc định ngành, không sáng tạo giá trị mới** — viết mặc định ra không xấu hơn im lặng ở bất kỳ ca nào, còn tự nghĩ ra một giá trị lạ là ca duy nhất tệ hơn im lặng (`knowledge/30` §1b).
+- **Ranh giới sửa**: `SỬA` áp được ngay; `HỎI` bị chặn bởi số nhịp còn lại nên phải xếp hạng; hết giờ hỏi thì thành `RỦI RO ĐÃ BIẾT`, không sửa hộ bằng cách đoán lần thứ hai.
 - **Executor** luôn được gọi mù và gọi hai lần (`/spec-review` khối D; reader 2 dùng model yếu hơn) — model Executor của BTC là thông tin bảo mật nên giả lập bảo toàn là lựa chọn duy nhất đúng.
-- **Customer** chỉ dùng khi `/drill`; nó cố tình chỉ trả lời một câu hỏi mỗi lượt và đánh dấu `[BỎ QUA: …]` để đội thấy ngay câu nào bị nhồi quá.
+- **Customer** chỉ dùng khi `/drill`; nó **từ chối** câu chứa chỉ thị hoặc câu gộp nhiều ý bằng đúng khuôn nhãn của hệ thật (`⚠ Bị từ chối · …` + `✓ Không trừ token`), để đội thấy ngay lượt nào sẽ mất nhịp ở phòng thi.

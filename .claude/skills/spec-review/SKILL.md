@@ -1,6 +1,6 @@
 ---
 name: spec-review
-description: Red team spec của đội trước khi nộp — kiểm đủ 10 mục BTC, lint từ mơ hồ và nội dung, kiểm cấu trúc và ô trống bảng, kiểm phủ RTM (cả dòng đã hỏi và dòng giả định), cổng khả thi F + bảng Mục tiêu↔Luật + mô hình lạm dụng + kiểm giá trị tự nghĩ ra, eval set qua HAI agent executor mù độc lập (đo đa nghĩa bằng bất đồng), đếm token bản nộp, cổng chất lượng 23 dòng, kết luận NỘP ĐƯỢC/CHƯA kèm danh sách SỬA và HỎI đã cắt theo số câu hỏi còn lại. Dùng 11:38–11:48 ngày thi hoặc trong diễn tập khi người dùng nói "review spec", "soi spec mình", "red team", "kiểm tra trước khi nộp", "spec-review".
+description: Red team spec của đội trước khi nộp — kiểm đủ 10 mục BTC, lint từ mơ hồ và nội dung, kiểm cấu trúc và ô trống bảng, kiểm phủ RTM (cả dòng đã hỏi và dòng giả định), cổng khả thi F + bảng Mục tiêu↔Luật + mô hình lạm dụng + kiểm giá trị tự nghĩ ra, eval set qua HAI agent executor mù độc lập (đo đa nghĩa bằng bất đồng), đếm token bản nộp, cổng chất lượng 23 dòng, kết luận NỘP ĐƯỢC/CHƯA kèm danh sách SỬA và HỎI (mỗi mục một lượt nhị phân, cắt theo số nhịp còn kịp gửi). Dùng 11:38–11:48 ngày thi hoặc trong diễn tập khi người dùng nói "review spec", "soi spec mình", "red team", "kiểm tra trước khi nộp", "spec-review".
 argument-hint: "[đường-dẫn-spec] [n=20] [sửa]"
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(LC_ALL=C.UTF-8 wc *), Agent
 ---
@@ -11,7 +11,7 @@ Mục tiêu: tìm mọi chỗ Executor có thể trả lời khác specs thật,
 ## Input
 `$ARGUMENTS` = `[đường-dẫn-spec] [n] [sửa]`. Mặc định spec `battle/spec.md`, n = 20 tình huống eval. `rtm.md` cùng thư mục nếu có.
 
-**Đọc sổ hạn mức ở dòng đầu `log-khach-hang.md` trước tiên** (`<k>/5 câu`): số câu hỏi còn lại quyết định danh sách `HỎI` được dài bao nhiêu. Còn 1 câu ⇒ `HỎI` tối đa 10 phát biểu, tất cả nhồi vào C5. Còn 0 câu ⇒ **không có danh sách `HỎI`**, mọi phát hiện loại đó chuyển thành `RỦI RO ĐÃ BIẾT` (xem báo cáo mục 6b).
+**Đọc sổ hạn mức ở dòng đầu `log-khach-hang.md` trước tiên** (`<t>/4.000 token · lượt · nhịp · đường cắt`): thứ còn lại là **token và số nhịp trước đường cắt**, không phải số câu. Ước `số lượt còn kịp = min(token còn lại ÷ 150 ; số phút còn lại của pha hỏi × 60 ÷ nhịp)`; danh sách `HỎI` cắt đúng con số đó, **mỗi mục một lượt một ý, ưu tiên dạng nhị phân**. Còn 0 lượt ⇒ **không có danh sách `HỎI`**, mọi phát hiện loại đó chuyển thành `RỦI RO ĐÃ BIẾT` (xem báo cáo mục 6b).
 
 Đọc trước:
 - `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1 (10 mục BTC bắt buộc), §2 ("ba thứ" + 5 gạch của mỗi logic ở mục 6), §5–§6 (ngân sách token, thứ tự cắt), §7 (Mermaid — sơ đồ không thay bảng).
@@ -20,7 +20,7 @@ Mục tiêu: tìm mọi chỗ Executor có thể trả lời khác specs thật,
 - `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md`: §2 bảng Mục tiêu↔Luật, §M4 6 láng giềng, §M5 6 kẻ lạm dụng, §M6 12 kịch bản suy biến.
 - `${CLAUDE_PROJECT_DIR}/knowledge/31-bang-quyet-dinh-trang-thai.md`: §2.2–§2.3 (đếm tổ hợp, soi gap/overlap), §3 (mọi ô state × event), §4 (mức phủ).
 - `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (**24 loại** lỗ hổng — để sinh eval set; #22 message, #23 guest, #24 trạng thái UI là loại mới 11/09), §2 (quy tắc viết tình huống), §5 probe P1–P58.
-- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §2 tên 14 nhóm N1–N14 (để tick heading spec MÌNH ở khối B) + §3b (hở mục 4 message / guest của kế hoạch 5 câu).
+- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §2 tên 14 nhóm N1–N14 (để tick heading spec MÌNH ở khối B) + §1 (cổng 8 kiểm tra — mọi mục trong danh sách `HỎI` phải qua cổng này trước khi in) + §3b (bốn vùng BTC: mục 4 message giờ hỏi được).
 - `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md` §1 (ngân sách token, quy tắc mermaid), §1b (**luật giả định = mặc định ngành** — căn cứ của khối G-7), §7 (cổng chất lượng **23 dòng**).
 - `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §4 (31 phát biểu mặc định ngành — dùng để chấm khối G-7), §5 (RTM hai loại dòng).
 
@@ -49,8 +49,8 @@ Rồi bắt buộc kiểm:
 **C. PHỦ & KHỚP RTM** — tìm `rtm.md` + `log-khach-hang.md` ở thư mục spec, rồi thư mục cha, hoặc đường dẫn người dùng chỉ. Có RTM:
 1. Dòng nào (`A-xx` **hoặc** `G-xx`) có cột Mã BR trống hoặc mã không tồn tại trong spec = lỗi Cao.
 2. Với TỪNG dòng `A-xx`, so NỘI DUNG BR tương ứng với câu trả lời nguyên văn (con số, trạng thái, hướng tiền, ai được phép) — BR nói khác = lỗi Cao "trái specs thật" (loại TRÚNG chắc nhất, #15), ghi cả hai vế. Đây là hạng lỗi nghiêm trọng nhất trong cả báo cáo: đội đã *biết* mà viết sai.
-3. Với TỪNG dòng `G-xx`, kiểm cột Rủi ro đã điền chưa; dòng rủi ro Cao mà **không** nằm trong 10 phát biểu đã gửi ở C5 = ghi vào `RỦI RO ĐÃ BIẾT`, mức Trung (không phải lỗi — là thông tin để buổi chiều tự bắn trước).
-4. Đếm và in: `A-xx` / `G-xx` / tổng, tỷ lệ luật có nguồn từ AI Khách hàng. Tỷ lệ này thấp (20–40%) là bình thường với 5 câu hỏi; nó chỉ là cảnh báo khi **dòng `A-xx` chưa được dùng hết** — có câu trả lời mà không thành luật là lỗi Cao.
+3. Với TỪNG dòng `G-xx`, kiểm cột Rủi ro đã điền chưa; dòng rủi ro Cao mà **chưa** được lượt hỏi nào chạm tới = ghi vào `RỦI RO ĐÃ BIẾT`, mức Trung (không phải lỗi — là thông tin để buổi chiều tự bắn trước).
+4. Đếm và in: `A-xx` / `G-xx` / tổng, tỷ lệ luật có nguồn từ AI Khách hàng. Tỷ lệ này thấp (25–45%) là bình thường ngay cả khi kịp 15–20 lượt; nó chỉ là cảnh báo khi **dòng `A-xx` chưa được dùng hết** — có câu trả lời mà không thành luật là lỗi Cao.
 Không có RTM → ghi "bỏ khối C: không có RTM" và đánh dấu mọi luật có con số/quyền là "cần đối chiếu log".
 
 **D. EVAL SET — hai Executor mù ĐỘC LẬP, đo bằng bất đồng**
@@ -96,13 +96,13 @@ In cả hai con số và giá trị lấy. **Không** dùng `wc` thiếu `LC_ALL
 2. Bảng lỗ hổng theo định dạng knowledge/40 §4, sắp theo Mức giảm dần rồi theo thang §5 (đã chèn 2b–2e); cột "Viết lại đề xuất" là câu dán được vào spec. Câu viết lại KHÔNG ĐƯỢC bịa con số/giá trị: số có trong RTM/log → ghi số + `(A-xx)`; không có → để `[..]` và ghi "xác nhận với AI Khách hàng"; luật hiện có trong spec chưa đối chiếu được với log → giữ nguyên nội dung, chỉ sửa diễn đạt, và gắn "cần đối chiếu log".
    **Phân biệt ba loại phát hiện, ghi rõ ở cột riêng:**
    - `SỬA` = sửa được ngay bằng viết lại (mơ hồ, ô trống, F1, F5, S25–S27, thiếu mục / thiếu loại case / message không nguyên văn / thiếu cột Guest (S31–S37), **và giá trị ngược mặc định ngành ở khối G-7** — đổi về mặc định ngành là sửa, không phải đoán).
-   - `HỎI` = đội đang không biết specs thật quy định gì và **còn câu hỏi** (F2, F7, S22, S23, `G-xx` rủi ro cao). Xuất thành **phát biểu Đúng/Sai** dán vào `/elicit restate`, không phải câu hỏi mở — vì chỉ còn một câu và nó là câu C5.
+   - `HỎI` = đội đang không biết specs thật quy định gì và **còn nhịp để hỏi** (F2, F7, S22, S23, `G-xx` rủi ro cao). Xuất thành **lượt nhị phân rời** dán vào `/elicit xac-nhan` — mỗi mục một lượt, một ý, không chỉ thị, không phải câu hỏi mở.
    - `RỦI RO ĐÃ BIẾT` = đúng loại `HỎI` nhưng **hết câu hỏi** hoặc không lọt vào 10 phát biểu của C5. Không sửa, không hỏi; ghi lại kèm tình huống mà đối thủ sẽ dùng để bắn, để buổi chiều tự bắn trước và để rút bài học.
    Cắt danh sách `HỎI` theo số câu còn lại: **10 phát biểu nếu còn 1 câu, 0 nếu còn 0 câu**; phần dư xuống `RỦI RO ĐÃ BIẾT`, xếp theo rủi ro giảm dần.
 3. Bảng eval set: tình huống | loại # | ĐỘ PHỦ | **TRẢ LỜI reader 1** | **TRẢ LỜI reader 2** | **lệch?** | đối chiếu RTM | mục cần vá.
 4. **Khối G**: bảng cổng F; bảng Mục tiêu↔Luật; 12 ca suy biến; 6 láng giềng; 6 kẻ lạm dụng; 6 chi phí ẩn.
 5. Cổng chất lượng 23 dòng ✓/✗. **Token bản nộp (cả hai công thức) + đệm còn lại dưới 6.000.**
-6. "Sửa trong 10 phút" — 5 việc đầu theo thang knowledge/40 §5, và **"10 phát biểu cho câu C5"** — đã viết sẵn dạng Đúng/Sai, xếp theo rủi ro, dán được vào `/elicit restate`.
+6. "Sửa trong 10 phút" — 5 việc đầu theo thang knowledge/40 §5, và **danh sách lượt hỏi còn kịp gửi** — mỗi mục đã viết sẵn thành một câu nhị phân, xếp theo rủi ro, dán được vào `/elicit xac-nhan`.
 6b. **`RỦI RO ĐÃ BIẾT`** — bảng: giả định | mặc định ngành hay ngược | tình huống đối thủ sẽ dùng | mức. Đây là đầu vào cho `/attack` tự bắn spec mình lúc 12:00–13:00.
 
 Nếu args có `sửa`: áp các câu viết lại mức Cao **thuộc loại `SỬA`** vào spec bằng Edit, chạy lại A, B, E, G-1, G-7, in diff token. **Mục thiếu hẳn thì không tự bịa nội dung** — dựng khung bảng rỗng có tên cột đúng và ghi rõ cần điền từ RTM. **Không** áp mục loại `HỎI`. Không sửa nội dung nghiệp vụ (không đổi con số/trạng thái) — chỉ sửa diễn đạt, điền ô trống bằng "Từ chối 0.5", thêm luật cho chế độ lỗi của láng giềng (knowledge/32 §3.2, không cần số mới), và tách mốc quyết định/hoàn tất (knowledge/32 §3.1, để `[..]` cho số chưa biết).

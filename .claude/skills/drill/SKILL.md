@@ -1,6 +1,6 @@
 ---
 name: drill
-description: Diễn tập trọn vòng Spec Battle với AI Khách hàng giả lập theo luật 09/09 (5 câu hỏi, 1 câu/lượt, không memory, 5.000 token; spec ≤6.000 token; điểm +2/+1/−1) — sinh specs thật ẩn có luật phản trực giác, brief mơ hồ, chạy /elicit ↔ agent customer, /spec-write, /spec-review, /attack chính spec vừa viết, chấm bằng executor + customer, tổng kết điểm và 8 chỉ số. Chỉ chạy khi người dùng gõ /drill (10–11/09 trước ngày thi).
+description: Diễn tập trọn vòng Spec Battle với AI Khách hàng giả lập theo luật 11/09 (không giới hạn số câu, một ý mỗi lượt, cấm câu chứa chỉ thị, có nhịp chờ, không memory, 4.000 token; spec ≤6.000 token; điểm +2/+1/−1) — sinh specs thật ẩn có luật phản trực giác, brief mơ hồ, chạy /elicit ↔ agent customer, /spec-write, /spec-review, /attack chính spec vừa viết, chấm bằng executor + customer, tổng kết điểm và 10 chỉ số. Chỉ chạy khi người dùng gõ /drill (10–11/09 trước ngày thi).
 argument-hint: "<tên> [tính-năng] [tự-động|thủ-công]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(LC_ALL=C.UTF-8 wc *), Bash(mkdir *), Bash(date *), Agent
@@ -12,14 +12,16 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
 ## Input
 `$ARGUMENTS` = `<tên> [tính-năng] [chế-độ]`. Mặc định: tính năng = "đặt giữ hàng e-commerce" (kiểm domain), chế độ = tự-động. Thư mục làm việc `drill/<tên>/` (layout như `battle/`, thêm `true-spec.md`).
 
-**Số lượt hỏi không còn là tham số: luật 09/09 chốt 5 câu, mỗi lượt 1 câu, AI không có memory (00 §A).** Diễn tập phải chạy đúng hạn mức đó — chạy 4 lượt batch như bản cũ sẽ cho kết quả tốt giả và không đo được thứ cần đo.
-Đọc: `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số 09/09), §A1 (ước token), §C, §D1 (công thức điểm); `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1–§2 (10 mục BTC + 5 gạch bảng Case — true-spec phải có dữ kiện cho cả 10 mục), §7 (Mermaid); `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md` §6 (catalogue ⚠ để cài luật phản trực giác); `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (24 loại để chấm đa dạng test), §6 luật 8 (điểm kỳ vọng); `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §M5, §M6 (để cài luật vào true-spec ở đúng những chỗ đội hay bỏ); `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (để true-spec nói về phụ thuộc ngoài đúng như hệ thật).
+**Luật hỏi đã đổi lần thứ hai (thi thử 11/09): không giới hạn số câu, nhưng mỗi lượt đúng MỘT Ý, câu chứa chỉ thị bị từ chối, có nhịp chờ giữa hai lượt, AI không có memory (00 §A).** Diễn tập phải chạy đúng chế độ đó. Chạy kiểu batch (bản 08/09) hay kiểu "một câu gộp một bảng" (bản 09/09) đều cho kết quả tốt giả, vì **cả hai kiểu đó bị từ chối ở hệ thật**.
+Đọc: `${CLAUDE_PROJECT_DIR}/knowledge/00-luat-choi.md` §A (tham số, cập nhật 11/09), §A1 (ước token + cách tính trần lượt), `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §1 (cổng 8 kiểm tra) và §3 (hàng đợi), §C, §D1 (công thức điểm); `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1–§2 (10 mục BTC + 5 gạch bảng Case — true-spec phải có dữ kiện cho cả 10 mục), §7 (Mermaid); `${CLAUDE_PROJECT_DIR}/knowledge/10-domain-giu-hang.md` §6 (catalogue ⚠ để cài luật phản trực giác); `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md` §1 (24 loại để chấm đa dạng test), §6 luật 8 (điểm kỳ vọng); `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §M5, §M6 (để cài luật vào true-spec ở đúng những chỗ đội hay bỏ); `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §2 (để true-spec nói về phụ thuộc ngoài đúng như hệ thật).
 
 ## Hạn mức phải tôn trọng khi diễn tập (nếu phá, kết quả vô nghĩa)
-- Đúng **5 câu hỏi** cho cả vòng; câu 5 là restate và **chỉ soạn sau khi có bản nháp spec**.
-- Mỗi lần gọi agent `customer` chế độ HỎI chỉ chứa **một câu hỏi**. Agent sẽ trả lời câu đầu và đánh dấu phần dư bị bỏ — coi phần bị bỏ là **mất thật**, không gọi lại.
+- **Một lần gọi agent `customer` = một lượt = một ẩn số.** Prompt chỉ chứa một câu nghi vấn, **không một chữ mệnh lệnh nào** về cách trả lời.
+- Agent sẽ **từ chối** câu chứa chỉ thị hoặc câu gộp nhiều ý. Lượt bị từ chối: **không cộng token**, nhưng **cộng 1 nhịp**, và phải chạy `/elicit tu-choi` để sửa — đúng như ở hệ thật.
+- **Nhịp chờ:** chọn một con số trước khi bắt đầu (mặc định 45 giây), ghi vào `README.md` của drill. Không cần chờ thật, đếm nhịp bằng sổ. **Trần lượt = (số phút pha hỏi ÷ nhịp) − 2**, ghi rõ trước khi gửi lượt đầu tiên.
 - Mỗi lần gọi là một **phiên độc lập**: không đưa câu hỏi/câu trả lời trước vào prompt (giả lập "không có memory").
-- Cộng dồn token ước (00 §A1); vượt 5.000 thì dừng hỏi, dù chưa hết 5 câu.
+- Cộng dồn token ước (00 §A1); vượt **4.000** thì dừng hỏi, dù hàng đợi còn.
+- **Viết spec song song**: bắt đầu viết từ sau lượt thứ 3, không đợi hỏi xong — đây là một trong những thứ drill phải đo.
 - Spec: đích ≤5.400 token, tuyệt đối ≤6.000, markdown, không ảnh, **đủ 10 mục BTC**.
 
 ## Ranh giới thông tin (quy tắc cứng)
@@ -36,14 +38,15 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
    Ghi `true-spec.answers.md`: bảng `W-xx | TS-xx | phát biểu | mặc định phổ biến nó đi ngược | loại # (knowledge/50 §1)`.
 3. **Sinh `brief.md`** 150–250 từ, mơ hồ như BTC, không lộ bất kỳ ⚠ nào, không nêu con số. **Bắt buộc có ≥2 mục tiêu nghiệp vụ tường minh** (kiểu "để tăng X", "chống Y") và **ít nhất một cặp câu chỏi nhau** — đó là chất liệu cho `/frame` M1 và bảng Mục tiêu↔Luật, và là thứ brief thật của BTC luôn có.
 3b. **Dựng mô hình bài toán**: chạy quy trình `/frame drill/<tên>` (đọc `${CLAUDE_PROJECT_DIR}/.claude/skills/frame/SKILL.md`) → `mo-hinh-bai-toan.md` + danh sách câu hỏi P0. Khi đóng vai đội, chỉ đọc `brief.md`, không mở `true-spec.md`.
-4. **Kế hoạch hỏi**: chạy quy trình `/elicit ke-hoach drill/<tên>` → 4 câu đã gọt + danh sách ô sẽ tự điền.
-4b. **Bốn câu hỏi C1–C4**, từng câu một:
-   - Chạy `/elicit cau k drill/<tên>` (đọc và làm theo `${CLAUDE_PROJECT_DIR}/.claude/skills/elicit/SKILL.md`) → một khối câu hỏi.
-   - Tự-động: gọi Agent `subagent_type: customer`, prompt = `CHẾ ĐỘ: HỎI` / `Đường dẫn true-spec: <tuyệt đối>` / dòng trống / **đúng một câu hỏi**. Thủ-công: in khối, chờ người dùng dán.
-   - Chạy `/elicit nap drill/<tên>` với câu trả lời nhận được; cộng token.
-   - Bốn câu này gọi được **song song** (customer không có memory nên thứ tự không ảnh hưởng) — nhưng vẫn nạp lần lượt để RTM không bị trộn.
+4. **Kế hoạch hỏi**: chạy quy trình `/elicit ke-hoach drill/<tên>` → hàng đợi xếp hạng, đường cắt bằng số, nguyên văn từng lượt, danh sách ô sẽ tự điền.
+4b. **Chạy hàng đợi tới đường cắt**, từng lượt một:
+   - Chạy `/elicit luot k drill/<tên>` (đọc và làm theo `${CLAUDE_PROJECT_DIR}/.claude/skills/elicit/SKILL.md`) → một dòng câu hỏi.
+   - Tự-động: gọi Agent `subagent_type: customer`, prompt = `CHẾ ĐỘ: HỎI` / `Đường dẫn true-spec: <tuyệt đối>` / dòng trống / **đúng một câu nghi vấn, không chỉ thị**. Thủ-công: in ra, chờ người dùng dán.
+   - Nhận `⚠ Bị từ chối` → chạy `/elicit tu-choi k drill/<tên>` và gửi lại bản đã sửa. **Đếm số lần bị từ chối** — đó là một chỉ số của drill.
+   - Chạy `/elicit nap drill/<tên>` với câu trả lời nhận được; cộng token và nhịp.
+   - Các lượt gọi được **song song** (customer không có memory) — nhưng vẫn nạp lần lượt để RTM không bị trộn, và vẫn đếm nhịp như thể gửi tuần tự.
 5. **Viết**: chạy quy trình `/spec-write drill/<tên>` → bản nháp + **bảng xếp hạng rủi ro giả định**.
-5b. **Câu 5 — restate**: chạy `/elicit restate drill/<tên>` (lấy 10 phát biểu từ bảng xếp hạng), gửi cho `customer`, nạp, rồi vá spec: mọi ý "Sai" phải sửa BR tương ứng. Ghi số ý Sai — **đó là số lỗ hổng mà restate cứu được**.
+5b. **Lượt xác nhận**: chạy `/elicit xac-nhan drill/<tên>` → danh sách lượt rời, **mỗi phát biểu một lượt**, ưu tiên dạng nhị phân. Gửi lần lượt cho `customer` trong số nhịp còn lại, nạp, rồi vá spec: mọi câu trả lời khác giả định phải sửa BR tương ứng. Ghi số ô được sửa — **đó là số lỗ hổng mà pha xác nhận cứu được**.
 6. **Review**: chạy `/spec-review drill/<tên>/spec.md 12 sửa` (executor gọi mù theo quy trình đó). Ghi số lỗi Cao trước/sau, và số hit khối G-7 (giá trị tự nghĩ ra).
 7. **Đổi vai — tự bắn**: chạy `/attack drill/<tên>/spec.md doi-minh drill/<tên>` → tối đa 5 test có `EV > 0` (executor mù theo quy trình đó).
 8. **Chấm** mỗi test: (a) Agent `executor` với `Đường dẫn spec: drill/<tên>/spec.md` + tình huống; (b) Agent `customer` với `CHẾ ĐỘ: CHẤM` / `Đường dẫn true-spec: ...` / `Tình huống: ...` / `Trả lời Executor: <output (a)>` → KẾT QUẢ. Gọi (a) song song 5 test, rồi (b) song song.
@@ -58,20 +61,23 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
    - **Lỗ hổng mục tiêu**: cặp câu chỏi nhau ở brief (bước 3) — đội có phát hiện và hỏi lại không, hay tự hoà giải rồi viết luật một chiều? Đo bằng: `/frame` bước 9 có xếp cặp đó vào nhóm 1 không, và C1 có hỏi tới không.
    - **Chỉ số đa nghĩa thật**: số tình huống eval mà hai reader ở `/spec-review` khối D ra kết quả khác nhau, so với số ca reader tự khai `ĐA NGHĨA = KHÔNG`. Hai số này lệch nhau nhiều = bằng chứng vòng tự khai không dùng được.
    - **Lỗ hổng giả định**: với mỗi dòng `G-xx` trong RTM, đối chiếu `true-spec.answers.md` — giả định trùng specs thật / trùng mặc định ngành nhưng lệch specs thật / **ngược mặc định ngành và lệch specs thật** (loại tệ nhất, phải = 0). Đây là chỉ số đo trực tiếp quy tắc 30 §1b.
-   - **Hiệu quả câu restate**: số ý "Sai" ở C5 · số BR đã sửa nhờ đó · trong số đó bao nhiêu BR về sau bị test bắn vào. Nếu C5 cứu được ≥2 BR bị bắn thì quy tắc "viết trước, restate sau" được xác nhận; nếu 0 thì xét lại việc dùng cả một câu hỏi cho restate.
+   - **Hiệu quả pha xác nhận**: số câu trả lời khác giả định · số BR đã sửa nhờ đó · trong số đó bao nhiêu BR về sau bị test bắn vào. So với chi phí nhịp: một lượt xác nhận cứu được ít hơn một lượt nhị phân mới trong hàng đợi thì lần sau hỏi thẳng, đừng để dành.
+   - **Chi phí bị từ chối**: số lượt bị từ chối / tổng lượt, tách theo hai nhãn (chứa chỉ thị / nhiều ý). Mỗi lần từ chối = một nhịp mất trắng. >10% nghĩa là cổng 8 kiểm tra ở `/elicit` chưa chặn được thứ đáng lẽ phải chặn — ghi thành bài học sửa `knowledge/20` §1.
+   - **Đúng nhịp hay không**: số lượt thật sự gửi / trần lượt đã tính ở bước 4. Dưới 70% = đội ngồi chờ câu trả lời, hoặc viết spec nối tiếp thay vì song song.
    - **Độ chính xác ước token**: token thật (nếu đo được) / ước theo `max(từ×2,5; ký tự/2,2)` — cho cả lượt hỏi và cho spec; lệch >20% thì chỉnh hệ số ở 00 §A1.
    - Token spec (cả hai công thức) + đệm còn lại dưới 6.000, thời gian từng pha (nếu đo được).
    - 3 bài học hành động được: mỗi bài = file knowledge + mục + câu cần thêm/sửa. Không tự sửa knowledge — đề xuất để người dùng duyệt.
 
 ## Output bắt buộc
 - [ ] `drill/<tên>/`: true-spec.md, true-spec.answers.md, brief.md, mo-hinh-bai-toan.md, log-khach-hang.md, rtm.md, spec.md, review.md, eval-set.md, tests/doi-minh.md, ket-qua.md.
-- [ ] `ket-qua.md` có 8 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, **lỗ hổng giả định**, **hiệu quả câu restate**) **bảng phủ 10 mục BTC của spec đội viết**, và 3 bài học.
+- [ ] `ket-qua.md` có 10 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, lỗ hổng giả định, hiệu quả pha xác nhận, **chi phí bị từ chối**, **đúng nhịp hay không**) **bảng phủ 10 mục BTC của spec đội viết**, và 3 bài học.
 
 ## Không được
 - Đưa true-spec cho executor; đưa spec đội cho customer; tự đọc true-spec khi đóng vai đội (kể cả khi dựng mô hình bài toán ở bước 3b).
 - Sinh true-spec thiếu bốn nhóm luật bắt buộc ở bước 2 — drill sẽ cho kết quả tốt giả.
-- Bỏ bước chấm (8) hay bước tổng kết (9); bỏ câu `restate`.
-- **Gửi quá 5 câu hỏi, gộp nhiều câu hỏi vào một lần gọi `customer`, hay đưa hội thoại trước vào prompt** — ba việc này phá đúng hạn mức mà diễn tập cần đo.
-- Soạn câu 5 trước khi có bản nháp spec và bảng xếp hạng rủi ro giả định.
-- Hỏi lại phần mà `customer` đã đánh dấu bỏ.
+- Bỏ bước chấm (8) hay bước tổng kết (9); bỏ pha `xac-nhan`.
+- **Đưa chỉ thị format vào prompt gọi `customer`, gộp nhiều ý vào một lượt, hay đưa hội thoại trước vào prompt** — ba việc này phá đúng hạn mức mà diễn tập cần đo.
+- Bỏ qua lượt bị từ chối như thể nó không xảy ra: phải ghi log, phải cộng nhịp.
+- Chạy `xac-nhan` trước khi có bản nháp spec và bảng xếp hạng rủi ro giả định.
+- Hỏi hết hàng đợi rồi mới bắt đầu viết spec.
 - Sửa file knowledge trực tiếp.

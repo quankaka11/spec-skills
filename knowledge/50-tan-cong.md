@@ -54,7 +54,7 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 7. Nằm trong core flow hold (tạo, giữ tồn, cọc, gia hạn, hết hạn, hủy, chuyển đơn, quyền actor). Chấm rubric §6 trước khi nộp.
 8. ≤ 60 từ (giới hạn tự đặt để Executor không bỏ dữ kiện; độ dài tối đa BTC cho phép vẫn chưa rõ — 00 §A2-5).
 9. **Chỉ nộp khi đã có gói bằng chứng phạm vi**, theo ba mức (đủ một mức là nộp được):
-   - **Mức 1 — câu trả lời AI Khách hàng nguyên văn** về đúng nghiệp vụ đó (C1–C5, có timestamp). Mạnh nhất, nhưng năm nay chỉ có 5 câu nên rất hiếm.
+   - **Mức 1 — câu trả lời AI Khách hàng nguyên văn** về đúng nghiệp vụ đó (khối `L<n>` đã chấp nhận, có timestamp). Mạnh nhất; với 15–20 lượt buổi sáng thì không còn hiếm như bản 5 câu, nhưng vẫn chỉ phủ đúng những ô đã hỏi. Khối `[BỊ TỪ CHỐI]` **không** phải bằng chứng.
    - **Mức 2 — câu brief tường minh** nhắc nghiệp vụ đó. Brief là tài liệu BTC phát cho mọi đội nên không bác được bằng lý "suy diễn của đội bạn".
    - **Mức 3 — đồng thuận chéo:** ≥2 trong 3 spec tải về có luật cho nghiệp vụ đó (trích số mục của cả hai). Yếu hơn hai mức trên nhưng dùng được khi kháng nghị.
    Không có mức nào ⇒ không nộp. Test không sửa được sau khi nộp, và kháng nghị chỉ mở cho ca VÔ HIỆU (00 §A) — nghĩa là gói bằng chứng phải xong lúc 14:30, không phải lúc 16:00.
@@ -79,7 +79,7 @@ Slot #9/#10 (actor, quyền) xuống dự phòng: hầu hết đội có bảng 
 
 **Slot 3 đổi sau tài liệu BTC 11/09.** Ba loại #22–#24 có mức "Rất cao / Cao" mà rủi ro VÔ HIỆU "Thấp", và phát hiện được chỉ bằng mục lục + hai bảng — rẻ hơn mọi slot khác. Ngoại lệ & rollback (#2/#12) dồn vào slot 4 vì cùng đọc từ bảng Case của mục 6.
 
-**Với 5 câu hỏi buổi sáng, nguồn đạn đã đổi trọng số.** Kit cũ giả định danh sách ⚠ có hàng chục dòng nên slot 1 luôn là #15. Năm nay danh sách ⚠ chỉ 8–20 dòng và 3 spec đối thủ thì tải về được, nên thứ tự nguồn đạn là: (1) ⚠ từ C1–C5 — ít nhưng chắc; (2) **bảng đồng thuận chéo** (#21) — nhiều và rẻ; (3) cổng F trên spec đối thủ (#16–#19) — không cần biết specs thật; (4) catalogue ⚠ của domain (10 §6) — đoán theo mặc định ngành, rủi ro TRƯỢT cao nhất vì Executor cũng đoán y hệt.
+**Trọng số nguồn đạn theo số lượt hỏi thật.** Với 15–20 lượt buổi sáng, danh sách ⚠ thường 12–25 dòng — nhiều hơn bản 5 câu nhưng vẫn ít hơn kit 08/09 giả định, và 3 spec đối thủ thì tải về được. Thứ tự nguồn đạn: (1) ⚠ từ các lượt đã trả lời — ít nhưng chắc; (2) **bảng đồng thuận chéo** (#21) — nhiều và rẻ; (3) cổng F trên spec đối thủ (#16–#19) — không cần biết specs thật; (4) catalogue ⚠ của domain (10 §6) — đoán theo mặc định ngành, rủi ro TRƯỢT cao nhất vì Executor cũng đoán y hệt.
 
 ## 4. Quy trình soi 10 phút / spec [HD §5.4]
 

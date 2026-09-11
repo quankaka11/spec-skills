@@ -130,7 +130,7 @@ Sửa từ trên xuống; hết giờ thì dừng.
 0. **Thiếu hẳn một mục trong 10 mục BTC (S31)** — cả vùng trống, đối thủ bắn thẳng.
 1. **Ô trống bảng trạng thái / ma trận chuyển / bảng Case (S13, S17, S34, S35)** — đối thủ đọc bảng là thấy lỗ.
 2. **Câu ⚠ chưa có BR (RTM thiếu)** [HD §2.4] — TRÚNG gần chắc chắn.
-2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **đưa vào câu C5** dưới dạng phát biểu Đúng/Sai (20 §3). Hết câu hỏi rồi thì viết luật bao quát an toàn hai chiều (32 §3.3), hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]`.
+2b. **Luật làm hỏng mục tiêu brief (S23) / mục tiêu không có luật (S22)** — đây là chỗ specs thật gần chắc có quy định riêng; sửa bằng cách **chèn một lượt nhị phân** lên đầu hàng đợi hỏi còn lại (20 §3.4). Hết giờ hỏi rồi thì viết luật bao quát an toàn hai chiều (32 §3.3), hoặc chọn phương án phục vụ mục tiêu brief và ghi `[GIẢ ĐỊNH-MT]`.
 2c. **Mốc "hoàn tất" hứa hộ bên ngoài (S25, nhóm 17)** — mọi tình huống hoàn tiền của đối thủ đều bắn trúng dòng này.
 2d. **Hạn mức trang trí (S28, nhóm 18)** — một câu hỏi "bot dùng email mới thì sao" là spec hoặc im lặng hoặc trả lời phi lý.
 2e. **Kịch bản suy biến có tiền dính vào còn hở (S24, S26, S27)** — bốn luật catch-all ở 32 §3.2 phủ 8/12 ca với ~90 từ; đây là tỷ lệ chắn / từ tốt nhất trong toàn bộ file này.
