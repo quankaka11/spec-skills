@@ -15,11 +15,13 @@
 | 7 | Không dẫn dắt (leading): không cài đáp án kỳ vọng vào câu hỏi; đưa lựa chọn cân bằng | "Chắc guest không được giữ hàng nhỉ?" → "Guest tạo hold: Được / Không được?" |
 | 8 | Xác nhận bằng phát biểu lại (restate): cuối buổi gói 8–10 phát biểu rút từ câu trả lời trước, xin Đúng/Sai; ý "Sai" hỏi lại ngay trong cùng lượt | "Tôi hiểu đúng chưa?" → "Đúng/Sai từng ý: 1. TTL 120 phút liên tục; 2. cọc 10%; …" |
 | 9 | Câu trả lời có từ mơ hồ ("sớm", "hợp lý", "tùy") hoặc thuật ngữ mới → bắt định nghĩa 1 dòng hoặc con số ngay lượt sau | AI nói "hoàn cọc sớm" → "'Sớm' = tối đa ? ngày làm việc?" |
-| 10 | Đặt P0 trước, P2 sau; đánh dấu câu bỏ được khi hết token; kết mỗi lượt bằng "Còn quy tắc nào về <chủ đề> chưa hỏi? Liệt kê tên" | Hỏi tuần tự theo cảm tính → theo Lượt 1→6 mục 3, giữ 10% token cho lượt restate |
+| 10 | Đặt P0 trước, P2 sau; đánh dấu câu bỏ được khi hết token; kết mỗi lượt bằng "Còn quy tắc nào về <chủ đề> chưa hỏi? Liệt kê tên" | Hỏi tuần tự theo cảm tính → theo 7 lượt ở mục 3 (thứ tự L1→L2→L3→L7→L4→L5→L6), giữ 8% token cho lượt restate |
 
 Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi ⚠ ngay vào RTM (mục 5) và log (mục 6), không chờ hết lượt [HD §2.3].
 
-## 2. Ngân hàng câu hỏi (103 câu, 14 nhóm)
+## 2. Ngân hàng câu hỏi (152 câu, 19 nhóm)
+
+> N15–N19 phục vụ **cấu trúc spec BTC 10 mục** (knowledge/32): mục 2 item màn hình, mục 3 event, mục 4 validation & message, mục 9 API, mục 7 ràng buộc/bất thường/chưa chốt. Không hỏi bốn vùng này = spec trống bốn mục.
 
 Định dạng dòng: **ID** [Ưu tiên·Kiểu] câu hỏi. Kiểu: **S** = số có đơn vị · **B** = bảng · **ĐS** = Đúng/Sai · **DS** = danh sách đóng (chọn 1 hoặc liệt kê tên). Mã lỗ hổng từng câu chắn: xem 50 §1/§3.
 
@@ -168,9 +170,70 @@ Quy tắc phụ: mỗi câu trả lời khác lẽ thường e-commerce → ghi 
 - **N14-03** [P1·DS] Luật kênh POS vs luật online khác nhau: bên nào thắng?
 - **N14-04** [P1·ĐS] Cấu hình riêng theo SKU / nhóm khách có ghi đè mặc định toàn hệ thống không?
 
-## 3. Sáu lượt hỏi đã batch sẵn (copy-paste)
+### N15. Item trên màn hình (mục 2 BTC)
 
-Copy câu hỏi theo ID từ §2 vào sau preamble; giữ số thứ tự. Ngân sách theo % TOKEN_MAX (00 §A): L1 15% · L2 18% · L3 14% · L4 15% · L5 12% · L6 16% · Restate 10%. Nếu TOKEN_MAX nhỏ, cắt theo thứ tự: L6 câu 9 → L1 câu 7 → L4 câu 9 → L6 câu 7 → L2 câu 5; không cắt L1 câu 3, L2 câu 1–2, L3.
+- **N15-01** [P0·DS] Màn hình/chức năng cần đặc tả tên là gì? Liệt kê các khu vực trên màn hình, mỗi dòng ≤6 từ.
+- **N15-02** [P0·B] Bảng: mỗi item hiển thị | nhập hay chỉ xem | bắt buộc hay không.
+- **N15-03** [P0·B] Item nào có giá trị mặc định? Bảng "Item | Mặc định".
+- **N15-04** [P0·B] Giới hạn độ dài / khoảng giá trị từng ô nhập: bảng "Item | Min | Max | Đơn vị".
+- **N15-05** [P0·B] Item nào bị **ẩn / disable** và trong điều kiện nào? Bảng "Item | Ẩn hay disable | Điều kiện".
+- **N15-06** [P0·B] **Khác biệt giữa khách đăng nhập và guest** trên màn hình: bảng "Item | Login | Guest".
+- **N15-07** [P1·DS] Text hiển thị nguyên văn của các nút chính (giữ hàng, hủy, gia hạn)?
+- **N15-08** [P1·DS] Format hiển thị số lượng, tiền, thời gian còn lại (ví dụ mẫu 1 dòng)?
+- **N15-09** [P1·ĐS] Có hiển thị số tồn còn lại cho khách không? Nếu có, hiển thị số thật hay khoảng?
+- **N15-10** [P2·DS] Placeholder của các ô nhập là gì?
+
+### N16. Event màn hình (mục 3 BTC)
+
+- **N16-01** [P0·B] Khi **mở màn hình**, hệ thống lấy những dữ liệu gì, từ đâu? Bảng "Dữ liệu | Nguồn".
+- **N16-02** [P0·B] Mỗi nút bấm gọi xử lý gì? Bảng "Nút | Xử lý | Kết quả".
+- **N16-03** [P0·DS] Bấm nút giữ hàng **hai lần liên tiếp** (double-click): tạo mấy hold?
+- **N16-04** [P1·B] Đổi dropdown / đổi số lượng thì cập nhật lại gì trên màn hình?
+- **N16-05** [P1·ĐS] Màn hình có tự làm mới (auto refresh) tồn kho / đồng hồ đếm ngược không? Chu kỳ?
+- **N16-06** [P1·DS] Sau khi tạo hold thành công, màn hình chuyển đi đâu hay ở lại?
+- **N16-07** [P2·ĐS] Có xác nhận (popup) trước khi hủy hold không? Text nguyên văn?
+
+### N17. Validation & message lỗi (mục 4 BTC)
+
+- **N17-01** [P0·B] Bảng mọi rule kiểm tra: "Item | Nội dung check | Message hiển thị (nguyên văn)".
+- **N17-02** [P0·B] Rule nào chạy ở **FE**, rule nào ở **BE**, rule nào cả hai? Bảng "Rule | FE/BE/Cả hai".
+- **N17-03** [P0·DS] Message nguyên văn khi **vượt tồn khả dụng**?
+- **N17-04** [P0·DS] Message nguyên văn khi **hold đã hết hạn**?
+- **N17-05** [P0·DS] Message nguyên văn khi **trạng thái không hợp lệ** (gia hạn hold đã hủy…)?
+- **N17-06** [P1·DS] Message nguyên văn khi **thanh toán cọc thất bại**?
+- **N17-07** [P1·ĐS] Nhiều lỗi cùng lúc: hiện tất cả hay chỉ lỗi đầu tiên? Theo thứ tự nào?
+- **N17-08** [P1·DS] Lỗi hệ thống chung (API chết): message chung cho user là gì?
+- **N17-09** [P2·DS] Message hiển thị ở đâu: cạnh item, đầu trang, hay popup?
+
+### N18. Luồng dữ liệu & API (mục 9 BTC)
+
+- **N18-01** [P0·B] Các hệ thống tham gia và quan hệ: bảng "Hệ thống | Vai trò | Nhận/gửi gì".
+- **N18-02** [P0·B] Mỗi lần trao đổi dữ liệu: bảng "Khi nào | Từ → Tới | Dữ liệu | Đồng bộ hay bất đồng bộ".
+- **N18-03** [P0·DS] Khi gọi hệ thống ngoài **thất bại**: retry mấy lần, cách nhau bao lâu, rồi làm gì?
+- **N18-04** [P0·DS] Tồn kho lấy **real-time từ ERP/WMS** hay từ cache? Nếu cache, trễ bao lâu?
+- **N18-05** [P1·ĐS] Có gửi dữ liệu hold sang hệ thống khác không? Field nào chỉ gửi trong điều kiện nào?
+- **N18-06** [P1·DS] Khi mail/thông báo gửi thất bại **sau khi đã lưu hold**: xử lý thế nào?
+- **N18-07** [P1·DS] Có alert cho vận hành khi tích hợp lỗi không? Ngưỡng nào?
+- **N18-08** [P2·B] Field nào do server tự tính (không nhận từ client)?
+
+### N19. Ràng buộc & ca bất thường liên logic (mục 7 BTC)
+
+- **N19-01** [P0·DS] **Dữ liệu đổi giữa lúc hiển thị và lúc submit** (tồn/giá đổi sau khi khách mở màn hình): xử lý thế nào?
+- **N19-02** [P0·DS] **Gửi trùng** (submit 2 lần, mở link xác nhận 2 lần): kết quả là gì?
+- **N19-03** [P0·DS] Ràng buộc kỹ thuật/nghiệp vụ đã biết (giới hạn hệ thống, quy định công ty): liệt kê tên.
+- **N19-04** [P1·DS] Điều gì trong tính năng này **đang chờ xác nhận / chưa chốt**? Liệt kê tên.
+- **N19-05** [P1·DS] Mục tiêu tốc độ (thời gian phản hồi) và giới hạn số request có quy định không? Số cụ thể?
+- **N19-06** [P2·DS] Yêu cầu bảo mật/thông tin cá nhân riêng cho tính năng này?
+
+## 3. Bảy lượt hỏi đã batch sẵn (copy-paste)
+
+Copy câu hỏi theo ID từ §2 vào sau preamble; giữ số thứ tự.
+
+**Bảy lượt** (L7 mới, phục vụ mục 2/3/4/9 của cấu trúc BTC). Ngân sách theo % TOKEN_MAX (00 §A): L1 13% · L2 15% · L3 13% · L4 13% · L5 10% · L6 13% · **L7 15%** · Restate 8%.
+
+Nếu TOKEN_MAX nhỏ, cắt theo thứ tự: L6 câu 9 → L1 câu 7 → L4 câu 9 → L6 câu 7 → L2 câu 5 → L7 câu 6. **Không cắt:** L1 câu 3, L2 câu 1–2, L3, **L7 câu 1–4** (message lỗi và khác biệt guest là hai vùng Executor đoán sai nhiều nhất).
+
+Thứ tự chạy đề xuất: L1 → L2 → L3 → **L7** → L4 → L5 → L6 → Restate. Đưa L7 lên sớm vì mục 2/4 cần nhiều dữ kiện nguyên văn, khó bịa lúc viết.
 
 ### Lượt 1 — Phạm vi TRONG/NGOÀI
 
@@ -225,6 +288,24 @@ Trả lời theo số, mỗi câu ≤2 dòng, không giải thích.
 1. N5-08  2. N5-07  3. N5-11  4. N12-01  5. N12-02, N2-14  6. N9-01, N9-02
 7. N9-04  8. N9-06, N9-10  9. N10-01, N10-03, N10-04, N10-02
 10. Còn quy tắc nào về tính năng chưa được hỏi? Liệt kê tên, không mô tả.
+```
+
+### Lượt 7 — Màn hình, event, validation, tích hợp (cấu trúc BTC mục 2, 3, 4, 9)
+
+```
+Trả lời dạng bảng theo số, mỗi ô ≤12 từ, không giải thích. Message lỗi ghi NGUYÊN VĂN.
+1. N15-01, N15-02
+2. N15-05, N15-06
+3. N17-01 (bảng: Item | Nội dung check | Message nguyên văn)
+4. N17-03, N17-04, N17-05, N17-08
+5. N17-02 (rule nào FE, nào BE, nào cả hai)
+6. N16-01, N16-02
+7. N16-03, N19-02
+8. N15-03, N15-04, N15-07
+9. N18-01, N18-02, N18-04
+10. N18-03, N18-06
+11. N19-01
+12. N19-03, N19-04
 ```
 
 ### Lượt đệm — Restate (làm sau 10:45)

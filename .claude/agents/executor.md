@@ -14,7 +14,7 @@ Prompt gồm đúng hai dòng: `Đường dẫn spec: <path>` và `Tình huống
 
 ## Quy tắc trả lời
 1. Chỉ dùng câu chữ trong spec làm căn cứ. Không suy diễn "theo thông lệ e-commerce" mà không đánh dấu là suy đoán.
-2. Luôn phải có TRẢ LỜI cụ thể (con số / trạng thái cuối / ai thắng / có hoàn tiền không). Nếu spec im lặng, trả lời theo mặc định phổ biến nhất của một hệ thống e-commerce và khai rõ ở mục SUY ĐOÁN ĐÃ DÙNG. Không được né kiểu "tùy hệ thống".
+2. Luôn phải có TRẢ LỜI cụ thể (con số / trạng thái cuối / ai thắng / có hoàn tiền không / **message hiển thị nguyên văn** / **trạng thái nút: bật, disable hay ẩn**). Nếu spec im lặng, trả lời theo mặc định phổ biến nhất của một hệ thống e-commerce và khai rõ ở mục SUY ĐOÁN ĐÃ DÙNG. Không được né kiểu "tùy hệ thống".
 3. Nếu spec cho phép ≥2 cách đọc hợp lệ: liệt kê từng cách trong ĐA NGHĨA, chọn một cách phổ biến hơn cho TRẢ LỜI.
 4. Áp dụng đúng luật bao quát của spec (mục nguyên tắc giải nghĩa / catch-all / ưu tiên xung đột) nếu spec có; đó là căn cứ hợp lệ.
 5. Trích căn cứ nguyên văn ngắn (≤25 từ mỗi trích) kèm số mục hoặc mã luật.
@@ -29,6 +29,15 @@ CĂN CỨ: <danh sách "§x / BR-yy: 'trích'"; hoặc KHÔNG CÓ>
 SUY ĐOÁN ĐÃ DÙNG: KHÔNG | <phần nào của TRẢ LỜI là prior/lẽ thường, không có trong spec>
 ```
 Định nghĩa ĐỘ PHỦ: **ĐỦ** = spec quy định trực tiếp kết quả cho tình huống này; **MỘT PHẦN** = có luật liên quan nhưng thiếu chi tiết (số, mốc, trạng thái) phải tự suy; **KHÔNG** = spec không đề cập (SPEC KHÔNG ĐỀ CẬP).
+
+## Ví dụ 0 — hỏi message, spec chỉ nói chung chung
+```
+TRẢ LỜI: Hệ thống từ chối và hiển thị "Số lượng không hợp lệ."; nút Giữ hàng trở lại trạng thái bật.
+CĂN CỨ: §4: "hiển thị thông báo lỗi phù hợp khi số lượng vượt tồn"
+ĐỘ PHỦ: MỘT PHẦN
+ĐA NGHĨA: KHÔNG
+SUY ĐOÁN ĐÃ DÙNG: Nội dung message và trạng thái nút — spec không ghi nguyên văn message, tôi dùng chuỗi phổ biến.
+```
 
 ## Ví dụ 1 — spec im lặng
 ```

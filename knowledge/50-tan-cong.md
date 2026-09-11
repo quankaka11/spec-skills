@@ -4,7 +4,9 @@
 
 Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn), `<%CỌC>`, `<TZ>` = số lấy từ AI Khách hàng buổi sáng; điền số thật trước khi nộp. Dùng thời điểm tuyệt đối (10:00:00) thay vì "sau TTL".
 
-## 1. Bảng 15 loại lỗ hổng [HD §5.1]
+## 1. Bảng 18 loại lỗ hổng [HD §5.1]
+
+> Loại 16–18 sinh ra từ cấu trúc spec BTC 10 mục (knowledge/32). Đội nào viết spec theo lối luật nghiệp vụ thuần (không có mục 2/3/4) sẽ hở toàn bộ ba loại này.
 
 | # | Tên | Dấu hiệu trong spec (Ctrl+F / thiếu mục) | Probe §5 | Tỷ lệ TRÚNG | Rủi ro VÔ HIỆU |
 |---|---|---|---|---|---|
@@ -23,6 +25,9 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 | 13 | Phụ thuộc ngoài không định nghĩa | Nhắc ERP/cổng thanh toán/kho nhưng không nêu nguồn sự thật, timeout, retry | P16 | TB | TB |
 | 14 | Từ ngữ đa nghĩa | Dùng lẫn "giữ hàng"/"đặt trước"/"đặt cọc"/"khóa hàng"/"giỏ hàng" | "Khách 'đặt trước' 1 sản phẩm tồn = 0 sắp về. Hold được tạo hay từ chối?" | TB | TB |
 | 15 | Luật phản trực giác bị im lặng | Đối chiếu danh sách ⚠ buổi sáng; spec không nói → bắn thẳng [HD §2.3] | P19 | Rất cao | Thấp |
+| 16 | **Message lỗi không nguyên văn** (mục 4 BTC) | Mục 4 vắng, hoặc chỉ ghi "hiển thị thông báo lỗi" / "báo lỗi phù hợp" — không có chuỗi trong ngoặc kép | P43 | **Rất cao** | Thấp |
+| 17 | **Guest vs login không phân biệt** (mục 2, 8 BTC) | Mục 2 không có cột guest; mục 8 không có dòng Guest; Ctrl+F "guest / chưa đăng nhập" = 0 hit | P44 | **Rất cao** | Thấp |
+| 18 | **Trạng thái UI không xác định** (mục 2, 3 BTC) | Không nói nút disable/ẩn khi nào; không nói sau thao tác màn hình hiển thị gì; bảng Case thiếu cột "hiển thị / trạng thái nút" | P45 | Cao | TB |
 
 ## 2. Quy tắc viết tình huống test
 
@@ -57,11 +62,14 @@ Luật phân tán: 5 test phủ ≥ 4 nhóm N; tối đa 2 test cùng chủ đ�
 
 | Phút | Việc | Đầu ra |
 |---|---|---|
-| 0–2 | Đọc heading; tick 14 nhóm N1–N14 [HD §3.5] có/không | Nhóm KHÔNG có = hạng A |
-| 2–4 | Ctrl+F danh sách đen [HD §4.6] + "có thể", "nên", "v.v.", "phù hợp", "hệ thống xử lý" | Mỗi hit = 1 điểm #3, ghi số mục |
-| 4–6 | Tìm bảng trạng thái / decision table. Không có → #6/#8. Có → tìm ô trống, sự kiện thiếu (admin hủy, hết hàng, thanh toán lỗi) | Danh sách ô trống |
-| 6–8 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
-| 8–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; mở hồ sơ §7 | 5 test điểm ≤1 |
+| 0–2 | **Tick 10 mục BTC** (knowledge/32 §1) có/không; rồi tick 14 nhóm nghiệp vụ N1–N14 [HD §3.5] | Mục vắng = hạng A (#1, và #16/#17/#18 nếu là mục 4 / 2 / 3) |
+| 2–3 | **Mục 4** (validation & message): có message **nguyên văn trong ngoặc kép** không? có cột FE/BE không? | Không nguyên văn = #16 hạng A — bắn "hiện message gì" |
+| 3–4 | **Mục 2 + 8**: có cột/dòng **Guest** không? có điều kiện ẩn/disable không? | Vắng = #17/#18 hạng A |
+| 4–5 | Ctrl+F danh sách đen [HD §4.6] + "có thể", "nên", "v.v.", "phù hợp", "hệ thống xử lý" | Mỗi hit = 1 điểm #3, ghi số mục |
+| 5–7 | **Mục 6**: với từng logic, đếm case **bình thường / biên / lỗi**; kiểm 5 gạch (số, toán tử `>`/`≥`, múi giờ, default khi config trống, ưu tiên khi nhiều case cùng đúng). Bảng trạng thái: ô trống, sự kiện thiếu | Case thiếu = #2/#4/#6/#8; 5 gạch thiếu = bắn thẳng vào gạch đó |
+| 7–8 | **Mục 7**: có 4 ca bất thường BTC nêu đích danh không (dữ liệu đổi giữa hiển thị và submit · gửi trùng · mở link hai lần · mail fail sau khi đã lưu)? | Vắng ca nào = tình huống bắn sẵn |
+| 8–9 | Ctrl+F 5 mục hiếm: "đồng thời", "múi giờ", "guest", "rollback", "ưu tiên" | 0 hit = hạng A |
+| 9–10 | Chốt 5 test theo §3; viết theo mẫu §2; chấm rubric §6; mở hồ sơ §7 | 5 test điểm ≤1 |
 
 Knowledge boundary sweep [HD §2.1 ⑤]: Ctrl+F từng dòng danh sách ⚠ + bảng tham số đội mình (TTL, qty, hold max, %cọc, gia hạn, giá khóa, guest, hoàn cọc) trong spec đối thủ; không thấy hoặc khác specs thật → test hạng A, đáp án chuẩn có sẵn. 2 người: một sweep, một soi cấu trúc, song song từ phút 0.
 
@@ -115,6 +123,15 @@ Nguồn: EP [ISTQB 4.2.1]; BVA 3-value [4.2.2]; decision table [4.2.3]; state ta
 | P40 | Hủy rồi tạo lại ngay | Sequences [Hendrickson] | N3 | "Khách hủy hold 10:05, tạo lại hold cùng SKU lúc 10:06. Hold mới được tạo hay bị từ chối?" |
 | P41 | Hủy khi cổng đang xử lý cọc | Interruptions: Cancel [Hendrickson] | N5 | "Khách bấm Hủy lúc cổng thanh toán đang xử lý cọc (chưa callback). Cọc về đâu: không thu / hoàn 100% / giữ?" |
 | P42 | SKU ngừng bán khi hold ACTIVE | State: invalid transition | N12 | "Admin ngừng bán SKU X lúc 10:30 khi hold ACTIVE tới 12:00. Hold ở trạng thái nào?" |
+| **P43** | **Message lỗi nguyên văn** | #16; mục 4 BTC | N17 | "Khách nhập số lượng 5 khi tồn khả dụng còn 2, bấm Giữ hàng. Hệ thống hiển thị message gì, nguyên văn?" |
+| **P43b** | **Nhiều lỗi cùng lúc** | #16; mục 4 | N17 | "Khách để trống số điện thoại VÀ nhập số lượng vượt tồn, bấm Giữ hàng. Hiện một hay nhiều message, message nào trước?" |
+| **P44** | **Guest vs login** | #17; mục 2, 8 BTC | N15 | "Khách CHƯA đăng nhập bấm Giữ hàng cho SKU còn 3 đơn vị. Hold được tạo hay bị từ chối; màn hình hiện gì?" |
+| **P44b** | **Guest xem hold** | #17; mục 8 | N15 | "Guest đã tạo hold lúc 10:00, đóng trình duyệt, mở lại lúc 10:30. Guest có xem được hold của mình không?" |
+| **P45** | **Trạng thái nút** | #18; mục 2, 3 BTC | N15 | "Tồn khả dụng của SKU X = 0 khi khách mở màn hình. Nút Giữ hàng ở trạng thái nào: bật, disable hay ẩn?" |
+| **P45b** | **Sau thao tác hiển thị gì** | #18; mục 3 | N16 | "Khách tạo hold thành công lúc 10:00. Ngay sau đó màn hình hiển thị gì và nút chuyển thành gì?" |
+| **P46** | **Dữ liệu đổi giữa hiển thị và submit** | mục 7.2 BTC | N19 | "Khách mở màn hình lúc 10:00 thấy tồn 3; lúc 10:02 tồn thật còn 1; khách bấm Giữ hàng 2 đơn vị lúc 10:03. Kết quả và message?" |
+| **P47** | **Mở link hai lần** | mục 7.2 BTC | N19 | "Khách mở link xác nhận cọc hai lần trong 5 giây. Có mấy hold, thu cọc mấy lần?" |
+| **P48** | **Mail fail sau khi đã lưu** | mục 7.2 BTC | N18 | "Hold đã lưu thành công nhưng gửi email xác nhận thất bại. Hold ở trạng thái nào, khách thấy gì?" |
 
 ## 6. Rubric kiểm phạm vi (chống VÔ HIỆU)
 

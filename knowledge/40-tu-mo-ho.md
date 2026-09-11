@@ -74,6 +74,15 @@ Mức: **Cao** = Executor gần chắc trả lời khác specs thật; **Trung**
 | S19 | Xung đột nội bộ | Hai luật cho cùng điều kiện ra kết quả khác nhau; số liệu khác nhau ở 2 chỗ (TTL 120 ở mục 3, 90 ở bảng) | Cao | Một nguồn sự thật cho mỗi tham số; chỗ khác chỉ trỏ tới BR [NASA C.4 Consistency] |
 | S20 | Thiếu luật bao quát (catch-all) | Cuối mỗi mục không có "Mọi trường hợp không nêu ở trên → …" | Cao | Thêm câu chốt phạm vi + hành vi mặc định [HD §2.2] |
 | S21 | Thuật ngữ dùng trước khi định nghĩa | Từ viết hoa/trạng thái xuất hiện trước bảng thuật ngữ | Trung | Đưa định nghĩa lên trước lần dùng đầu |
+| S22 | **Thiếu mục bắt buộc** (cấu trúc BTC 10 mục) | Đối chiếu mục lục với knowledge/32 §1: thiếu mục nào trong 1–10 | Cao | Mục vắng = cả vùng nghiệp vụ bỏ trống; thêm mục, tối thiểu một bảng |
+| S23 | **Message lỗi không nguyên văn** (mục 4) | Mục 4 mô tả "hiện thông báo lỗi" / "báo lỗi phù hợp" mà không có chuỗi trong ngoặc kép | Cao | "báo lỗi" → `"Số lượng vượt tồn khả dụng (còn {n})."` — Executor sẽ bị hỏi message gì |
+| S24 | **Rule không ghi FE/BE** (mục 4) | Bảng validation thiếu cột FE/BE hoặc ô trống | Trung | Ghi rõ FE / BE / Cả hai từng rule |
+| S25 | **Bảng Case thiếu loại case** (mục 6) | Mỗi logic: đếm case bình thường / biên / lỗi — thiếu loại nào | Cao | Thêm case biên (chạm đúng mốc) và case lỗi; BTC: "thiếu case nào thì Executor phải đoán ở đúng chỗ đó" |
+| S26 | **Bảng Case thiếu 5 gạch bắt buộc** (mục 6) | Mỗi bảng Case kiểm: có số? có toán tử `>`/`≥`? có múi giờ? có giá trị mặc định khi config trống? có thứ tự ưu tiên khi nhiều case cùng đúng? | Cao | Bổ sung gạch thiếu; ưu tiên "toán tử" và "ưu tiên khi nhiều case cùng đúng" |
+| S27 | **Không phân biệt login vs guest** (mục 2, 8) | Mục 2 thiếu cột guest; mục 8 thiếu dòng Guest | Cao | Thêm cột/dòng Guest — vùng Executor đoán sai nhiều nhất |
+| S28 | **Điều chưa chốt rải rác** (mục 7.4) | `[GIẢ ĐỊNH]`, "TBD", "đang xác nhận" nằm rải trong bài mà không có bảng gom ở mục 7.4 | Trung | Gom một bảng riêng mục 7.4 kèm giả định hiện tại — BTC yêu cầu "không rải trong bài" |
+| S29 | **Sơ đồ thay bảng** | Có khối ```mermaid `stateDiagram-v2` nhưng KHÔNG có bảng state × event; hoặc sơ đồ hệ thống thay cho bảng timing | Cao | Sơ đồ chỉ vẽ chuyển hợp lệ → mọi cặp (trạng thái × sự kiện) không vẽ đều là chỗ Executor đoán. Giữ cả hai; hết chỗ thì bỏ sơ đồ, giữ bảng (knowledge/32 §7.2) |
+| S30 | **Sơ đồ Mermaid không có phần chữ** | Khối ```mermaid không kèm 1–2 câu tóm tắt ngay dưới; hoặc nhãn tiếng Việt có dấu không bọc ngoặc kép | Trung | Render lỗi là mất trắng nội dung sơ đồ — luôn kèm câu chữ; bọc nhãn `A["Khách đăng nhập"]` |
 
 ## 4. Định dạng báo cáo lint
 
@@ -94,8 +103,10 @@ Chuyển hit → tình huống bắn (vai CÔNG):
 
 Sửa từ trên xuống; hết giờ thì dừng.
 
-1. **Ô trống bảng trạng thái / ma trận chuyển (S13, S17)** — đối thủ đọc bảng là thấy lỗ.
+0. **Thiếu hẳn một mục trong 10 mục BTC (S22)** — cả vùng trống, đối thủ bắn thẳng.
+1. **Ô trống bảng trạng thái / ma trận chuyển / bảng Case (S13, S17, S25, S26)** — đối thủ đọc bảng là thấy lỗ.
 2. **Câu ⚠ chưa có BR (RTM thiếu)** [HD §2.4] — TRÚNG gần chắc chắn.
+2b. **Message lỗi không nguyên văn (S23); không phân biệt guest (S27)** — hai vùng Executor đoán sai nhiều nhất ở cấu trúc mới.
 3. **Tham chiếu ra ngoài / trực giác ngầm (S12, nhóm 6)** — Executor đoán theo prior.
 4. **Số không đơn vị, khoảng không biên, giờ không timezone (S1–S3)** — "đúng 120 phút", "23:59" là mẫu bắn phổ biến nhất.
 5. **Thiếu luật bao quát cuối mục (S20)** — 1 câu chặn cả nhóm tình huống.

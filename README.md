@@ -8,10 +8,10 @@ Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Bat
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `knowledge/00…50-*.md` | 7 file tri thức chưng cất (luật chơi, domain, ngân hàng câu hỏi, viết spec, từ mơ hồ, tấn công) — skill đọc trực tiếp, không chép lại |
+| `knowledge/00…50-*.md` | 8 file tri thức chưng cất (luật chơi, domain, ngân hàng câu hỏi, **cấu trúc spec BTC 10 mục**, viết spec, từ mơ hồ, tấn công) — skill đọc trực tiếp, không chép lại |
 | `.claude/skills/<tên>/SKILL.md` | 6 skill: `elicit`, `spec-write`, `spec-review`, `attack`, `appeal`, `drill` |
 | `.claude/agents/{executor,customer}.md` | 2 agent giả lập, mù bối cảnh thật |
-| `data/` | 16 PDF nguồn (BABOK, ISTQB, NASA SE Handbook, Volere, DMN, Shopify/IBM/Oracle inventory…) |
+| `data/btc/` | Tài liệu BTC gửi, bản trích nguyên văn (đối chiếu khi tranh luận) |
 | `hackathon_descriptions.md` | Tài liệu nền hợp nhất về cuộc thi (mô tả, luật, 9 phần + phụ lục) |
 | `battle/` | Tạo khi vào thi thật: brief, log, RTM, spec, test — skill tự sinh các file còn lại |
 | `drill/` | Fixture & kết quả diễn tập trước ngày thi |
@@ -24,20 +24,26 @@ Bộ công cụ Claude Code cho đội thi **HBLAB AI Hackathon #02 — Spec Bat
 
 ## Quy trình thi (Sáng, 9:30–12:00)
 
-### 6 lượt hỏi-đáp với AI Khách hàng
+### 7 lượt hỏi-đáp với AI Khách hàng
 
 ```bash
 /elicit lượt 1          # Sinh khối câu hỏi để copy
                         # Dán cho AI Khách hàng, copy câu trả lời
 /elicit nạp             # Dán câu trả lời — cập nhật RTM ngược + log có timestamp
-# Lặp đến lượt 6
+# Lặp đến lượt 7 (thứ tự: L1 → L2 → L3 → L7 → L4 → L5 → L6 → restate)
 ```
+
+**Lượt 7 là bắt buộc** — lấy dữ kiện cho mục 2 (item màn hình), 3 (event), 4 (validation & message lỗi nguyên văn), 9 (API) của cấu trúc spec BTC. Bỏ lượt này = spec trống bốn mục.
 
 ### Viết spec
 
 ```bash
 /spec-write             # Viết battle/spec.md ≤3.000 từ từ RTM + log (mặc định thư mục battle/)
 ```
+
+Spec theo **cấu trúc 10 mục BTC** (tài liệu "Spec Battle Anatomy", 11/09): `1` Tổng quan & phạm vi · `2` Item màn hình · `3` Event · `4` Validation & message lỗi · `5` Wireframe · `6` Flow & quy tắc xử lý · `7` Ràng buộc/bất thường/chưa chốt · `8` Xác thực & phân quyền · `9` Luồng dữ liệu & API · `10` Data model, perf, security. Chi tiết: [`knowledge/32-cau-truc-spec-btc.md`](knowledge/32-cau-truc-spec-btc.md).
+
+Sơ đồ vẽ bằng **Mermaid** (không có Figma trong phòng thi): `block-beta` wireframe · `stateDiagram-v2` state machine · `sequenceDiagram` flow end-to-end · `flowchart LR` sơ đồ hệ thống. Cú pháp mẫu ở [`knowledge/32` §7](knowledge/32-cau-truc-spec-btc.md). **Sơ đồ không thay bảng** — sơ đồ chỉ vẽ chuyển hợp lệ, ô `Từ chối 0.5`/`KHL` chỉ có trong bảng; hết chỗ thì bỏ sơ đồ, giữ bảng.
 
 ### Review & Submit (11:45–11:55, khóa 12:00)
 

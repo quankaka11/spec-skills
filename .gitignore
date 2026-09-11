@@ -1,0 +1,13 @@
+# Trang web đã lưu (Save page as) — chỉ giữ bản trích text ở data/btc/
+*_files/
+*.html
+
+# PDF nguồn — đã chưng cất vào knowledge/, không commit lại (xem PROGRESS 11/09)
+data/*
+!data/btc/
+
+# Thư mục làm việc ngày thi & diễn tập — sinh ra lúc chạy, không commit
+battle/
+drill/
+
+.DS_Store
