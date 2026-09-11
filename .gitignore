@@ -9,5 +9,5 @@ data/*
 # Thư mục làm việc ngày thi & diễn tập — sinh ra lúc chạy, không commit
 battle/
 drill/
-
+.idea
 .DS_Store
