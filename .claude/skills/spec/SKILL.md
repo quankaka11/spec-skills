@@ -78,7 +78,14 @@ Thứ tự gửi nếu đội muốn ưu tiên: phạm vi & điều cấm → ch
    - **10** Field lưu trữ; mục tiêu tốc độ ghi rõ số nào là giả định; bảo mật; tài liệu tham chiếu.
 3. Bản nội bộ `spec.md`: cuối mỗi dòng luật ghi `← F-xx`. Ô không có sự kiện nào bao trùm: viết mặc định ngành phổ biến nhất, ghi `← G-xx` và thêm dòng vào `su-kien.md` với Nguồn = `GIẢ ĐỊNH`.
 4. Bản nộp `spec.nop.md`: chép từ `spec.md`, **xóa toàn bộ** `← F-xx`, `← G-xx`, mọi chữ "giả định", "TBD", "đang xác nhận", và mọi câu nói về chính tài liệu ("đã phủ", "đủ tổ hợp"). Bản nộp đọc như luật chắc chắn. Mục 7.4 chỉ giữ điều thật sự không thể quyết.
-5. Đo độ dài theo cách `the_le.md` quy định. Vượt thì cắt theo thứ tự: câu giải thích lý do → ví dụ minh họa → sơ đồ mục 9 → sơ đồ trạng thái mục 6 (bảng vẫn giữ). **Không cắt** bảng case, message nguyên văn, dòng bao quát, wireframe mục 5.
+5. Đo độ dài `spec.nop.md` theo mục **Giới hạn độ dài bản nộp** bên dưới. Vượt thì cắt theo thứ tự: câu giải thích lý do → ví dụ minh họa → sơ đồ mục 9 → sơ đồ trạng thái mục 6 (bảng vẫn giữ) → gộp các dòng bảng cùng kết quả thành một dòng có điều kiện chung. **Không cắt** bảng case, message nguyên văn, dòng bao quát, wireframe mục 5.
+
+**Giới hạn độ dài bản nộp:**
+
+- Trần nội bộ của đội: `spec.nop.md` **≤ 10.000 token**, đích nhắm 8.000–9.500 để còn chỗ sửa sau `kiem`. Trần này là quyết định của đội, không phải số BTC: Executor đọc spec dài hơn sẽ bỏ sót luật ở giữa, và spec dài là spec có nhiều chỗ để bắn.
+- Nếu `the_le.md` công bố giới hạn **nhỏ hơn** thì theo `the_le.md`. Nếu lớn hơn hoặc còn `?` thì giữ trần 10.000. Tức là luôn lấy **min(thể lệ, 10.000)**.
+- Cách đo: chạy `wc -m battle/spec.nop.md`, token ≈ số ký tự ÷ 3 (tiếng Việt có dấu tokenize đắt hơn tiếng Anh). Mermaid và bảng tính như văn bản thường. Có tokenizer thật (tiktoken, API count_tokens) thì dùng số thật và ghi công cụ đo vào `kiem.md`.
+- Ngân sách gợi ý theo mục, tính trên 10.000: mục 6 ≈ 35 %, mục 2 + 4 ≈ 25 %, mục 3 + 7 + 8 ≈ 20 %, còn lại cho 1, 5, 9, 10. Mục nào vượt gấp đôi phần gợi ý là dấu hiệu đang viết giải thích thay cho luật.
 
 **Quy tắc Mermaid** (mọi hình vẽ trong spec đều là Mermaid, không ảnh, không link Figma):
 
@@ -87,13 +94,15 @@ Thứ tự gửi nếu đội muốn ưu tiên: phạm vi & điều cấm → ch
 - Nhãn tiếng Việt có dấu, khoảng trắng, dấu `/` `(` `:` phải bọc ngoặc kép: `A["Khách đăng nhập"]`, `S1 : "Chờ duyệt"`. Không dùng `;` `#` `%%` trong nhãn.
 - Mỗi sơ đồ ≤ 15 node / 12 message. Dài hơn thì tách theo logic, không nhồi.
 - Loại dùng theo mục: 5 `block-beta` · 6 flow `sequenceDiagram` · 6 trạng thái `stateDiagram-v2` · 9 `flowchart LR`. Không dùng `gantt`, `mindmap`, `C4` (render kém ổn định).
-- Mermaid tính vào độ dài bản nộp như văn bản. Kiểm render bằng cách dán vào Mermaid Live trước khi nộp nếu có mạng.
+- Mermaid tính vào độ dài bản nộp như văn bản và nằm trong trần 10.000 token. Kiểm render bằng cách dán vào Mermaid Live trước khi nộp nếu có mạng.
 
 Văn phong: câu ngắn, chủ ngữ rõ (khách / hệ thống / job / admin), động từ PHẢI / KHÔNG ĐƯỢC / ĐƯỢC PHÉP. Không "có thể", "thường", "phù hợp", "kịp thời", "v.v.", "như thông lệ", "theo tài liệu X". Mỗi thuật ngữ một tên duy nhất, định nghĩa trước khi dùng. Mọi khoảng có ký hiệu `[a, b)` hoặc `≤ / <`. Mọi số có đơn vị. Mọi giờ có múi giờ.
 
 ### `kiem` — kiểm trước khi nộp
 
 Chạy trên `spec.nop.md`. Kết quả ghi `battle/kiem.md`: **NỘP ĐƯỢC / CHƯA**, danh sách lỗi theo mức.
+
+**Cổng 0, độ dài (mức Cao nếu vi phạm):** đo `spec.nop.md` theo mục Giới hạn độ dài bản nộp; ghi số ký tự, số token ước lượng, công cụ đo và trần đang áp (min(thể lệ, 10.000)) vào đầu `kiem.md`. Vượt trần → CHƯA, kèm danh sách mục vượt ngân sách gợi ý để biết cắt ở đâu.
 
 **Cổng 1, cấu trúc (mức Cao nếu vi phạm):**
 
@@ -114,7 +123,8 @@ Sửa xong chạy lại `kiem` cho tới khi 0 lỗi mức Cao. Lưu một bản
 
 ## Điều không bao giờ làm
 
-- Không ghi số hạn mức cuộc thi vào skill hay spec; đọc từ `the_le.md`.
+- Không ghi số hạn mức cuộc thi vào skill hay spec; đọc từ `the_le.md`. Ngoại lệ duy nhất là trần 10.000 token của bản nộp: đó là số của đội, không phải của BTC, và luôn bị thể lệ nhỏ hơn ghi đè.
+- Không nộp `spec.nop.md` vượt 10.000 token dù thể lệ cho phép dài hơn.
 - Không để chữ "giả định" trong bản nộp.
 - Không viết "như thông lệ", "theo brief", "như đã trao đổi": Executor không thấy những thứ đó.
 - Không sáng tạo giá trị mới cho ô không hỏi được; dùng mặc định ngành phổ biến nhất.

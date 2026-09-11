@@ -7,7 +7,7 @@ Skill `/spec` và `/attack` đọc bảng này, không hard-code số. Điền k
 | Ngân sách token hỏi AI Khách hàng (hỏi + trả lời) | ? | |
 | AI Khách hàng có nhớ câu trước không | ? | |
 | Ảnh gửi AI Khách hàng: được không, có tính token không | ? | |
-| Giới hạn độ dài spec (token / từ / ký tự) và cách đo | ? | |
+| Giới hạn độ dài spec (token / từ / ký tự) và cách đo | ? — trần nội bộ đội: ≤ 10.000 token, đo `wc -m` ÷ 3; áp min(thể lệ, 10.000) | Quyết định đội 11/09 |
 | Định dạng nộp spec | Markdown; mọi hình vẽ bằng Mermaid, không ảnh | Quyết định đội 11/09 |
 | Mermaid có tính vào giới hạn độ dài không | ? | |
 | Giờ khóa spec | ? | |
