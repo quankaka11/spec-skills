@@ -10,8 +10,14 @@ Quy ước: PHẢI = bắt buộc · KHÔNG ĐƯỢC = cấm · ĐƯỢC PHÉP =
 - NGOÀI phạm vi (tài liệu này không quy định): …
 
 ### 1.1 Thuật ngữ
+(mọi từ khách hàng dùng trong câu trả lời đều có dòng ở đây)
 | Thuật ngữ | Định nghĩa | Trạng thái / giá trị hợp lệ |
 |---|---|---|
+
+### 1.2 Bảng giá trị
+(mọi con số xuất hiện trong spec phải có dòng ở đây; toán tử ghi rõ ≥ hay >)
+| Mã | Tên | Giá trị | Đơn vị | Toán tử so sánh | Áp dụng cho (actor / hạng / loại) |
+|---|---|---|---|---|---|
 
 ## 2. Item trên màn hình
 Khu vực: <tên khu vực>
@@ -63,6 +69,10 @@ Case:
 | Lỗi | | |
 Thứ tự ưu tiên khi nhiều case cùng đúng: …
 Mọi trường hợp không nêu ở trên → …
+
+Ma trận (dùng cho mọi quan hệ hai chiều: đang có × thêm mới · actor × hành động · hạng × mốc; điền đủ mọi ô):
+| <chiều 1> \ <chiều 2> | <giá trị a> | <giá trị b> | … |
+|---|---|---|---|
 
 ### 6.y Trạng thái
 ```mermaid
