@@ -1,6 +1,6 @@
 # PROGRESS — Chuẩn bị HBLAB AI Hackathon #02 (Spec Battle)
 
-**Ngày thi:** 12/09/2026 · **Họp BTC:** 09/09 · **Tài liệu BTC "Spec Battle Anatomy":** 11/09 · **THI THỬ 11/09 — luật hỏi đổi hẳn** · **Cập nhật note:** 11/09/2026
+**Ngày thi:** 12/09/2026 · **Họp BTC:** 09/09 · **Tài liệu BTC "Spec Battle Anatomy":** 11/09 · **THI THỬ 11/09 — luật hỏi đổi hẳn** · **Cập nhật note:** 12/09/2026
 
 **Mục tiêu cuối:** tài liệu → PDF → LLM Wiki/PageIndex → bộ skills & agents dùng trong ngày thi.
 
@@ -18,6 +18,8 @@
 | 6 | Diễn tập trọn 1 lượt | ❗ **Chưa chạy trên cấu trúc 10 mục và luật hỏi 11/09** | `/drill` trọn vòng **theo hạn mức 11/09** (không giới hạn số câu, một ý mỗi lượt, cấm chỉ thị, nhịp chờ, 4.000 token, spec 6k token). **Không được bỏ** — mọi số đo cũ đều từ chế độ batch hoặc chế độ 5-câu-gộp-bảng, cả hai đều **bị từ chối** ở hệ thật |
 | 7 | Áp tham số chốt 09/09 + cấu trúc BTC 11/09 vào toàn kit | ✅ **Xong 11/09** | 10 file `knowledge/`, 7 skill, 2 agent, 2 README — xem mục "Đã làm" bên dưới |
 | 9 | Áp **hạn mức spec 10.000 token** + nâng khối lưu đồ Mermaid | ✅ **Xong 11/09 chiều** | `knowledge/33` §5 phân bổ lại 10 mục (đích 9.000, **sàn 7.500**) + §6 + §7 viết lại thành **6 loại sơ đồ** (thêm `flowchart TD` lưu đồ quyết định, `erDiagram`) + **§7.7 lint 10 lỗi gãy render** · `knowledge/30` §1/§5/§6/§7 · `knowledge/00` §A/§A1/§B/§I · `/spec-write`, `/spec-review` (khối 5b lint sơ đồ, ngưỡng dưới token), `/frame`, `/drill` · `32`, `40`, 2 README |
+| 11 | **Nạp đạn bằng lượt hỏi AI Khách hàng** (`/attack hoi`) | ✅ **Xong 12/09** | `knowledge/50` **§9** (ba dạng lượt: Δ-probe / scope-probe / đếm-probe; luật đọc kết quả; §9.3 khi AI đã đóng) · `knowledge/20` §5 quy tắc 3 + 8b (**⚠⚠ = `Δ ≠ 0` = băng đạn**) · `/attack` **chế độ `hoi`** + bước 0c · `drill/thi-thu-1109/nap-dan.md` (15 lượt, đã kiểm ngược bằng ground truth) |
+| 10 | Áp **bài học CÔNG sau thi thử 11/09** (2/2 viên TRƯỢT) | ✅ **Xong 11/09 tối** | `knowledge/50` §0 + loại #25–#27 + §2-13…§2-16 + luật 9 (EV tương đối) + P59–P61 + **§8 bảng 14 ô "đề luôn chốt"** · `knowledge/20` **§4d** + §3.1 bước 2b · `/attack` bước 0/0b + cổng cấm cược · `/elicit` bước 3c · `/spec-write` checklist 14 ô · `/spec-review` **khối G-10** · `drill/thi-thu-1109/tests/doi-a.v2.md` |
 | 8 | Áp **luật hỏi mới sau thi thử 11/09** (bỏ trần 5 câu, một ý/lượt, cấm chỉ thị, nhịp chờ, 4.000 token) | ✅ **Xong 11/09 chiều** | `knowledge/00` §A/§A1/§A2/§B/§C/§F/§H/§I · `knowledge/20` viết lại §1/§2/§3/§3b/§5/§6 · `05` §4 · `30` §1b/§6 · `32` §6 · `50` §2/§4 · `/elicit` viết lại · `/frame`, `/drill`, `/spec-review`, `/appeal` · agent `customer` · 2 README |
 
 ---
@@ -92,6 +94,47 @@ Sơ đồ trong spec dùng **Mermaid** (knowledge/33 §7): `block-beta` wirefram
 ---
 
 ## Đã làm
+
+**12/09 — `Δ` là biến quyết định, không phải "đối thủ im lặng"**
+
+Đọc ba thẻ kết quả của hệ chấm (TRÚNG / TRƯỢT / VÔ HIỆU) thì lộ ra hai điều kit đang hiểu sai:
+
+1. **TRÚNG cần hai vế, kit cũ chỉ kiểm một.** Thẻ TRÚNG ghi "Spec B: không mô tả cách xử lý X · Executor: `<mặc định>` · Intent thật: `<khác>`". Vế "đối thủ im lặng" chỉ mở cửa; vế quyết định là **`Δ` = chênh lệch giữa specs thật và mặc định ngành**. `Δ = 0` thì Executor lấp chỗ im lặng bằng đúng đáp án ⇒ TRƯỢT ⇒ **+1 cho đối thủ**. Đây chính là 4 ứng viên bị dry-run loại ở 11/09 — dry-run đã đo `Δ` gián tiếp, nhưng chỉ ở cuối quy trình và chỉ trên ứng viên đã soạn xong.
+2. **VÔ HIỆU do chính AI Khách hàng phán phạm vi**, Executor thậm chí không được gọi. Nghĩa là **một lượt hỏi "X có thuộc phạm vi không" là bằng chứng mức 1 mạnh nhất** và dập `P(VÔ HIỆU)` xuống ~0,02 — rẻ hơn kháng nghị, vốn chỉ mở cho ca VÔ HIỆU và cũng chỉ tranh lại đúng câu phán này.
+
+⇒ **Cả hai vế đều hỏi được trước khi bắn.** Thêm chế độ **`/attack hoi`**: sau khi đọc spec đối thủ và tìm ô im lặng, sinh ba dạng lượt — **Δ-probe** (hỏi thẳng giá trị của ô), **scope-probe** (hỏi phạm vi, gửi TRƯỚC Δ-probe vì đáp "ngoài phạm vi" làm Δ-probe thành lãng phí nhịp), **đếm-probe** (`全部で何種類` cho danh sách đóng — một con số mở ra nhiều ứng viên nhất trên một nhịp). Luật đọc kết quả: đáp **lệch** mặc định ngành ⇒ BẮN, `P` lên 0,85 · đáp **trùng** ⇒ BỎ · **deflection ⇒ BỎ** (không có đáp án chuẩn thì không có ca TRÚNG).
+
+**Không thêm cột RTM mới:** `⚠⚠` sẵn có đã đúng nghĩa `Δ ≠ 0`. Chỉ làm rõ rằng nó phục vụ **hai vai** bằng một dấu, và thêm quy tắc 8b — in mọi dòng `⚠⚠` thành danh sách riêng cuối `rtm.md` để 13:00 chỉ việc đối chiếu với spec đối thủ, không phải đọc lại log.
+
+**Kiểm chứng trên hồ sơ 11/09** (`drill/thi-thu-1109/nap-dan.md`): 15 lượt → **8 ứng viên BẮN** (cơ chế A) · 2 ứng viên bị loại sớm đúng · 1 rào VÔ HIỆU được gỡ. Hai lượt đáng giá nhất lại là hai lượt **ngăn một phát bắn hỏng**:
+- **S3** (`基準額 có đổi theo hạng không`) → đáp "có" ⇒ chặn đúng viên **T-A1** trước khi bắn.
+- **S1** (`遠隔地追加送料 có thuộc bảng tiền không`) → đáp "có" ⇒ **gỡ rào** cho ứng viên 440円 mà bản cũ đã loại vì ước `P(VÔ HIỆU)` = 0,25 dựa trên A-23. Hoá ra `NG-002` chỉ loại 包装料・代引手数料, không loại phụ phí vùng xa.
+
+Đó là chỗ khác biệt thật: thi thử thua vì **bắn khi chưa biết**, không phải vì thiếu ứng viên.
+
+**Nếu AI Khách hàng đóng trước pha CÔNG** (00 §A2-4, vẫn chưa có văn bản): `50` §9.3 — hỏi trước theo bảng 14 ô §8, và đánh `Δ` **ngay lúc nạp câu trả lời** thay vì đợi 13:00.
+
+**11/09 tối — Bài học vai CÔNG: 2/2 viên TRƯỢT, và nguồn đạn bị bỏ sót**
+
+Soi lại buổi thi thử bằng ground truth thật (`drill/thi-thu-1109/ground-truth-thi-thu.md`, khôi phục từ hồ sơ trận). Kit sinh 2 test cho spec đội A, **trượt cả hai — và cả hai trượt vì lỗi quy trình, không phải xui**:
+
+1. **T-A1 (しきい値)** — kit suy "AI Khách hàng nói 「しきい値」 số ít, không nhắc hạng thành viên ⇒ đối thủ tự bịa hai mốc 5.000/3.000". Ground truth V-03: **hai mốc đó đúng**, đội A biết nhiều hơn ta. Lỗi: **im lặng của AI Khách hàng bị đọc thành bằng chứng phủ định** — khách trả lời đúng một ẩn số mỗi lượt, ô ta không hỏi thì khách không kể.
+2. **T-A2 (coupon hết hạn giữa giỏ và xác nhận)** — kit suy "specs thật gần như chắc chắn tái kiểm hạn lúc chốt". Ground truth V-10: hạn xét **tại lúc ÁP**, và GTD còn ghi rõ đây là *"điểm dễ nhầm nhất của đề"*. Lỗi: **cược vào đáp án chuẩn bằng suy luận hợp lý** — mà suy luận hợp lý là đúng thứ đề cố bẻ, và cũng là đúng thứ Executor mù sẽ đoán ⇒ hai bên trùng nhau ⇒ TRƯỢT.
+
+**Chỗ kit đã làm đúng mà không dám đi tiếp.** Bước dry-run loại đúng 4 ứng viên mạnh nhất (A-12/A-14/A-15/A-17: đối thủ im lặng nhưng mặc định ngành trùng specs thật). Loại là đúng. Sai là ở chỗ **thay chúng bằng hai canh bạc thay vì đổi nguồn đạn** — nguồn đúng nằm ngay trong file đối thủ mà kit đọc rồi bỏ qua: **mục 8「Điểm chưa chốt」I-01…I-05**, tức danh sách đối thủ tự viết ra những ô Executor của họ sẽ phải bịa. Đối chiếu ground truth: 3/5 dòng đó có luật riêng, phản trực giác.
+
+Bốn thay đổi, tất cả đã áp:
+
+1. **Hai cơ chế TRÚNG, không có cơ chế thứ ba** (`50` §2-14). **A** = ta có lời khách nguyên văn *và* đối thủ nói khác nó. **B** = ô thuộc bảng §8, đối thủ im lặng hoặc tự khai chưa chốt, và **không gian đáp án `W ≥ 4`** — thắng nhờ độ rộng, không nhờ ta đoán đúng. Không thuộc A cũng không B ⇒ **bỏ slot**.
+2. **`EV` tính lại cho đúng luật chấm** (`50` §6 luật 9). Luật 8 cũ coi TRƯỢT = 0; thật ra TRƯỢT **cho đội thủ +1**. `EV_rel = 3·P(TRÚNG) − 1 − 2·P(VÔ HIỆU)` ⇒ ngưỡng nộp là `P(TRÚNG) > 0,37`, không phải `> P(VÔ HIỆU)/2`. Thêm **bảng gán `P(TRÚNG)` theo bằng chứng** — cấm gán theo cảm giác, vì hai viên trượt đều được gán 0,55–0,60 không có cơ sở (gán lại đúng thì cả hai rơi xuống 0,25 và bị loại).
+3. **Bảng 14 ô "đề luôn chốt"** (`50` §8 = `20` §4d) — mười bốn ô mà đề nghiệp vụ nào cũng chốt sẵn: đơn vị/bội số, trần/sàn, thời điểm xét, phép so dùng tổng nào, tập con loại trừ, phụ phí vẫn thu, danh sách mã lỗi + thứ tự, thao tác gỡ, lặp lại thao tác, message kèm số, trạng thái rỗng, thời hạn lưu, chuẩn hoá đầu vào, phân hạng. **Đây là bảng hai mặt**: nguồn đạn khi soi đối thủ, hàng đợi hỏi và checklist lấp lỗ khi viết spec mình.
+4. **Ba loại lỗ hổng mới + ba probe** — #25 ô đối thủ tự khai chưa chốt (P59), #26 đơn vị/bội số/trần (P60), #27 thao tác hoàn tác không tồn tại (P61). Ba loại này sống sót được cả khi đối thủ đã chắn hết dòng ⚠ của ta — tình huống **11/14 dòng bị chắn** của thi thử là bình thường, vì hai đội đọc cùng brief và hỏi cùng một AI Khách hàng.
+
+**Kiểm chứng:** chạy lại `/attack` bản mới trên đúng spec đội A → 5 test (`drill/thi-thu-1109/tests/doi-a.v2.md`), **cả 5 dry-run qua executor mù đều lệch ground truth**, trong đó một ca `ĐỘ PHỦ = ĐỦ · ĐA NGHĨA = KHÔNG` (spec A nói trái sự thật, hạng A+). Cả 5 đều cơ chế B — **không test nào cần ta biết đáp án**.
+
+**Số đo đắt nhất của buổi này:** ta hỏi 14 lượt tính token nhưng **9/14 ô của bảng §8 không lượt nào chạm tới** (Đ1, Đ2, Đ5, Đ6, Đ8, Đ9, Đ12, Đ13, Đ14), và **5 trong 9 ô bỏ trống đó có luật phản trực giác**. Vừa mất đạn công vừa hở giáp thủ, từ cùng một chỗ. Vì thế bảng đã được nối vào cả ba pha: `/elicit` bước 3c (sàn bắt buộc của hàng đợi), `/spec-write` (một dòng checklist), `/spec-review` khối G-10 (grep 14 ô trên bản nộp).
+
+**Còn lại:** `/drill` trọn vòng vẫn chưa chạy — giờ nó phải đo thêm **tỷ lệ phủ 14 ô §8** ở cả hai vai.
 
 **11/09 chiều (2) — Hạn mức spec 6.000 → 10.000 token; lưu đồ Mermaid thành bắt buộc**
 

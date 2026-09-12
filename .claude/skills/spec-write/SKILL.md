@@ -24,7 +24,7 @@ Mục tiêu: mọi dòng RTM thành một luật có mã; đủ **10 mục BTC**
 - `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md`: §1 template 10 mục chi tiết, §2 khung catch-all đặt ở mục 1.x (gồm 0.11–0.15), §3 cú pháp EARS + mẫu BR-xx, §4 checklist 17 quy tắc + 7 quy tắc nội dung (18–24), §1b luật giả định = mặc định ngành, §5 tiết kiệm token, §6 thứ tự viết, §7 cổng chất lượng 30 dòng.
 - `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §2 (bảng Mục tiêu↔Luật), §M4 (6 láng giềng), §M6 (12 kịch bản suy biến), §4 (ô mô hình không hỏi được thì xử lý thế nào).
 - `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md`: §1 cổng F, §2 bảng thực tế phụ thuộc ngoài, §3 ba mẫu viết lại, §4 chi phí ẩn, §6 hit F nào thành một lượt hỏi riêng.
-- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §4b (dựng bảng mặc định cho **miền của đề này**), §4c (quét hằng số), §5 (RTM hai loại dòng), §3 bảng ánh xạ cuối mục. **Nguồn tra giá trị là `battle/mac-dinh-nganh.md`**, không phải §4 — §4 chỉ là ví dụ miền đặt giữ hàng.
+- `${CLAUDE_PROJECT_DIR}/knowledge/20-ngan-hang-cau-hoi.md` §4b (dựng bảng mặc định cho **miền của đề này**), §4c (quét hằng số), **§4d (mười bốn ô "đề luôn chốt" — checklist lấp lỗ)**, §5 (RTM hai loại dòng), §3 bảng ánh xạ cuối mục. **Nguồn tra giá trị là `battle/mac-dinh-nganh.md`**, không phải §4 — §4 chỉ là ví dụ miền đặt giữ hàng.
 - `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` **§5b thang bằng chứng 9 bậc + đường đỏ** — bất biến quyết định thứ tự đổ token ở mọi hạn mức.
 - `${CLAUDE_PROJECT_DIR}/knowledge/30-viet-spec.md` **§1c bốn cách biến bằng chứng thành khẳng định sai** — chạy trên từng luật trước khi đưa vào bản nộp.
 - `${CLAUDE_PROJECT_DIR}/knowledge/31-bang-quyet-dinh-trang-thai.md`: §1 hit policy, §2 chứng minh đủ/rời, §3 bảng state × event và mã hiệu ứng K/T/N/L.
@@ -120,6 +120,7 @@ Mọi nghĩa vụ do cổng thanh toán / ngân hàng / ERP / kênh thông báo 
 - [ ] Cổng F đã chạy trên mọi BR; 0 ✗ ở F1 và F5.
 - [ ] `rtm.md` cột Mã BR đã điền cho mọi dòng; cột Rủi ro đã điền cho mọi dòng `G-xx`.
 - [ ] **Mọi con số trong bản nộp trỏ về một `A-xx` hoặc một `G-xx`** — chạy quét hằng số (20 §4c) trên chính `spec.nop.md`, không trên RTM.
+- [ ] **Mười bốn ô "đề luôn chốt" (20 §4d) đều có luật trong bản nộp** — mỗi ô một dòng: `Đ1 bội số ô nhập số · Đ2 trần/sàn ô nhập · Đ3 thời điểm xét điều kiện · Đ4 phép so dùng tổng nào · Đ5 tập con bị loại trừ · Đ6 phụ phí vẫn thu khi đã miễn · Đ7 danh sách mã lỗi đủ + thứ tự · Đ8 gỡ/hoàn tác trước khi chốt · Đ9 lặp lại đúng thao tác đã làm · Đ10 message có kèm con số không · Đ11 trạng thái rỗng · Đ12 thời hạn lưu dữ liệu tạm · Đ13 chuẩn hoá đầu vào · Đ14 phân hạng & mốc riêng`. Ô nào không hỏi được thì tra `mac-dinh-nganh.md` và mở `G-xx`; tra không thấy ⇒ ghi `KHÔNG BIẾT` theo 30 §1b-2b. **Im lặng ở mười bốn ô này không trung lập** — Executor mù lấp bằng mặc định ngành, và đây đúng là chỗ đề hay đặt luật ngược mặc định (thi thử 11/09: 5/9 ô bỏ trống có luật phản trực giác).
 - [ ] Đã chạy **30 §1c** trên từng luật: không biến NGOÀI phạm vi thành lệnh cấm · không có luật rộng hơn danh từ đã hỏi · không có con số dựa trên "không có quy định riêng" · không có mã lỗi suy rộng.
 - [ ] Bảng tóm tắt 6 khối, **gồm khối `→ HỎI TIẾP` gồm 10 câu hỏi nhị phân đã viết sẵn**.
 - [ ] `spec.nop.md` sạch dấu vết nội bộ, không có ảnh.

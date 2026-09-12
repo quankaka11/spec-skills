@@ -1,24 +1,29 @@
 ---
 name: attack
-description: Soi một spec đối thủ trong 10 phút — cấu trúc 10 mục BTC, cổng khả thi F, 24 loại lỗ hổng, đồng thuận chéo 3 spec, 12 kịch bản suy biến, phạm vi tự đặt — rồi sinh tối đa 5 test đa dạng loại kèm hồ sơ finding, gói bằng chứng phạm vi 3 mức để kháng nghị, điểm kỳ vọng theo công thức +2/−1, và dry-run qua agent executor mù. Dùng 13:00–14:30 ngày thi khi người dùng nói "soi spec đối thủ", "bắn spec", "tạo 5 test", "attack", "red team đội X"; cũng dùng để tự bắn spec mình sau /spec-review.
-argument-hint: "cheo <spec1> <spec2> <spec3> [thư-mục] | <đường-dẫn-spec-đối-thủ> <tên-đội> [thư-mục-trận]"
+description: Soi một spec đối thủ trong 10 phút — mục "Điểm chưa chốt" của đối thủ, bảng 14 ô đề luôn chốt, cấu trúc 10 mục BTC, cổng khả thi F, 27 loại lỗ hổng, đồng thuận chéo 3 spec, 12 kịch bản suy biến, phạm vi tự đặt — rồi sinh tối đa 5 test đa dạng loại kèm hồ sơ finding, gói bằng chứng phạm vi 3 mức để kháng nghị, điểm kỳ vọng theo công thức +2/−1, và dry-run qua agent executor mù. Dùng 13:00–14:30 ngày thi khi người dùng nói "soi spec đối thủ", "bắn spec", "tạo 5 test", "attack", "red team đội X"; cũng dùng để tự bắn spec mình sau /spec-review.
+argument-hint: "cheo <spec1> <spec2> <spec3> [thư-mục] | hoi <đường-dẫn-spec-đối-thủ> [thư-mục-trận] | <đường-dẫn-spec-đối-thủ> <tên-đội> [thư-mục-trận]"
 allowed-tools: Read, Write, Edit, Grep, Glob, Agent, Bash(date *), Bash(mkdir *)
 ---
 # /attack — tối đa 5 test cho một spec đối thủ
 
 Mục tiêu: mỗi test một loại lỗ hổng khác nhau, nhắm vào chỗ specs thật phản trực giác mà spec đối thủ im lặng, **mỗi test có điểm kỳ vọng dương và một gói bằng chứng phạm vi thu sẵn**, đã kiểm bằng executor mù.
 
+**Bài học thi thử 11/09 — 2/2 viên TRƯỢT (knowledge/50 §0). Ba luật cứng sinh ra từ đó, đọc trước khi làm gì khác:**
+- **Cấm cược vào đáp án chuẩn.** Không nộp test mà lý do TRÚNG bắt đầu bằng "specs thật gần như chắc chắn…". Suy luận hợp lý là đúng thứ đề cố bẻ và cũng là đúng thứ Executor mù sẽ đoán ⇒ hai bên trùng ⇒ TRƯỢT. Mỗi test phải thuộc **cơ chế A** (ta có lời khách nguyên văn và đối thủ nói khác) hoặc **cơ chế B** (ô bảng knowledge/50 §8, đối thủ im lặng/tự khai chưa chốt, không gian đáp án `W ≥ 4`). Không thuộc A cũng không B ⇒ **bỏ slot**.
+- **Im lặng của AI Khách hàng không phải bằng chứng phủ định.** Khách trả lời một ẩn số mỗi lượt, không memory. Không được bắn vào một con số đối thủ tự đặt chỉ vì khách không nhắc tới nó — đối thủ có thể đã hỏi ô ta không hỏi.
+- **TRƯỢT không phải 0** — nó cho đội thủ +1. Ngưỡng nộp thật: `P(TRÚNG) > (1 + 2·P(VÔ HIỆU))/3` ≈ **0,37** (knowledge/50 §6 luật 9). Test nhị phân (`W = 2`) có `P ≈ 0,5` vẫn đáng nộp, test cược có `P = 0,25` thì không.
+
 **Ba tham số 09/09 đổi cách chấm (00 §A, §D1):**
-- **TRÚNG +2 · VÔ HIỆU −1 · bỏ slot 0** ⇒ nộp khi `EV = 2·P(TRÚNG) − P(VÔ HIỆU) > 0`; **nộp 4 test tốt hơn nộp 5 test trong đó 1 test đoán bừa**.
+- **TRÚNG +2 · TRƯỢT 0 nhưng đội thủ +1 · VÔ HIỆU −1 · bỏ slot 0** ⇒ nộp khi `EV_rel = 3·P(TRÚNG) − 1 − 2·P(VÔ HIỆU) > 0` (knowledge/50 §6 luật 9); **nộp 4 test tốt hơn nộp 5 test trong đó 1 test đoán bừa**.
 - **Test không sửa được sau khi nộp** ⇒ không có "dự phòng thay slot" sau 15:00; 2 test dự phòng chỉ dùng để đổi *trước* khi nộp.
 - **Chỉ ca VÔ HIỆU được kháng nghị** ⇒ gói bằng chứng phạm vi (50 §2-9, ba mức) phải xong lúc nộp, không phải lúc 16:00.
 
 ## Input
-`$ARGUMENTS` = `cheo <spec1> <spec2> <spec3> [thư-mục]` (chế độ đồng thuận chéo, **chạy trước tiên lúc 13:00**) hoặc `<spec-đối-thủ> <tên-đội> [thư-mục-trận]`. Thư mục trận mặc định `battle/` — lấy `rtm.md` (dòng `A-xx` ⚠ = băng đạn chắc nhất; dòng `G-xx` = đạn suy luận; mục NGOÀI phạm vi = rào chống VÔ HIỆU), `log-khach-hang.md` (mọi câu trả lời nguyên văn + timestamp; bỏ qua khối `[BỊ TỪ CHỐI]`), `brief.md` (bằng chứng phạm vi mức 2), `review.md` mục `RỦI RO ĐÃ BIẾT` (khi tự bắn spec mình).
+`$ARGUMENTS` = `cheo <spec1> <spec2> <spec3> [thư-mục]` (chế độ đồng thuận chéo, **chạy trước tiên lúc 13:00**) · `hoi <spec-đối-thủ> [thư-mục-trận]` (**sinh lượt hỏi nạp đạn — chạy ngay sau `cheo` nếu AI Khách hàng còn mở**) · hoặc `<spec-đối-thủ> <tên-đội> [thư-mục-trận]`. Thư mục trận mặc định `battle/` — lấy `rtm.md` (dòng `A-xx` ⚠ = băng đạn chắc nhất; dòng `G-xx` = đạn suy luận; mục NGOÀI phạm vi = rào chống VÔ HIỆU), `log-khach-hang.md` (mọi câu trả lời nguyên văn + timestamp; bỏ qua khối `[BỊ TỪ CHỐI]`), `brief.md` (bằng chứng phạm vi mức 2), `review.md` mục `RỦI RO ĐÃ BIẾT` (khi tự bắn spec mình).
 
 Đọc trước:
 - `${CLAUDE_PROJECT_DIR}/knowledge/33-cau-truc-spec-btc.md` §1 (10 mục BTC — dùng để tick mục vắng), §2 (5 gạch bắt buộc của bảng Case ở mục 6), §7 (Mermaid — sơ đồ không thay bảng).
-- `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md`: §1 (**24 loại**, gồm #16–#20 nội dung, **#21 lệch đồng thuận chéo**, **#22–#24 cấu trúc 10 mục**), §2 (quy tắc viết tình huống + **§2-9 ba mức bằng chứng phạm vi** + §2-10 bỏ slot), §3 (phân bổ 5 test + trọng số nguồn đạn mới), §4 (quy trình 10 phút + cổng F rút gọn bằng grep), **§4b (bảng đồng thuận chéo 3 spec)**, §5 (probe **P1–P52**), §6 (rubric phạm vi + **luật 8 điểm kỳ vọng**), §7 (hồ sơ finding + kháng nghị chỉ ca VÔ HIỆU).
+- `${CLAUDE_PROJECT_DIR}/knowledge/50-tan-cong.md`: **§0 (bài học 11/09 — đọc trước tiên)**, **§9 (nạp đạn bằng lượt hỏi AI Khách hàng — `Δ`, scope-probe, đếm-probe)**, §1 (**27 loại**, gồm #16–#20 nội dung, #21 đồng thuận chéo, #22–#24 cấu trúc 10 mục, **#25 ô đối thủ tự khai chưa chốt · #26 đơn vị/bội số/trần · #27 thao tác hoàn tác**), §2 (quy tắc viết tình huống + §2-9 ba mức bằng chứng phạm vi + §2-10 bỏ slot + **§2-13 cổng hỏi hành vi · §2-14 cấm cược · §2-15 im lặng ≠ phủ định · §2-16 xếp theo `W`**), §3 (phân bổ test), §4 (quy trình 10 phút + cổng F rút gọn bằng grep), §4b (bảng đồng thuận chéo 3 spec), §5 (probe **P1–P61**, gồm **P59–P61 cơ chế B**), §6 (rubric phạm vi + **luật 9 điểm kỳ vọng tương đối + bảng gán `P(TRÚNG)`**), §7 (hồ sơ finding + kháng nghị chỉ ca VÔ HIỆU), **§8 (bảng 14 ô đề luôn chốt — nguồn đạn chính)**.
 - `${CLAUDE_PROJECT_DIR}/knowledge/32-kha-thi-van-hanh.md` §1 (6 lệnh grep cổng F — chạy trên spec đối thủ), §2 (bảng thực tế phụ thuộc ngoài — dùng để chứng minh luật đối thủ bất khả thi).
 - `${CLAUDE_PROJECT_DIR}/knowledge/05-hieu-bai-toan.md` §M6 (12 kịch bản suy biến — checklist đối chiếu spec đối thủ), §M5 (6 kẻ lạm dụng).
 - `${CLAUDE_PROJECT_DIR}/knowledge/40-tu-mo-ho.md` §2 (regex danh sách đen **22 nhóm**), §3 (**S31–S39** kiểm cấu trúc 10 mục), §4 (chuyển hit → tình huống).
@@ -32,8 +37,28 @@ Mục tiêu: mỗi test một loại lỗ hổng khác nhau, nhắm vào chỗ s
 3. Xuất `<thư-mục>/dong-thuan-cheo.md`: bảng đầy đủ + ba danh sách ứng viên xếp theo độ mạnh — (a) **hai spec chỏi nhau** về cùng nghiệp vụ (một tình huống bắn được cả hai); (b) **một spec im lặng, ≥2 spec có luật** (#21, có sẵn bằng chứng phạm vi mức 3); (c) **cả ba im lặng** (điểm mù chung — chỉ bắn khi có bằng chứng mức 1 hoặc 2).
 4. In thêm cột "Spec mình": dòng nào ta im lặng mà ≥2 đội có luật = chỗ ta gần chắc bị bắn. Không sửa được nữa (spec khóa 12:00) — ghi vào bài học.
 
+## Chế độ `hoi` — sinh lượt hỏi AI Khách hàng để nạp đạn (chạy ngay sau khi nhận spec đối thủ, TRƯỚC khi soạn test)
+
+Chỉ chạy được khi AI Khách hàng còn mở ở pha CÔNG (00 §A2-4 — kiểm đầu ngày). Đóng rồi thì bỏ qua chế độ này và đọc knowledge/50 §9.3.
+
+Ba thẻ kết quả của hệ chấm (50 §9) nói: TRÚNG cần **đối thủ im lặng ở X** *và* **specs thật lệch mặc định ngành ở X**; VÔ HIỆU do **chính AI Khách hàng phán phạm vi**. Cả hai vế đều hỏi được, và một lượt hỏi rẻ hơn một viên đạn hỏng (−1 điểm, cộng +1 cho đối thủ).
+
+1. Chạy bước 0 và 0b của mục "Bước" để có danh sách ô đối thủ im lặng / tự khai chưa chốt.
+2. **Điền cột "mặc định ngành" trước** cho từng ô, tra `<thư-mục-trận>/mac-dinh-nganh.md`. **Không gửi lượt nào khi cột này còn trống** — không có nó thì câu trả lời về cũng không đọc được là `Δ = 0` hay `Δ ≠ 0`.
+3. Sinh lượt theo ba dạng của 50 §9.1, **scope-probe trước Δ-probe** cho cùng một ứng viên:
+   - **Scope-probe** cho mọi ứng viên điểm phạm vi ≥ 1 hoặc nằm ở rìa ba màn hình. Đáp "ngoài phạm vi" ⇒ **xoá ứng viên ngay** và ghi vào danh sách rào.
+   - **Δ-probe** hỏi thẳng giá trị của ô, dạng số hoặc nhị phân.
+   - **Đếm-probe** cho ô Đ7 và mọi danh sách đóng (`全部で何種類`).
+4. Chạy **cổng 8 kiểm tra** (20 §1) trên cả loạt một lần. Câu bị từ chối không mất token, không mất nhịp — sửa rồi gửi lại.
+5. Xếp hàng đợi theo `giá trị kỳ vọng của lượt` = (ứng viên đó đang ở `P` bao nhiêu) × (câu trả lời nâng được lên bao nhiêu). Ô cơ chế B `P` = 0,55 mà một lượt nâng lên 0,85 thì lãi hơn ô đã là cơ chế A.
+6. Ghi `<thư-mục-trận>/nap-dan.md`: bảng 50 §9.2 (ứng viên · mặc định ngành · lượt hỏi nguyên văn · đáp = mặc định ⇒ BỎ · đáp ≠ mặc định ⇒ BẮN) + hàng đợi đã xếp + ô trống chờ điền câu trả lời.
+7. Nạp câu trả lời xong: mỗi ô đánh **`Δ = 0` ⇒ loại ứng viên** (Executor sẽ đoán trúng — đây đúng là ca TRƯỢT ở thẻ giữa), **`Δ ≠ 0` ⇒ nâng lên cơ chế A, `P(TRÚNG)` = 0,85**, **deflection ⇒ loại** (không có đáp án chuẩn thì không có ca TRÚNG). Rồi chạy chế độ thường để soạn test.
+
 ## Bước (mốc phút theo knowledge/50 §4)
-1. **0–1,5 Mục lục**: tick **10 mục BTC** (knowledge/33 §1) có/không, rồi tick 14 nhóm nghiệp vụ N1–N14 (knowledge/20 §2 tên nhóm). Mục hoặc nhóm vắng = ứng viên hạng A (#1). Mục 4 vắng ⇒ #22; mục 2 hoặc 8 vắng cột/dòng Guest ⇒ #23; mục 2/3 không nói trạng thái nút ⇒ #24.
+0. **0–1 Mục "Điểm chưa chốt" của đối thủ — làm TRƯỚC MỌI BƯỚC KHÁC.** Grep spec đối thủ: `chưa chốt|chưa rõ|TBD|確認中|課題|未定|要確認|Open issue|Câu hỏi`. Mỗi dòng tìm được là một chỗ **đối thủ tự khai Executor của họ sẽ phải bịa** — loại #25, `P(TRÚNG)` khởi điểm **0,70**, và rủi ro VÔ HIỆU thấp nhất trong mọi nguồn đạn vì chính đối thủ đã nhận nghiệp vụ đó thuộc phạm vi bằng cách viết nó ra. Với mỗi dòng: đối chiếu bảng knowledge/50 §8 xem nó rơi vào ô Đ nào, đếm `W`, dựng tình huống bằng probe P59. **Nếu bước này ra ≥2 ứng viên `W ≥ 4` thì đó là các slot đầu tiên, không cần chờ bước 5.**
+0b. **1–2,5 Quét bảng 14 ô "đề luôn chốt"** (knowledge/50 §8) bằng grep từ khoá miền trên spec đối thủ. Ô nào **0 hit** mà nằm trong phạm vi brief ⇒ ứng viên cơ chế B; ô nào đối thủ viết rõ ⇒ bỏ, **trừ khi** ta có lời khách nguyên văn nói khác (khi đó thành cơ chế A, `P = 0,85`). Xếp ứng viên theo `W` giảm dần. Đây là nguồn đạn **duy nhất còn sống** khi đối thủ đã chắn hết dòng ⚠ của ta — tình huống 11/14 dòng bị chắn của 11/09 là bình thường, không phải bất thường, vì hai đội đọc cùng brief và hỏi cùng một AI Khách hàng.
+0c. **AI Khách hàng còn mở?** Còn ⇒ dừng ở đây, chạy **chế độ `hoi`** trước (mỗi lượt hỏi biến một ứng viên `P` = 0,55 thành `P` = 0,85, hoặc loại sớm một ứng viên sẽ TRƯỢT). Đóng rồi ⇒ lọc `rtm.md` lấy các dòng đánh `Δ ≠ 0` (20 §5) làm băng đạn xếp sẵn, rồi đi tiếp.
+1. **2,5–3,5 Mục lục**: tick **10 mục BTC** (knowledge/33 §1) có/không, rồi tick 14 nhóm nghiệp vụ N1–N14 (knowledge/20 §2 tên nhóm). Mục hoặc nhóm vắng = ứng viên hạng A (#1). Mục 4 vắng ⇒ #22; mục 2 hoặc 8 vắng cột/dòng Guest ⇒ #23; mục 2/3 không nói trạng thái nút ⇒ #24.
 1b. **1,5–3 Cổng F rút gọn** — chạy 4 lệnh grep của knowledge/32 §1 trên spec đối thủ:
    - `hoàn tất|tiền về|đối soát xong` + số giờ/ngày ⇒ **#16** (luật bất khả thi). Chứng cứ bảng knowledge/32 §2: hoàn tiền thẻ không hoàn tất trong giờ, và hoàn về thẻ đóng có thể thất bại ⇒ specs thật không viết như họ ⇒ probe P43/P44.
    - hạn mức neo vào `email|số điện thoại|tự khai` ⇒ **#18** ⇒ probe P47.
@@ -56,7 +81,18 @@ Mục tiêu: mỗi test một loại lỗ hổng khác nhau, nhắm vào chỗ s
    Tình huống: <văn bản test>
    ```
    Không kèm RTM, log, đáp án chuẩn. Gọi song song. Tiêu chí duy nhất để GIỮ: TRẢ LỜI của executor khác đáp án chuẩn trong RTM về ý nghĩa (trạng thái cuối / con số / ai thắng / tiền). Phân hạng: ĐỘ PHỦ = ĐỦ mà vẫn khác ⇒ spec đối thủ viết TRÁI specs thật — hạng A+ (TRÚNG gần chắc chắn); ĐỘ PHỦ KHÔNG/MỘT PHẦN hoặc ĐA NGHĨA ⇒ hạng A. Executor trả lời trùng đáp án chuẩn (dù spec im lặng) ⇒ TRƯỢT dự kiến → loại (knowledge/50 §2-11).
-8b. **Chấm điểm kỳ vọng** cho từng ứng viên còn lại theo knowledge/50 §6 luật 8: `P(TRÚNG)` từ kết quả dry-run (khác đáp án chuẩn + ĐỘ PHỦ ĐỦ ⇒ 0,8; khác + ĐỘ PHỦ KHÔNG ⇒ 0,6; trùng ⇒ 0,1), `P(VÔ HIỆU)` từ điểm phạm vi (0 ⇒ 0,05; 1 ⇒ 0,15; 1,5 ⇒ 0,30). `EV = 2·P(TRÚNG) − P(VÔ HIỆU)`. Ứng viên `EV ≤ 0` loại, ghi lý do.
+8b. **Chấm điểm kỳ vọng** cho từng ứng viên còn lại theo knowledge/50 §6 **luật 9**. `P(TRÚNG)` **chỉ được lấy từ bảng gán của §6**, cấm gán theo cảm giác — ghi rõ ứng viên thuộc cơ chế nào:
+
+   | Ứng viên | P(TRÚNG) |
+   |---|---|
+   |A: có lời khách nguyên văn, đối thủ nói **khác** nó|0,85|
+   |A yếu: có lời khách nguyên văn, đối thủ im lặng, dry-run ra kết quả khác lời khách|0,70|
+   |B: ô §8, đối thủ **tự khai chưa chốt** (#25), `W ≥ 4`|0,70|
+   |B: ô §8, đối thủ im lặng, `W ≥ 4`|0,55|
+   |B: `W = 3`|0,40|
+   |`W = 2` nhị phân · cược §2-14 · dry-run trùng lời khách|0,25 / 0,25 / 0,10 ⇒ **loại**|
+
+   `P(VÔ HIỆU)` từ điểm phạm vi (0 ⇒ 0,05; 1 ⇒ 0,15; 1,5 ⇒ 0,30). `EV_rel = 3·P(TRÚNG) − 1 − 2·P(VÔ HIỆU)`. Ứng viên `EV_rel ≤ 0` loại, ghi lý do. Ngưỡng thực tế: `P(TRÚNG) ≥ 0,40` mới qua.
 9. **Chọn tối đa 5 + 2 dự phòng** theo phân bổ knowledge/50 §3: các loại # khác nhau, phủ ≥4 nhóm N, tối đa 2 test cùng chủ đề. Ưu tiên: #15 → **#16/#18/#19/#21** → **#22/#23** (message nguyên văn, guest — spec viết theo lối luật nghiệp vụ thuần hở cả hai) → #2/#12 → #4/#11 → #7/#8/#17. Slot #9/#10 (actor, quyền) xuống dự phòng.
    **Nếu số ứng viên `EV > 0` ít hơn 5 thì nộp ít hơn 5.** Bỏ slot là 0 điểm, nộp một test đoán bừa là −1 và không cứu được bằng kháng nghị (kháng nghị chỉ tranh *phạm vi*, không tranh việc test kém). Nói rõ trong output: "nộp k/5, k' slot bỏ trống vì EV ≤ 0".
 9b. **Kiểm chéo với spec mình**: mỗi loại # vừa bắn được đối thủ, đánh dấu để `/spec-review` khối G kiểm lại chính spec mình cùng loại đó. Lỗ hổng tìm thấy ở đối thủ thường cũng có ở ta — cả hai đội đọc cùng một brief.
@@ -68,10 +104,13 @@ Mục tiêu: mỗi test một loại lỗ hổng khác nhau, nhắm vào chỗ s
 3. Bảng knowledge boundary sweep (bước 5) gồm mục "⚠ đã bị chắn".
 3b. Bảng "10 mục BTC của spec đối thủ: có / thiếu / rỗng" (bước 1).
 3c. **Bảng cổng F trên spec đối thủ** (bước 1b + 4b): hit nào ở F1/F2/F5/F8, ca suy biến nào hở, nghiệp vụ nào brief nhắc mà họ đẩy ra ngoài — kể cả ứng viên không được chọn, để tái dùng khi soi spec khác.
-4. Dòng kiểm: các loại # khác nhau ✓ | mọi điểm phạm vi ≤1,5 ✓ | mọi test ≤60 từ ✓ | **mọi test có gói bằng chứng phạm vi mức 1/2/3 đã trích nguyên văn** ✓ | mọi test có `EV > 0` ✓ | **≥1 test thuộc #22/#23 nếu spec đối thủ thiếu mục 4 hoặc cột Guest** ✓ | **≥1 test thuộc #16–#21** ✓ | số test nộp = k (nêu rõ nếu k < 5).
+4. Dòng kiểm: **mỗi test ghi rõ cơ chế A hay B ✓** | **mọi `P(TRÚNG)` lấy từ bảng §6, không gán tay ✓** | **≥1 test từ mục "Điểm chưa chốt" của đối thủ nếu mục đó tồn tại ✓** | **mọi test dạng hỏi hành vi hệ thống, không hỏi giá trị ✓** | các loại # khác nhau ✓ | mọi điểm phạm vi ≤1,5 ✓ | mọi test ≤60 từ ✓ | **mọi test có gói bằng chứng phạm vi mức 1/2/3 đã trích nguyên văn** ✓ | mọi test có `EV > 0` ✓ | **≥1 test thuộc #22/#23 nếu spec đối thủ thiếu mục 4 hoặc cột Guest** ✓ | **≥1 test thuộc #16–#21** ✓ | số test nộp = k (nêu rõ nếu k < 5).
 5. Danh sách loại # cần kiểm chéo lại trên spec mình (bước 9b).
 
 ## Không được
+- **Nộp test mà cơ sở TRÚNG là suy luận "specs thật chắc phải thế"** (knowledge/50 §2-14). Đây là lỗi làm trượt cả 2 viên ở thi thử 11/09. Mỗi hồ sơ finding phải ghi rõ **cơ chế A hay B**; không ghi được ⇒ không nộp.
+- **Bắn vào một con số đối thủ tự đặt chỉ vì AI Khách hàng không nhắc tới nó** (§2-15). Chỉ bắn khi có lời khách nguyên văn nêu **con số khác**.
+- Hỏi 「いくら / bao nhiêu tiền」 thay vì hỏi hành vi hệ thống (§2-13) — hệ thống trả câu về, mất một nhịp.
 - Hai test cùng loại #; test điểm phạm vi ≥2 không có bằng chứng mức 1/2/3; test về thuế/kế toán/bảo hiểm/vận chuyển quốc tế/đổi trả sau giao.
 - **Nộp cho đủ 5 slot khi ứng viên còn lại có `EV ≤ 0`** — mỗi test bừa là −1 điểm chắc chắn.
 - Nộp test mà bằng chứng phạm vi chưa được trích nguyên văn vào hồ sơ; test đã nộp không sửa được và kháng nghị chỉ mở cho ca VÔ HIỆU.

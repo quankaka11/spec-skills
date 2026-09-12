@@ -112,6 +112,28 @@ Không có RTM → ghi "bỏ khối C: không có RTM" và đánh dấu mọi lu
 
      **Ngoại lệ hợp lệ:** một lượt có thể vừa trả lời thật vừa deflection ("X giữ nguyên, còn phần sau thì không quy định"). Khi đó phần trả lời thật tách thành một dòng riêng và **không** tính hit — điều kiện là nội dung dòng đó nằm trong nguyên văn câu trả lời. Kiểm bằng cách đối chiếu nguyên văn, không bằng cách tin nhãn.
    - **G-9d bảng mã lỗi suy rộng.** Đếm số mã lỗi trong mục 4; đếm số mã có `A-xx` đỡ. Chênh lệch > 0 ⇒ mức Cao nếu chênh ≥ 2, Trung nếu chênh = 1. Mã không có `A-xx` phải hạ về mô tả điều kiện bằng lời (bậc 8), không đánh số.
+
+10. **Khối G-10 — mười bốn ô "đề luôn chốt"** (20 §4d = 50 §8, hai mặt của cùng một bảng). Đây là khối **đo được bằng grep** và là khối duy nhất nói cho biết **đối thủ sẽ bắn vào đâu**, vì họ dùng đúng bảng này làm nguồn đạn (`/attack` bước 0b). Chạy một lệnh grep cho mỗi ô trên `spec.nop.md`, bằng từ khoá của miền:
+
+    | Ô | Grep trên bản nộp | Thiếu ⇒ |
+    |---|---|---|
+    |Đ1 bội số/bước nhảy ô nhập số|`単位\|bội số\|bước nhảy\|刻み`|Cao|
+    |Đ2 trần/sàn ô nhập|`上限\|最大\|trần\|tối đa`|Cao|
+    |Đ3 thời điểm xét điều kiện|`時点\|lúc\|tại thời điểm`|Cao|
+    |Đ4 phép so dùng tổng nào|tên từng tổng trong glossary|Cao|
+    |Đ5 tập con bị loại trừ|`対象外\|除く\|loại trừ\|không áp dụng cho`|Cao|
+    |Đ6 phụ phí vẫn thu khi đã miễn|`追加\|phụ phí\|vẫn thu`|Trung|
+    |Đ7 mã lỗi đủ + thứ tự|đếm mã ở mục 4 (trùng G-9d)|Cao|
+    |Đ8 gỡ/hoàn tác trước khi chốt|`解除\|gỡ\|huỷ áp\|hoàn tác`|Cao|
+    |Đ9 lặp lại đúng thao tác đã làm|`同じ\|lại\|trùng\|再`|Cao|
+    |Đ10 message kèm con số|mục 4: message có `{ }` hay không|Trung|
+    |Đ11 trạng thái rỗng|`0件\|rỗng\|trống\|không có`|Trung|
+    |Đ12 thời hạn lưu dữ liệu tạm|`保持\|ngày\|日間\|hết hạn`|Cao|
+    |Đ13 chuẩn hoá đầu vào|`桁\|độ dài\|大文字\|hoa thường\|trim`|Trung|
+    |Đ14 phân hạng & mốc riêng|`会員\|hạng\|ランク\|区分`|Cao|
+
+    Ô **0 hit** ⇒ một phát hiện, mức ở cột phải, loại `SỬA` nếu tra được `mac-dinh-nganh.md`, loại `HỎI` nếu còn nhịp và ô đó `⚠ Cao`. Ô có hit nhưng giá trị không trỏ về `A-xx`/`G-xx` nào ⇒ chuyển sang G-7.
+    **Không được báo "đủ 14/14" chỉ vì grep có hit** — hit chứng minh có chữ, không chứng minh có luật. Với mỗi ô có hit, trích đúng câu luật vào báo cáo; trích không ra câu nào thì tính là 0 hit.
 8. **Markdown & sơ đồ**: bản nộp không có ảnh (`grep -n '!\[' `), không có link ngoài; nếu có khối ```mermaid thì dòng catch-all 0.15 (sơ đồ chỉ minh họa, bảng và luật có mã thắng) phải tồn tại — thiếu = lỗi Cao loại #5, và sơ đồ lặp lại nội dung bảng state × event 6.3 = mức Trung, ứng viên cắt token.
 
 **E. ĐẾM TOKEN** — đếm trên **bản nộp** `spec.nop.md` (không phải `spec.md` nội bộ, dài hơn ~500 token vì mang `← A-xx` và nhãn `[M-x]`):
@@ -150,7 +172,7 @@ Kèm **bảng token theo mục** (đo bằng cách cắt file theo heading), so 
    - `RỦI RO ĐÃ BIẾT` = đúng loại `HỎI` nhưng **hết câu hỏi** hoặc không lọt vào 10 phát biểu của C5. Không sửa, không hỏi; ghi lại kèm tình huống mà đối thủ sẽ dùng để bắn, để buổi chiều tự bắn trước và để rút bài học.
    Cắt danh sách `HỎI` theo **số lượt còn kịp gửi trước đường cắt** (ước ở đầu skill); phần dư xuống `RỦI RO ĐÃ BIẾT`, xếp theo rủi ro giảm dần.
 3. Bảng eval set: tình huống | loại # | ĐỘ PHỦ | **TRẢ LỜI reader 1** | **TRẢ LỜI reader 2** | **lệch?** | đối chiếu RTM | mục cần vá.
-4. **Khối G**: bảng cổng F; bảng Mục tiêu↔Luật; 12 ca suy biến; 6 láng giềng; 6 kẻ lạm dụng; 6 chi phí ẩn.
+4. **Khối G**: bảng cổng F; bảng Mục tiêu↔Luật; 12 ca suy biến; 6 láng giềng; 6 kẻ lạm dụng; 6 chi phí ẩn; **bảng 14 ô "đề luôn chốt" (G-10) kèm câu luật đã trích cho mỗi ô có hit**.
 5. Cổng chất lượng 30 dòng ✓/✗. **Token bản nộp (cả hai công thức) + `L` + đệm còn lại + chế độ CHẬT/RỘNG kèm `T_A` + bậc đang dừng trên thang bằng chứng + bảng token theo mục.**
 6. "Sửa trong 10 phút" — 5 việc đầu theo thang knowledge/40 §5, và **danh sách lượt hỏi còn kịp gửi** — mỗi mục đã viết sẵn thành một câu nhị phân, xếp theo rủi ro, dán được vào `/elicit xac-nhan`.
 6b. **`RỦI RO ĐÃ BIẾT`** — bảng: giả định | mặc định ngành hay ngược | tình huống đối thủ sẽ dùng | mức. Đây là đầu vào cho `/attack` tự bắn spec mình lúc 12:00–13:00.

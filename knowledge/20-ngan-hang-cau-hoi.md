@@ -305,6 +305,7 @@ Nhóm này **không hỏi tham số** — nó hỏi bài toán. Sinh ra từ `kn
 
 1. **Tính trần lượt thật**: `(số phút của pha hỏi ÷ nhịp chờ) − 2 lượt dự phòng cho câu bị từ chối`. Thi thử: 16 phút ÷ 45 giây ≈ 21, trừ dự phòng và trừ thời gian viết spec ⇒ đường cắt thật là **13**. Ngày thi 9:30–11:20 với nhịp 45 giây ⇒ ~100 lượt về lý thuyết, nhưng token 4.000 chặn ở **~20 lượt** — lúc đó token mới là thứ chặn. **Tính cả hai, lấy số nhỏ hơn.**
 2. **Đổ ô `?` từ `/frame`** (nhóm 1 và nhóm 2) vào một danh sách phẳng. Mỗi ô một dòng, chưa viết câu.
+2b. **Chèn mười bốn ô "đề luôn chốt" (§4d) vào danh sách** — không qua bước chấm điểm ở dưới. Chúng là **sàn của hàng đợi**, không phải ứng viên tranh chỗ: đều là câu hạng 1–2 của §4c nên gần như luôn có đáp án, và ô nào bỏ trống thì vừa mất đạn công vừa hở giáp thủ. Thi thử 11/09 bỏ trống 9/14 ô này.
 3. **Chấm giá trị từng ô**: `đảo lại thì đổi tiền / trạng thái cuối / ai thắng` (có = 2 điểm) × `Executor mù sẽ đoán khác mặc định ngành` (có = 2 điểm) + `brief chỉ mặt đích danh` (+1) + `là mâu thuẫn nội tại của brief` (+2). Mâu thuẫn nội tại luôn lên đầu: nó là dấu hiệu specs thật có luật thứ ba.
 4. **Chọn dạng** theo bảng "muốn biết gì → hỏi dạng nào" (§1). Nhắm **≥60% hàng đợi là nhị phân** — đó là cách duy nhất giữ token thấp mà không dùng chỉ thị.
 5. **Viết nguyên văn từng lượt**, chạy **cổng 8 kiểm tra** (§1) trên cả hàng đợi một lần, trước khi bấm gửi lượt đầu tiên.
@@ -551,6 +552,36 @@ Lỗi thật 11/09 nằm đúng hạng 3: hỏi "điểm có trừ vào phí shi
 
 **Cảnh giác câu trả lời SUY DIỄN.** Đo được ở drill: hỏi một ô hạng 3, khách trả lời `Được — trong bảng tiền có cả dòng này lẫn dòng kia`. Đó là khách **suy ra từ một chỗ khác**, không phải luật tường minh. Ghi vào RTM thì đánh dấu là suy diễn, **không** dùng làm bằng chứng kháng nghị, và nếu ô đó có tiền dính vào thì hỏi lại bằng một ô hạng 1.
 
+## 4d. Mười bốn ô "đề luôn chốt" — hàng đợi tối thiểu, và giáp hai mặt
+
+> Bảng gốc: `knowledge/50` §8 (ở đó nó là **nguồn đạn** khi soi spec đối thủ). Đây là mặt còn lại của cùng một bảng: **ô nào đối thủ bắn được ta thì cũng là ô ta bắn được họ**, nên mười bốn dòng này vừa là hàng đợi hỏi vừa là checklist lấp lỗ spec. Đo ở thi thử 11/09: hỏi 14 lượt tính token nhưng **9/14 ô không lượt nào chạm tới** (Đ1, Đ2, Đ5, Đ6, Đ8, Đ9, Đ12, Đ13, Đ14) — và khi soi lại bằng ground truth thì **5 trong 9 ô bỏ trống đó có luật riêng, phản trực giác**, đủ để bắn thủng cả spec ta lẫn spec đối thủ.
+
+Vì sao mười bốn ô này gần như luôn có câu trả lời: chúng đều là **hạng 1–2** của §4c (hằng số, và quan hệ của một khái niệm với chính nó). Hạng 3 — giao giữa hai khái niệm — mới là chỗ nhận deflection. Thi thử hỏi 5 câu hạng 2–3 và **0 câu hạng 1**; mười bốn ô này chính là danh sách câu hạng 1 soạn sẵn.
+
+| Ô | Hỏi dạng | Khuôn lượt (thay danh từ của đề) | Không hỏi ⇒ tra `mac-dinh-nganh.md` |
+|---|---|---|---|
+|**Đ1** Đơn vị & bước nhảy ô nhập số|số|`<Hệ thống>で<tài nguyên>を使うとき、何単位で指定できるのでしょうか？`|bội số 1 (⚠ rủi ro Cao — đề hay chốt 100/500)|
+|**Đ2** Trần trên & sàn dưới ô nhập|số|`<Hệ thống>で同一<đối tượng>を一度に指定できる上限はいくつでしょうか？`|trần = tồn/số dư (⚠ Cao)|
+|**Đ3** Thời điểm xét điều kiện|nhị phân|`<điều kiện>の判定時点は、<thao tác A>の時点と<thao tác B>の時点のどちらでしょうか？`|lúc thao tác|
+|**Đ4** Ô nào KHÔNG tính vào phép so nào|nhị phân|`<phép so>の対象となる金額は、<tổng X>と<tổng Y>のどちらでしょうか？`|tổng lớn nhất (⚠ Cao)|
+|**Đ5** Tập con bị loại trừ|mở ngắn|`<ưu đãi>の対象外となる商品はどれでしょうか？`|không loại trừ gì (⚠ Cao)|
+|**Đ6** Phụ phí luôn thu|nhị phân|`<ưu đãi>が適用されたとき、<phụ phí>も無料になるのでしょうか？`|miễn theo|
+|**Đ7** Danh sách mã lỗi đầy đủ + thứ tự|số rồi mở|`<màn hình>で表示されるエラーは全部で何種類でしょうか？` rồi mới hỏi từng mã|**không có mặc định** — bắt buộc hỏi|
+|**Đ8** Thao tác hoàn tác trước khi chốt|nhị phân|`確定前に適用済みの<X>を取り消すことはできるのでしょうか？`|gỡ được, không tiêu lượt|
+|**Đ9** Lặp lại chính thao tác đã làm|nhị phân|`すでに適用中の<X>と同じものをもう一度指定したとき、置き換わるのでしょうか？`|báo lỗi (⚠ Cao — hay là mã dùng chung, không phải mã riêng)|
+|**Đ10** Thông báo phải kèm con số|nhị phân|`<lỗi>のメッセージには不足額も表示されるのでしょうか？`|không kèm số|
+|**Đ11** Trạng thái rỗng / cạn|nhị phân|`<tập> が0件のとき、<màn hình>の<khối>は非表示になるのでしょうか？`|ẩn khối, hiện một dòng|
+|**Đ12** Thời hạn lưu dữ liệu tạm|số|`<giỏ/nháp>は最後の操作から何日間保持されるのでしょうか？`|vĩnh viễn (⚠ Cao)|
+|**Đ13** Chuẩn hoá đầu vào|số rồi nhị phân|`<mã>は何桁でしょうか？` → `大文字と小文字は区別されるのでしょうか？`|trim + không phân biệt hoa thường|
+|**Đ14** Phân hạng & mốc riêng|nhị phân|`<mốc>は利用者の区分によって変わるのでしょうか？`|một mốc chung (⚠ Cao — thi thử 11/09 đội thua đúng ô này)|
+
+**Cách dùng trong `/elicit` (§3.1 bước 2b).** Mười bốn ô này **chèn thẳng vào hàng đợi trước khi chấm điểm giá trị**, không qua bước chấm — chúng là sàn, không phải ứng viên. Chọn theo hai luật:
+
+1. **Ô nào tra `mac-dinh-nganh.md` ra `⚠ Cao` thì lên trên đường cắt**, kể cả khi có vẻ vặt. Đ1/Đ2/Đ12/Đ14 nhìn như chi tiết UI nhưng chúng đổi **con số cuối cùng** — mà con số cuối cùng là thứ máy chấm so.
+2. **Đ7 không có mặc định ngành** (30 §1c-4: ánh xạ mã ↔ điều kiện là dữ liệu tuỳ tiện của khách). Ô này luôn nằm trên đường cắt, và hỏi bằng **hai lượt**: đếm trước (`何種類`), liệt kê sau. Đếm trước là lượt rẻ nhất của cả ngày — một con số cho biết ngay ta đang thiếu mấy mã.
+
+**Cách dùng ngược — giáp.** Mỗi ô không hỏi được vẫn **phải có một dòng luật trong spec**, lấy giá trị từ `mac-dinh-nganh.md` và mở dòng `G-xx`. Im lặng ở mười bốn ô này không trung lập: Executor mù sẽ lấp bằng mặc định ngành, và năm trong số đó là chỗ đề cố tình đặt luật **ngược** mặc định. Kiểm ở `/spec-review` khối G-10.
+
 ## 5. Mẫu RTM ngược — có cả dòng giả định
 
 Truy vết *đáp án AI Khách hàng → luật có mã trong spec*, **và** *giả định → luật*. Kể cả khi kịp 15–20 lượt, phần lớn spec vẫn không có nguồn từ AI Khách hàng; RTM vì thế có hai loại dòng và không loại nào được để trống cột "Mã BR".
@@ -568,10 +599,12 @@ Quy tắc:
 1. Dòng `A-xx` = có câu trả lời nguyên văn trong log (bằng chứng kháng nghị dùng được). Dòng `G-xx` = giả định, **không** phải bằng chứng, không được trích khi kháng nghị.
 2. Ô "Mã BR" trống = lỗ hổng chắc bị bắn. Không nộp spec khi còn ô trống, kể cả ở dòng `G-xx`.
 3. ⚠⚠ = khác mặc định ngành VÀ có con số/trạng thái cụ thể → viết BR trước tiên, thêm 1 ví dụ số vào spec.
+   **⚠⚠ chính là `Δ ≠ 0` của `50` §9** — nó phục vụ hai vai bằng một dấu: vai THỦ (luật phản trực giác, phải viết rõ nhất trong spec mình vì Executor mù sẽ đoán sai) **và vai CÔNG (băng đạn: ô nào đối thủ im lặng mà ta có ⚠⚠ là ứng viên `P(TRÚNG)` = 0,85)**. Đánh dấu ngay lúc nạp câu trả lời, đừng đợi pha CÔNG mới đọc lại log. Đối chiếu bắt buộc với `mac-dinh-nganh.md`: không tra mặc định thì không biết là ⚠⚠ hay ⚠.
 4. Cột **Rủi ro** chỉ điền cho dòng `G-xx`, theo ba tiêu chí của `/spec-write` bước 14: đảo lại thì đổi kết quả quan sát được · Executor mù có đoán trùng không · có nằm trong core flow tiền/tồn không. Mười dòng `G-xx` rủi ro cao nhất là nguyên liệu của các lượt hỏi còn lại (§3.4) — chuyển sang dạng nhị phân trước khi gửi.
 5. Trạng thái: ✅ đã viết · ✍ đang viết · ❌ thiếu · ⛔ ngoài phạm vi (không viết, dùng cho §1 spec).
 6. Câu trả lời dạng liệt kê hoặc bảng nhiều hàng → **mỗi ý một dòng RTM**, không gộp (ý bị gộp sẽ không thành BR và bị catch-all 0.4/0.5 xử sai).
 7. Một lượt xác nhận trả về "không đúng" ⇒ dòng `G-xx` tương ứng **chuyển thành `A-xx`** với nội dung mới, đánh ⚠⚠, và mở một việc sửa spec.
+8b. **Lọc băng đạn cho pha CÔNG**: mọi dòng ⚠⚠ (`Δ ≠ 0`) in ra thành một danh sách riêng ở cuối `rtm.md`. 13:00 chỉ việc đối chiếu danh sách này với từng spec đối thủ: họ im lặng ở dòng nào ⇒ ứng viên cơ chế A. Dòng ⚠ thường (`Δ = 0`) **không** vào danh sách này — đối thủ im lặng ở đó thì Executor vẫn đoán trúng, bắn vào là TRƯỢT (`50` §9).
 8. Sau 11:20, đếm: số dòng ⚠ có BR / tổng dòng ⚠ phải = 100%; số dòng `G-xx` rủi ro Cao **rớt dưới đường cắt** phải được liệt kê trong `review.md` như rủi ro đã biết.
 
 ## 6. Mẫu log hội thoại có timestamp (bằng chứng kháng nghị)

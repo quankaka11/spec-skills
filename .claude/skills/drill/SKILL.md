@@ -72,12 +72,13 @@ Mục tiêu: đo xem question bank + template + quy trình có thật sự chắ
    - **Bốn kiểu G-9**: số hit ở G-9a (ngoài phạm vi → cấm) · G-9b (luật rộng hơn danh từ đã hỏi) · G-9c (con số trên câu deflection) · G-9d (mã lỗi suy rộng). Mục tiêu **= 0** cả bốn.
    - **Danh từ lạ bị bỏ qua**: đếm danh từ mới xuất hiện trong câu trả lời của customer; bao nhiêu cái có lượt truy theo. Tỷ lệ truy theo dưới 50% ⇒ hàng đợi đang bỏ phí nguồn dữ kiện rẻ nhất.
    - **Hằng số trước quan hệ**: trong các lượt đã gửi, đếm `số câu hằng số` / `số câu quan hệ`, và liệt kê hằng số nào bị viết vào spec mà **chưa từng có một lượt hỏi**. Đây là chỉ số đo trực tiếp bài học lớn nhất của thi thử 11/09.
+   - **Phủ 14 ô "đề luôn chốt"** *(chỉ số mới)*: chạy bảng 20 §4d hai lần — (a) **mặt hỏi**: mấy ô có ít nhất một lượt đã gửi; (b) **mặt viết**: mấy ô có ít nhất một luật trong bản nộp (khối G-10 của `/spec-review`). Mục tiêu (b) **= 14/14**; (a) đo đường cắt chọn đúng chưa. Với mỗi ô hở, đối chiếu `true-spec.answers.md` xem specs thật có luật **ngược mặc định ngành** ở đó không — ô hở + luật ngược = một viên đạn đối thủ chắc chắn có. Thi thử 11/09 đo được 5/14 ở mặt hỏi và 5 ô hở có luật phản trực giác.
    - **`HỎI` có được thực thi không**: số mục trong danh sách `HỎI` của `/spec-review` · bao nhiêu mục thật sự được gửi trước khi nộp · **ngân sách hỏi còn thừa lúc nộp**. Nộp khi còn >30% ngân sách và danh sách `HỎI` chưa rỗng là **thất bại quy trình**, ghi riêng thành một dòng đỏ ở đầu `ket-qua.md`.
    - 3 bài học hành động được: mỗi bài = file knowledge + mục + câu cần thêm/sửa. Không tự sửa knowledge — đề xuất để người dùng duyệt.
 
 ## Output bắt buộc
 - [ ] `drill/<tên>/`: true-spec.md, true-spec.answers.md, brief.md, mo-hinh-bai-toan.md, log-khach-hang.md, rtm.md, spec.md, review.md, eval-set.md, tests/doi-minh.md, ket-qua.md.
-- [ ] `ket-qua.md` có 16 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, lỗ hổng giả định, hiệu quả pha xác nhận, chi phí bị từ chối, đúng nhịp hay không, **hằng số không nguồn**, **vượt đường đỏ**, **bốn kiểu G-9**, **danh từ lạ bị bỏ qua**, **hằng số trước quan hệ**, **`HỎI` có được thực thi không**), bảng phủ 10 mục BTC, và 3 bài học.
+- [ ] `ket-qua.md` có 17 chỉ số (điểm quy đổi, lỗ hổng elicitation, lỗ hổng viết, lỗ hổng khả thi, lỗ hổng mục tiêu, đa nghĩa thật, lỗ hổng giả định, hiệu quả pha xác nhận, chi phí bị từ chối, đúng nhịp hay không, **hằng số không nguồn**, **vượt đường đỏ**, **bốn kiểu G-9**, **danh từ lạ bị bỏ qua**, **hằng số trước quan hệ**, **phủ 14 ô "đề luôn chốt"**, **`HỎI` có được thực thi không**), bảng phủ 10 mục BTC, và 3 bài học.
 
 ## Không được
 - Đưa true-spec cho executor; đưa spec đội cho customer; tự đọc true-spec khi đóng vai đội (kể cả khi dựng mô hình bài toán ở bước 3b).

@@ -6,7 +6,32 @@
 
 Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn), `<%CỌC>`, `<TZ>` = số lấy từ AI Khách hàng buổi sáng; điền số thật trước khi nộp. Dùng thời điểm tuyệt đối (10:00:00) thay vì "sau TTL".
 
-## 1. Bảng 24 loại lỗ hổng (#16–#20 thêm 09/09; #21 sau họp BTC; #22–#24 từ cấu trúc 10 mục 11/09)
+## 0. Bài học thi thử 11/09 — 2/2 viên TRƯỢT, và vì sao
+
+Trận thử đề ハナマルストア: kit sinh 2 test cho spec đội A, **cả hai TRƯỢT**. Đọc lại bằng ground truth (`battle/ground-truth-thi-thu.md`) thì hai viên trượt vì **hai lỗi khác nhau, cả hai đều nằm trong quy trình cũ, không phải do xui**:
+
+| Viên | Giả thiết kit đặt ra | Sự thật của đề | Lỗi của quy trình |
+|---|---|---|---|
+|T-A1 — しきい値 4.000円|"AI Khách hàng nói **một** 「しきい値」 số ít, không nhắc hạng thành viên ⇒ đối thủ tự bịa hai ngưỡng 5.000/3.000 theo hạng"|V-03: mốc **đúng là** 5.000円 thường / 3.000円 Gold. Đối thủ **biết nhiều hơn ta**|**Im lặng của AI Khách hàng bị đọc thành bằng chứng phủ định.** Khách trả lời đúng một ẩn số mỗi lượt; những gì khách không nhắc **không phải** là những gì không tồn tại|
+|T-A2 — coupon hết hạn giữa giỏ và xác nhận|"specs thật gần như chắc chắn tái kiểm hạn lúc chốt, nếu không thì mã hết hạn giảm giá vô thời hạn"|V-10: hạn xét **tại lúc ÁP**, không phải lúc chốt. GTD còn ghi rõ đây là "điểm dễ nhầm nhất của đề"|**Cược vào đáp án chuẩn bằng suy luận "hợp lý".** Suy luận hợp lý là đúng thứ mà đề cố tình bẻ — và cũng là đúng thứ Executor mù sẽ đoán|
+
+Ba hệ quả, đã thành luật cứng ở §2-13…§2-16:
+
+1. **Không có lời khách nguyên văn về ĐÁP ÁN ⇒ không được lấy suy luận thay vào.** Bằng chứng mức 1/2/3 ở §2-9 chỉ chứng minh **phạm vi** (chống VÔ HIỆU). Nó không chứng minh ta biết đáp án. Hai việc khác nhau, kit cũ trộn làm một.
+2. **Đừng bắn vào con số đối thủ tự đặt** khi ta chỉ có im lặng để chống lại nó. Đối thủ có thể đã hỏi được ô ta không hỏi.
+3. **TRƯỢT không phải 0 điểm** — nó cho đội thủ +1. Xem §6 luật 9: ngưỡng nộp thật là `P(TRÚNG) > 1/3`, không phải `> P(VÔ HIỆU)/2`.
+
+**Nhưng bài học đắt nhất là chỗ kit đã đúng mà không dám đi tiếp.** Bước dry-run loại đúng 4 ứng viên mạnh (A-12/A-14/A-15/A-17: đối thủ im lặng nhưng mặc định ngành trùng specs thật). Loại là đúng. Sai là ở chỗ **thay chúng bằng hai canh bạc thay vì đổi nguồn đạn**. Nguồn đạn đúng có sẵn ngay trong file đối thủ mà kit đọc rồi bỏ qua: **mục 8「Điểm chưa chốt」 I-01…I-05 — chỗ đối thủ TỰ KHAI là chưa biết.** Đối chiếu với ground truth thì 3 trong 5 dòng đó có luật riêng, phản trực giác, và Executor buộc phải bịa:
+
+| Đối thủ tự khai chưa chốt | Đề có luật | Executor mù sẽ nói |
+|---|---|---|
+|I-05 nhập lại coupon khi đã áp một coupon thì báo gì|R-214 + DT-05: **E-105 (併用不可)**, kể cả khi nhập **đúng mã đang áp**; KHÔNG thay thế cái cũ|"đã áp rồi" / "thay bằng mã mới" — lệch|
+|I-01 còn mã lỗi nào từ E-104 trở đi|DT-03: còn **E-104** (giỏ không có 対象商品), **E-105**, **E-106** (phiếu 1 lần đã dùng), và thứ tự xét 1→6|Chỉ biết E-101/102/103 ⇒ ca "giỏ toàn hàng sale" trả về E-103 thay vì E-104|
+|I-02 điểm có trả được phí ship không|V-06 + V-07 + R-303: điểm chỉ dùng **bội số 100**, trần 50% 税抜商品小計, không ảnh hưởng 判定額|Cho dùng 1.250pt — lệch ngay ở đơn vị|
+
+⇒ **Luật nguồn đạn mới (§4 bước 0):** đọc mục "Điểm chưa chốt / TBD / 確認中 / 課題" của spec đối thủ **trước mọi bước khác**. Đó là danh sách đối thủ tự viết ra những chỗ Executor của họ sẽ phải bịa.
+
+## 1. Bảng 27 loại lỗ hổng (#16–#20 thêm 09/09; #21 sau họp BTC; #22–#24 từ cấu trúc 10 mục 11/09)
 
 > Loại #22–#24 sinh ra từ cấu trúc spec BTC 10 mục (knowledge/33). Đội nào viết spec theo lối luật nghiệp vụ thuần (không có mục 2/3/4) sẽ hở toàn bộ ba loại này.
 
@@ -41,6 +66,12 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 | 23 | **Guest vs login không phân biệt** (mục 2, 8 BTC) | Mục 2 không có cột guest; mục 8 không có dòng Guest; Ctrl+F "guest / chưa đăng nhập" = 0 hit | P54 | **Rất cao** | Thấp |
 | 24 | **Trạng thái UI không xác định** (mục 2, 3 BTC) | Không nói nút disable/ẩn khi nào; không nói sau thao tác màn hình hiển thị gì; bảng Case thiếu cột "hiển thị / trạng thái nút" | P55 | Cao | TB |
 
+| 25 | **Ô đối thủ TỰ KHAI chưa chốt** (mục "Điểm chưa chốt / TBD / 確認中 / 課題") | Có mục liệt kê câu hỏi mở của chính đối thủ. Mỗi dòng = một chỗ Executor của họ buộc phải bịa | P59 | **Rất cao** | Thấp — đối thủ đã tự nhận nghiệp vụ đó thuộc phạm vi bằng cách viết nó ra |
+| 26 | **Đơn vị / bước nhảy / trần của ô nhập số** | Spec nói "1 điểm = 1 yên", "nhập số lượng" mà **không** nói bội số, bước nhảy, trần trên, có số 0 không | P60 | **Rất cao** | Thấp |
+| 27 | **Thao tác hoàn tác không tồn tại trong spec** (gỡ / huỷ áp / đổi lựa chọn trước khi chốt) | Ctrl+F "gỡ / 解除 / huỷ áp / đổi / thay" = 0 hit, trong khi spec có thao tác "áp / chọn" | P61 | Cao | Thấp |
+
+**Vì sao #25–#27 là ba loại đáng bắn nhất sau thi thử 11/09.** Cả ba đều **không cần ta biết đáp án chuẩn** — chúng chỉ cần **không gian đáp án rộng**. Bắn vào một ô nhị phân (có/không, giữ/gỡ) thì Executor trùng đáp án 50% do may. Bắn vào một ô có ≥4 giá trị hợp lý (bội số 100 hay 1? trần 50% hay toàn bộ? mã lỗi nào trong 6 mã? gỡ được mấy lần?) thì xác suất trùng tụt xuống ≤25% **mà không cần ta đoán đúng gì cả**. Đây là cách duy nhất kit có được đạn khi đối thủ đã chắn hết các dòng ⚠ của ta — tình huống 11/14 dòng bị chắn của thi thử 11/09 sẽ lặp lại, vì hai đội đọc cùng một brief và hỏi cùng một AI Khách hàng.
+
 **Vì sao #22–#24 rẻ.** Ba loại này chỉ cần đọc mục lục và hai bảng của spec đối thủ — không cần biết specs thật, không cần suy luận nghiệp vụ. Mục 4 vắng message nguyên văn là hở gần như chắc chắn ở các đội còn viết theo template luật nghiệp vụ thuần.
 
 ## 2. Quy tắc viết tình huống test
@@ -61,6 +92,14 @@ Quy ước: `<TTL>`, `<QTY_MAX>`, `<HOLD_MAX>`, `<GH_MAX>` (số lần gia hạn
 10. **Bỏ một slot còn hơn nộp một test âm kỳ vọng.** Không nộp = 0 điểm; VÔ HIỆU = −1. Với 5 slot × 3 spec, nộp 13 test tốt hơn nộp 15 test trong đó 2 test đoán bừa.
 11. Không dùng từ mơ hồ trong câu hỏi ("một lúc sau", "khá nhiều").
 12. Tự đóng vai Executor: đoán mặc định khi spec im lặng vẫn trùng đáp án chuẩn → TRƯỢT cao, đổi test [HD §2.3].
+
+13. **Cổng hình thức thứ tư — hỏi HÀNH VI HỆ THỐNG, không hỏi GIÁ TRỊ** (phát hiện 11/09, hệ thống trả câu về kèm hướng dẫn). Câu 「送料はいくらになりますか」 bị chặn; dạng được nhận là 「…のとき、システムは〜をどう計算し、画面にどう表示しますか」. Ba động từ an toàn: **表示する · 計算する · 適用する**, thêm **制御する / 許可する / 拒否する** cho ca quyền và nút. Lợi ích phụ: dạng hành vi ép Executor cam kết **cả con số lẫn chuỗi hiển thị** ⇒ hai điểm để lệch thay vì một.
+14. **Cấm cược vào đáp án chuẩn.** Không nộp test mà cơ sở TRÚNG là một câu bắt đầu bằng "specs thật gần như chắc chắn…", "nếu không thì sẽ vô lý…", "theo lẽ thường phải là…". Suy luận hợp lý chính là thứ đề cố tình bẻ, và cũng là thứ Executor mù sẽ đoán ⇒ hai bên trùng nhau ⇒ TRƯỢT. Một test chỉ được nộp khi TRÚNG đến từ **một** trong hai cơ chế:
+   - **Cơ chế A — ta biết đáp án:** có lời AI Khách hàng nguyên văn xác định kết quả, **và** spec đối thủ nói khác nó (không phải im lặng — im lặng thì xem cơ chế B).
+   - **Cơ chế B — không ai biết đáp án nhưng không gian đáp án rộng:** ô thuộc bảng §8, spec đối thủ im lặng hoặc tự khai chưa chốt, và liệt kê được **≥4 giá trị hợp lý** mà Executor có thể xuất ra. Xác suất trùng ≤ 1/4 mà ta không phải đoán đúng gì.
+   Không thuộc A cũng không thuộc B ⇒ **bỏ slot**.
+15. **Im lặng của AI Khách hàng không phải bằng chứng phủ định.** Khách chỉ trả lời đúng một ẩn số mỗi lượt và không có memory; ô ta không hỏi thì khách không kể. Cấm suy "khách nói 「しきい値」 số ít nên chỉ có một mốc", "khách không nhắc hạng thành viên nên không có hạng". Hệ quả trực tiếp: **không bắn vào một con số đối thủ tự đặt** trừ khi có lời khách nguyên văn nêu **con số khác**.
+16. **Ưu tiên ô có không gian đáp án rộng hơn ô nhị phân.** Xếp hạng ứng viên theo `W` = số giá trị hợp lý mà Executor có thể xuất: `W ≥ 4` (đơn vị/bội số, trần, chọn 1 trong ≥4 mã lỗi, số lần cho phép) > `W = 3` (ba nhánh trạng thái) > `W = 2` (có/không, giữ/gỡ). Với cùng độ im lặng, `W = 2` cho `P(TRÚNG) ≈ 0,5` là **dưới ngưỡng nộp** của §6 luật 9.
 
 Mẫu câu chuẩn:
 > "[Loại khách] tạo hold [qty] đơn vị sản phẩm [X] lúc [hh:mm:ss, ngày, TZ]; hold hiện ở trạng thái [S]. Lúc [hh:mm:ss] xảy ra [sự kiện]. [Trạng thái cuối của hold là gì / tồn khả dụng bằng bao nhiêu / tiền cọc hoàn bao nhiêu / ai được hàng]?"
@@ -206,6 +245,18 @@ Nguồn: ISO/IEC/IEEE 29148 `feasible`/`affordable`; HTSM *Operations: disfavore
 | P51 | Ghi giữ thất bại sau khi kiểm thấy còn hàng | #19 | N4 | "Hệ thống kiểm thấy còn 1 đơn vị nhưng khi ghi giữ thì số tồn đã bị giao dịch khác lấy. Khách nhận kết quả gì?" |
 | P52 | Nghiệp vụ brief nhắc bị đẩy ra ngoài phạm vi | #20 | N1 | "Khách đã chốt đơn từ hold và còn phải trả phần tiền còn lại. Khách trả nốt trong thời hạn nào?" *(chỉ bắn khi brief nhắc tường minh phần tiền còn lại)* |
 
+### Probe cơ chế B (P59–P61) — dùng cho loại #25–#27, không cần biết đáp án chuẩn
+
+Nguồn: bài học thi thử 11/09 (§0) + bảng "ô đề luôn chốt" §8. Ba probe này khác mọi probe trên ở chỗ **ta không đoán đáp án** — ta chỉ chọn ô mà Executor buộc phải xuất một giá trị trong không gian ≥4 khả năng.
+
+| # | Probe | Loại | Ô §8 | Khuôn câu (thay danh từ của miền) |
+|---|---|---|---|---|
+| P59 | Bắn thẳng vào dòng đối thủ tự khai chưa chốt | #25 | theo dòng | Lấy nguyên dòng ở mục "Điểm chưa chốt / TBD / 確認中", dựng một tình huống khách thật rơi đúng vào đó, kết bằng 「…のとき、システムは〜をどう判定し、画面にどう表示しますか」 |
+| P60 | Đơn vị / bội số / trần của ô nhập số | #26 | Đ1, Đ2 | "Khách có `<tài nguyên>` là `<N lớn>`, muốn dùng `<M không tròn, dưới trần>`. Hệ thống chấp nhận con số ấy thế nào và bảng tiền tính ra sao?" |
+| P61 | Thao tác hoàn tác / làm lại trước khi chốt | #27, #25 | Đ8, Đ9 | "Khách đã áp `<X>`, rồi muốn đổi sang `<X'>` (hoặc nhập lại đúng `<X>`) trước khi chốt. Hệ thống xử lý yêu cầu ấy thế nào và hiện gì?" |
+
+**Vì sao ba probe này sống sót được khi mọi dòng ⚠ đã bị chắn.** Chúng không tranh với đối thủ về *kiến thức đề* (ô đó đối thủ cũng không biết — họ tự khai), mà tranh về *độ rộng không gian đáp án*. Thi thử 11/09: 11/14 dòng ⚠ của ta bị spec A chắn, nhưng cả ba probe này đều có đạn (I-05 → Đ9 · I-02 → Đ1 · I-01 → Đ7).
+
 **Cảnh báo phạm vi cho P43–P52:** chấm rubric §6 như mọi test. P43, P44, P48–P51 điểm 0–1 vì nằm trong luồng tiền/tồn của chính tính năng. P52 chỉ nộp khi **trích được câu brief** nhắc nghiệp vụ đó — brief là căn cứ dùng chung, mạnh hơn suy diễn, nhưng vẫn yếu hơn một câu trả lời của AI Khách hàng.
 
 ## 6. Rubric kiểm phạm vi (chống VÔ HIỆU)
@@ -235,6 +286,33 @@ Luật:
 
    Ước `P(TRÚNG)` từ dry-run executor mù: executor trả lời khác đáp án chuẩn và ĐỘ PHỦ = ĐỦ ⇒ 0,8; khác và ĐỘ PHỦ = KHÔNG ⇒ 0,6; trùng đáp án chuẩn ⇒ 0,1 (đổi test).
 9. Câu trả lời `"Không có quy định riêng."` **KHÔNG** phải bằng chứng trong phạm vi — nó chỉ nói specs thật không quy định, không nói nghiệp vụ thuộc tính năng. Chỉ hai thứ hạ được điểm phạm vi: (a) mục nằm trong danh sách TRONG phạm vi (N1-03), hoặc (b) một câu trả lời nghiệp vụ cụ thể (con số / trạng thái cuối / hướng tiền / ai thắng) về đúng nghiệp vụ đó. Dòng "chưa rõ" trong RTM giữ nguyên điểm phạm vi gốc — đừng coi im lặng của specs thật là giấy thông hành.
+
+### Luật 9 — điểm kỳ vọng TƯƠNG ĐỐI (sửa 11/09, thay luật 8)
+
+Luật 8 cũ tính `EV = 2·P(TRÚNG) − P(VÔ HIỆU)` và coi TRƯỢT = 0. Sai: **TRƯỢT cho đội thủ +1 điểm thủ**, nên so với việc bỏ slot, một viên trượt làm ta thua thêm 1 điểm chênh lệch.
+
+```
+EV_rel = 2·P(TRÚNG) − 1·P(TRƯỢT) − 1·P(VÔ HIỆU)
+       = 3·P(TRÚNG) − 1 − 2·P(VÔ HIỆU)          (vì P(TRƯỢT)=1−P(TRÚNG)−P(VÔ HIỆU))
+```
+
+⇒ **Ngưỡng nộp: `P(TRÚNG) > (1 + 2·P(VÔ HIỆU)) / 3`.** Với `P(VÔ HIỆU)=0,05` thì cần `P(TRÚNG) > 0,37`. Hai viên của thi thử 11/09 được gán 0,55–0,60 **không có cơ sở** (đều là cược §2-14); gán lại theo bảng dưới thì cả hai đều rơi xuống 0,25 và bị loại đúng.
+
+**Bảng gán `P(TRÚNG)` — chỉ theo bằng chứng, cấm gán theo cảm giác:**
+
+| Tình huống | P(TRÚNG) |
+|---|---|
+|Cơ chế A: có lời khách nguyên văn **và** spec đối thủ nói **khác** nó|**0,85**|
+|Cơ chế A yếu: có lời khách nguyên văn, spec đối thủ im lặng, dry-run cho ra kết quả **khác** lời khách|**0,70**|
+|Cơ chế B: ô bảng §8, đối thủ **tự khai chưa chốt** (#25), `W ≥ 4`|**0,70**|
+|Cơ chế B: ô bảng §8, đối thủ im lặng, `W ≥ 4`|**0,55**|
+|Cơ chế B: `W = 3`|**0,40**|
+|`W = 2` (nhị phân) bất kể im lặng cỡ nào|**0,25** ⇒ loại|
+|Cược §2-14 ("specs thật chắc phải thế")|**0,25** ⇒ loại|
+|Dry-run cho ra kết quả **trùng** lời khách|**0,10** ⇒ loại|
+
+`P(VÔ HIỆU)` giữ nguyên theo điểm phạm vi: 0 ⇒ 0,05 · 1 ⇒ 0,15 · 1,5 ⇒ 0,30.
+
 
 ## 7. Hồ sơ finding [HD §5.7] và kháng nghị [HD §5.8]
 
@@ -283,3 +361,79 @@ Giới hạn: <1 câu tự nêu điểm yếu của bằng chứng, nếu là m�
 Câu "Giới hạn" không phải khiêm tốn: người review thấy đội tự nêu đúng giới hạn của bằng chứng sẽ tin phần còn lại hơn, và nó chặn trước lý bác duy nhất mà họ có.
 
 Bằng chứng chuẩn bị trước 15:00 (không kịp thu lúc 16:00): log AI Khách hàng có timestamp + ảnh chụp từng câu trả lời, bản copy spec đã nộp, 15 hồ sơ finding **kèm gói bằng chứng phạm vi 3 mức**, bảng đồng thuận chéo §4b, 3 spec đối thủ đã tải về.
+
+## 8. Bảng "ô đề luôn chốt" — nguồn đạn cơ chế B (mới 11/09)
+
+Mọi đề nghiệp vụ do BTC dựng đều **chốt sẵn** những ô dưới đây trong specs thật, vì đó là chỗ hai người đọc cùng một brief sẽ hiểu khác nhau. Đối thủ im lặng hoặc tự khai chưa chốt ở một ô ⇒ ứng viên cơ chế B, **không cần ta biết đáp án**. Cột `W` là số giá trị hợp lý Executor có thể xuất — chính là tử số của `P(TRÚNG)`.
+
+| Ô | Câu hỏi soi trên spec đối thủ | W | Ví dụ đề thi thử 11/09 (ground truth) |
+|---|---|---|---|
+|**Đ1 Đơn vị & bước nhảy của ô nhập số**|Nhập được số lẻ hay phải bội số? Bước nhảy bao nhiêu?|4–6|V-06: điểm chỉ dùng **bội số 100**, spec A chỉ ghi 1点=1円|
+|**Đ2 Trần trên & sàn dưới của ô nhập**|Tối đa bao nhiêu? Có chọn 0 được không? Trần neo vào đâu|4–6|V-02: số lượng tối đa **10**, ô chỉ có 1..10, không có 0|
+|**Đ3 Thời điểm xét điều kiện**|Xét lúc thao tác hay lúc chốt? Có tái kiểm không|3–4|V-10: hạn phiếu xét lúc **ÁP**, không phải lúc chốt|
+|**Đ4 Ô nào KHÔNG tính vào phép so nào**|Phép so X dùng tổng nào — toàn giỏ hay tập con? Có trừ phí/điểm không|4–6|G-07/R-209: mức mua tối thiểu so với **対象商品小計**, không tính phí ship và điểm|
+|**Đ5 Tập con bị loại trừ**|Hạng mục nào không được tính vào tập đối tượng|3–5|G-06: セール価格・定期便・ギフトカード **không** là 対象商品|
+|**Đ6 Phụ phí luôn thu**|Khoản nào vẫn thu kể cả khi đã miễn|3|V-04/R-105: 遠隔地追加送料 440円 **vẫn thu** khi ship miễn phí|
+|**Đ7 Danh sách mã lỗi đầy đủ + thứ tự xét**|Có mấy mã? Thứ tự nào? Nhiều điều kiện cùng hỏng thì mã nào|5–8|DT-03: 6 điều kiện E-101→E-106 theo thứ tự; spec A chỉ có 3|
+|**Đ8 Thao tác hoàn tác trước khi chốt**|Gỡ / đổi / huỷ áp được không, mấy lần, có tiêu lượt không|4|R-212: 「解除」 gỡ được, **không tiêu lượt**, bao nhiêu lần cũng được|
+|**Đ9 Lặp lại chính thao tác đã làm**|Nhập lại đúng thứ đang áp thì sao|4|R-214: ra **E-105**, không có câu riêng "đã áp rồi"|
+|**Đ10 Thông báo phải kèm con số**|Message có bắt buộc chứa số/khoản còn thiếu không|3–4|R-213: E-103 phải hiện **số tiền còn thiếu**|
+|**Đ11 Trạng thái rỗng / cạn**|Màn hình hiện gì khi tập rỗng — ẩn hết hay hiện xám|3–4|R-107: giỏ rỗng **ẩn hết** bảng tiền, thanh, ô phiếu, nút; chỉ còn một dòng|
+|**Đ12 Thời hạn lưu dữ liệu tạm**|Giỏ / nháp / phiên giữ bao lâu|4–6|V-05: giỏ giữ **30 ngày** kể từ lần sửa cuối|
+|**Đ13 Chuẩn hoá đầu vào**|Cắt khoảng trắng? Phân biệt hoa thường? Độ dài cố định?|3–5|V-08/R-205/R-206/R-207: 12 ký tự, không phân biệt hoa thường, trim, thiếu ký tự ⇒ E-101|
+|**Đ14 Phân hạng / phân khúc & mốc riêng**|Có hạng khách không, mốc khác nhau không, xét hạng lúc nào|3–5|V-03 + R-304: 5.000/3.000円 theo hạng, **hạng xét tại lúc chốt đơn**|
+
+**Cách dùng (2 phút):** grep 14 ô này trên spec đối thủ bằng từ khoá của miền. Ô nào 0 hit **và** nằm trong 3 màn hình/phạm vi brief ⇒ ứng viên cơ chế B. Xếp theo `W` giảm dần, lấy từ trên xuống. Ô nào đối thủ đã viết rõ ⇒ bỏ, trừ khi ta có lời khách nguyên văn nói **khác** (khi đó thành cơ chế A, `P = 0,85`).
+
+**Cách dùng ngược (quan trọng hơn):** 14 ô này cũng là **hàng đợi hỏi AI Khách hàng buổi sáng** và **checklist lấp lỗ spec mình**. Ô nào ta không hỏi được thì phải tự điền mặc định ngành — vì đối thủ sẽ bắn đúng đây. Thi thử 11/09: ta hỏi 14 lượt tính token nhưng **không lượt nào** chạm Đ1, Đ2, Đ5, Đ6, Đ8, Đ9, Đ12, Đ13, Đ14 — tức bỏ trống 9/14 ô vừa là đạn vừa là giáp.
+
+## 9. Nạp đạn bằng lượt hỏi AI Khách hàng (mới 12/09)
+
+Ba thẻ kết quả của hệ chấm nói rõ ba điều kiện, và cả ba đều **đo được bằng một lượt hỏi**:
+
+| Thẻ | Hệ thống ghi gì | Điều kiện thật |
+|---|---|---|
+|**TRÚNG**|"Spec B: không mô tả cách xử lý X · Executor: `<mặc định>` · Intent thật: `<khác>`"|spec đối thủ **im lặng** ở X **VÀ** specs thật có luật **lệch mặc định ngành**|
+|**TRƯỢT**|"Spec A: mô tả rõ hành vi · Intent thật: khớp với câu trả lời"|đối thủ có luật, **hoặc** im lặng nhưng mặc định ngành trùng specs thật|
+|**VÔ HIỆU**|"**AI Khách hàng: nghiệp vụ này nằm ngoài phạm vi ứng dụng** · Executor: không cần được gọi để trả lời"|**AI Khách hàng** phán ngoài phạm vi — máy xét trước, Executor không chạy|
+
+Hai hệ quả đọc thẳng ra từ đây:
+
+1. **Biến quyết định của TRÚNG không phải "đối thủ im lặng" mà là `Δ`** — **chênh lệch giữa specs thật và mặc định ngành**. Đối thủ im lặng chỉ mở cửa; `Δ ≠ 0` mới là viên đạn. `Δ = 0` thì Executor lấp chỗ im lặng bằng đúng đáp án ⇒ TRƯỢT ⇒ tặng đối thủ +1. Đây chính là 4 ứng viên bị dry-run loại ở thi thử 11/09 (§0).
+2. **VÔ HIỆU do AI Khách hàng phán, không do người chấm suy** ⇒ **một lượt hỏi "X có thuộc phạm vi không" là bằng chứng mức 1 mạnh nhất**, và nó dập `P(VÔ HIỆU)` xuống ~0,02. Rẻ hơn mọi cách kháng nghị, vì kháng nghị chỉ mở cho ca VÔ HIỆU và chỉ tranh lại đúng câu phán này.
+
+### 9.1 Ba dạng lượt nạp đạn
+
+Cả ba đều phải qua **cổng 8 kiểm tra** của 20 §1 (một ý, không chỉ thị, không nhắc bộ máy chấm, không viện dẫn tài liệu). Câu bị từ chối không mất token, không mất nhịp — sai thì sửa và gửi lại.
+
+| Dạng | Dùng khi | Khuôn | Đọc kết quả |
+|---|---|---|---|
+|**Δ-probe** (đo chênh lệch)|Ứng viên cơ chế B: đối thủ im lặng ở một ô §8|Hỏi thẳng **giá trị** của ô đó, dạng số hoặc nhị phân: `<Hệ thống>で<ô>は<A>と<B>のどちらでしょうか？`|Đáp **lệch** mặc định ngành ⇒ `Δ ≠ 0` ⇒ **bắn, cơ chế A, `P` = 0,85** · Đáp **trùng** mặc định ngành ⇒ `Δ = 0` ⇒ **bỏ ứng viên** (Executor sẽ đoán trúng) · Đáp deflection (`特に定めていません`) ⇒ **bỏ** — không có đáp án chuẩn thì không TRÚNG được|
+|**Scope-probe** (diệt VÔ HIỆU)|Ứng viên nằm ở rìa phạm vi, hoặc điểm phạm vi ≥ 1|`<Hệ thống>の<màn hình/tính năng>で<nghiệp vụ X>は対象に含まれるのでしょうか？`|Đáp **có** ⇒ bằng chứng mức 1, `P(VÔ HIỆU)` = 0,02 · Đáp **ngoài phạm vi** ⇒ **xoá ứng viên ngay**, và ghi vào danh sách rào (bắn vào đây là −1 chắc chắn)|
+|**Đếm-probe** (mở rộng băng đạn)|Ô Đ7 và mọi danh sách đóng|`<màn hình>で表示されるエラーは全部で何種類でしょうか？`|Số đáp lớn hơn số mã đối thủ có ⇒ **mỗi mã chênh là một ứng viên**; hỏi tiếp từng mã bằng lượt riêng|
+
+**Thứ tự gửi:** Scope-probe trước Δ-probe cho cùng một ứng viên. Lý do: scope-probe trả về "ngoài phạm vi" thì Δ-probe thành lãng phí một nhịp, còn chiều ngược lại không đúng.
+
+### 9.2 Bảng chuyển ứng viên → lượt hỏi
+
+Chạy sau bước 0b của `/attack`, khi đã có danh sách ô §8 mà đối thủ im lặng.
+
+| Cột | Nội dung |
+|---|---|
+|Ứng viên|ô Đ / dòng I-xx đối thủ tự khai|
+|Mặc định ngành|tra `mac-dinh-nganh.md` — **phải điền trước khi gửi**, nếu không thì không đọc được kết quả|
+|Lượt hỏi|nguyên văn, đã qua cổng 8 kiểm tra|
+|Đáp = mặc định ⇒|**BỎ** (ghi lý do: `Δ = 0`)|
+|Đáp ≠ mặc định ⇒|**BẮN**, nâng lên cơ chế A, `P` = 0,85|
+|Deflection ⇒|**BỎ** — 20 §5 luật 9: không có đáp án chuẩn thì không có ca TRÚNG|
+
+**Một lượt hỏi phục vụ hai vai.** Cùng câu đó vừa nạp đạn cho vai CÔNG vừa lấp lỗ spec mình cho vai THỦ — nên khi hàng đợi buổi sáng còn chỗ, ô §8 luôn đáng hỏi kể cả chưa thấy spec đối thủ.
+
+### 9.3 Khi AI Khách hàng đã đóng trước pha CÔNG
+
+Kiểm tra đầu ngày (00 §A2-4). Nếu đóng thì **không có lượt nạp đạn nào sau khi thấy spec đối thủ** — mọi thứ phải chốt từ pha hỏi. Hai việc bù:
+
+1. **Hỏi trước theo bảng 14 ô §8** (20 §4d), vì đó là ô đề hay chốt nhất và ta chưa biết đối thủ hở đâu. Đây là cách duy nhất giữ optionality khi chưa thấy spec họ.
+2. **Ghi `Δ` ngay lúc nạp câu trả lời**, không đợi tới pha CÔNG: mỗi dòng `A-xx` đánh dấu `Δ ≠ 0` nếu đáp lệch mặc định ngành. Cột này là **băng đạn xếp sẵn** — 13:00 chỉ việc lọc `Δ ≠ 0` rồi đối chiếu spec đối thủ, không phải đọc lại log.
+
+Hệ quả cho `/elicit`: cột `Δ` thành cột bắt buộc của RTM, và những dòng `Δ ≠ 0` là thứ **không được viết rõ ràng quá** trong spec mình — viết rõ thì đối thủ đọc spec ta cũng biết. (Không phải giấu luật: luật vẫn phải có, chỉ là đừng làm nó nổi bật hơn các luật khác.)
